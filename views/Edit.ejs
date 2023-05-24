@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ModifierMessage</title>
+  <%- include('./partials/bootstrap'); %></head>
+<body>
+    <%- include('./partials/nav'); %>
+  <div class="d-flex flex-column align-items-center ">
+    <div class="container col-6">
+      <h1 class="text-center">Modifier Message</h1>
+          <form action="/edit-message/<%= message._id %>?_method=PUT" method="POST">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" class="form-control text-capitalize"  name="expediteur" value="<%= message.expediteur %>">
+            <div class="form-group ">
+              <h3 class="fst-italic text-capitalize"><span class="text-success fst-italic ">Destinataire : </span><%= message.destinataire %></h3>
+              <input type="hidden" class="form-control"  name="destinataire" value="<%= message.destinataire %>">
+            </div>
+            <div class="form-group ">
+              <label for="message">Message</label>
+              <textarea class="form-control" id="message" name="message" rows="4" required><%= message.message %></textarea>
+            </div>
+            <input type="hidden" name="datetime" id="datetime" value="<%= getCurrentDateTime() %>">      
+            <button type="submit" class="btn btn-primary mt-2">Enregistrer</button>
+          </form>
+        <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
+          <input type="hidden" name="_method" value="DELETE">
+          <button type="submit" class="btn btn-danger mt-2">Supprimer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    function getCurrentDateTime() {
+      var currentDateTime = new Date();
+      return currentDateTime.toISOString();
+    }
+  </script>
+</body>
+</html>

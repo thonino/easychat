@@ -1,0 +1,201 @@
+// Get Datetime
+function getCurrentDateTime() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+// Dépendances
+const express = require('express');
+const session = require('express-session');
+const bcrypt = require('bcrypt');
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
+const app = express();
+
+// Get datetime
+app.locals.getCurrentDateTime = getCurrentDateTime;
+
+// MongoDB Mongoose et dotenv
+require('dotenv').config();
+var mongoose = require('mongoose');
+const Message = require('./models/Message');
+const User = require('./models/User');
+const { log } = require('console');
+const url = process.env.DATABASE_URL;
+mongoose.connect(url, {useNewUrlParser: true,useUnifiedTopology: true})
+.then(() => {console.log("MongoDB connected");})
+.catch(err => {console.log(err);});
+
+//Les modèles
+const messageSchema = new mongoose.Schema({
+  expediteur: { type: String },
+  destinataire: { type: String },
+  message: { type: String },
+  datetime: { type: Date }
+});
+const userSchema = new mongoose.Schema({
+  pseudo: { type: String, required: true },
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+  status: { type: String, required: false },
+  role: { type: String, required: true }
+});
+
+// Les middlewares
+app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(methodOverride('_method'));
+
+
+//  - - - - - - - - - - R O U T E - - - - - - - - - - - //
+
+// GET HOME
+app.get('/', (req, res) => {
+  const user = req.session.user;
+  res.render('home', { user: user }); 
+});
+
+// GET REGISTER
+app.get('/register', (req, res) => {
+  const user = req.session.user;
+  res.render('register', { user: user });
+});
+
+// POST REGISTER
+app.post('/register', async (req, res) => {
+  try {
+    const { pseudo, email, password, role } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({ 
+    pseudo: pseudo,email: email,password: hashedPassword,role: role});
+    await user.save();
+    req.session.user = user;
+    res.redirect('/login');
+  } catch (error) {console.error(error);}
+});
+
+// GET LOGIN
+app.get('/login', (req, res) => {const user = req.session.user;
+  res.render('login', { user: user });});
+
+// POST LOGIN
+app.post('/login', async (req, res) => {
+  try {
+    const { pseudo, password } = req.body;
+    const user = await User.findOne({ pseudo: pseudo });
+    if (!user) {
+      res.send('Invalid username');
+      return;
+    }
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {res.send('Invalid password');return;}
+    req.session.user = user; res.redirect('/userpage');
+  } 
+  catch (error) {console.error(error);}
+});
+
+// GET LOGOUT
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {console.log(err);} 
+    else {res.redirect('/login');}
+  });
+});
+
+// GET USER PAGE
+app.get('/userpage', (req, res) => {
+  if (!req.session.user) { return res.redirect('/login');}
+  const user = req.session.user;
+  Message.find({$or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
+  }).then(messages => {
+    const messagesSent = messages.filter(message => message.expediteur === user.pseudo);
+    const messagesReceived = messages.filter(message => message.destinataire === user.pseudo);
+    res.render('userpage', {  
+      user: user, messagesSent: messagesSent,
+      messagesReceived: messagesReceived });
+  })
+  .catch(err => {console.log(err);});
+});
+
+// GET NEW MESSAGE
+app.get('/message/new', (req, res) => {
+  if (!req.session.user) {return res.redirect('/login');}
+  const user = req.session.user;
+  res.render('messageForm', { user: user });
+});
+
+// POST NEW MESSAGE
+app.post('/message', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  const user = req.session.user;
+  const { destinataire, message } = req.body;
+  const newMessage = new Message({
+    expediteur: user.pseudo,
+    destinataire: destinataire,
+    message: message,
+    datetime: new Date()
+  });
+  newMessage.save()
+    .then(() => res.redirect('/userpage'))
+    .catch(err => {console.log(err);
+    });
+});
+
+// GET EDIT PAGE 
+app.get('/edit-message/:id', (req, res) => {
+  const messageId = req.params.id;
+  const user = req.session.user;
+  Message.findById(messageId)
+    .then((message) => {res.render('edit', { message: message , user: user });})
+    .catch(err => {console.log(err);});
+});
+
+// PUT EDIT PAGE
+app.put('/edit-message/:id', (req, res) => {
+  const messageId = req.params.id;
+  const updatedMessage = {
+    destinataire: req.body.destinataire,
+    message: req.body.message,
+    datetime: new Date()
+  };
+  Message.findByIdAndUpdate(messageId, updatedMessage)
+    .then(() => {res.redirect('/userpage');})
+    .catch(err => {console.log(err);});
+});
+
+// DELETE 
+app.delete('/delete-message/:messageId', (req, res) => {
+  Message.findByIdAndRemove(req.params.messageId)
+    .then(() => {res.redirect('/userpage');})
+    .catch(err => {console.log(err);});
+});
+
+// await
+// await est utilisé pour attendre la résolution d'une promesse avant de 
+// poursuivre l'exécution du code. Lorsqu'une fonction est déclarée avec 
+// le mot-clé async, cela signifie qu'elle peut contenir des 
+//  opérations asynchrones qui renvoient des promesses.
+
+// $or
+// Chaque condition spécifiée entre crochets représente une expression 
+// de recherche indépendante. Si au moins l'une des conditions est satisfaite, 
+// le document correspondant sera retourné dans les résultats de la requête.
+
+// Démarrage du serveur
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log(`Serveur démarré sur le port ${port}`);
+});

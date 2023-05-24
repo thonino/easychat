@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nouveau Message</title>
+  <%- include('./partials/bootstrap') %>
+</head>
+<body >
+  <%- include('./partials/nav') %>
+  <div class="d-flex flex-column align-items-center ">
+    <div class="container col-6">
+      <h1 class="text-center">Nouveau Message</h1>
+      <form method="POST" action="/message">
+        <div class="form-group ">
+          <label for="destinataire" class="fst-italic">Pseudo du destinataire</label>
+          <input type="text" class="form-control" id="destinataire" name="destinataire" required>
+        </div>
+        <div class="form-group ">
+          <label for="message" class="fst-italic">Message</label>
+          <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+        </div>
+        <input type="hidden" name="datetime" id="datetime" value="<%= getCurrentDateTime() %>">      
+        
+        <button type="submit" class="btn btn-primary mt-2">Envoyer</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    function getCurrentDateTime() {
+      var currentDateTime = new Date();
+      return currentDateTime.toISOString();
+    }
+  </script>
+</body>
+</html>
