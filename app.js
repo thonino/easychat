@@ -62,7 +62,7 @@ app.get('/', (req, res) => {
 // GET REGISTER
 app.get('/register', (req, res) => {
   const user = req.session.user;
-  res.render('register', { user: user });
+  res.render('RegisterForm', { user: user });
 });
 
 // POST REGISTER
@@ -81,22 +81,18 @@ app.post('/register', function(req, res){
 
 // GET LOGIN
 app.get('/login', (req, res) => {const user = req.session.user;
-  res.render('login', { user: user });});
+  res.render('LoginForm', { user: user });});
 
 // POST LOGIN
-app.post('/login', async (req, res) => {
-  try {
-    const { pseudo, password } = req.body;
-    const user = await User.findOne({ pseudo: pseudo });
-    if (!user) {
-      res.send('Invalid username');
-      return;
-    }
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {res.send('Invalid password');return;}
-    req.session.user = user; res.redirect('/userpage');
-  } 
-  catch (error) {console.error(error);}
+app.post('/login', (req, res) => {
+  User.findOne({ pseudo: req.body.pseudo }).then(user => {
+    if (!user) {res.send('Pseudo invalide');}
+    if (!bcrypt.compareSync(req.body.password, user.password)) {
+      res.send('Mot de passe invalide');}
+    req.session.user = user;
+    res.redirect('/userpage');
+  })
+  .catch(err => console.log(err));
 });
 
 // GET LOGOUT
