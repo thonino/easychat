@@ -1,0 +1,2 @@
+npm install bcrypt body-parser dotenv ejs express express-session method-override mongodb mongoose 
+nodemon: ^2.0.22

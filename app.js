@@ -189,13 +189,12 @@ app.delete('/delete-message/:messageId', (req, res) => {
 // le mot-clé async, cela signifie qu'elle peut contenir des 
 //  opérations asynchrones qui renvoient des promesses.
 
-// $or
+// $orcls
 // Chaque condition spécifiée entre crochets représente une expression 
 // de recherche indépendante. Si au moins l'une des conditions est satisfaite, 
 // le document correspondant sera retourné dans les résultats de la requête.
 
 // Démarrage du serveur
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log(`Serveur démarré sur le port ${port}`);
+var server = express(); app.listen(5000, function () {
+  console.log("server listening : http://localhost:5000");
 });
