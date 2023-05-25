@@ -1,4 +1,4 @@
-// Get Datetime
+// For Datetime
 function getCurrentDateTime() {
   const now = new Date();
   const year = now.getFullYear();
@@ -10,16 +10,15 @@ function getCurrentDateTime() {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-// Dépendances
+//  - - - - - - - - -D E P E N D A N C E S- - - - - - - - - - //
+
+// express & express-session
 const express = require('express');
 const session = require('express-session');
-const bcrypt = require('bcrypt');
-const bodyParser = require('body-parser');
-const methodOverride = require('method-override');
 const app = express();
 
-// Get datetime
-app.locals.getCurrentDateTime = getCurrentDateTime;
+// bcrypt
+const bcrypt = require('bcrypt');
 
 // MongoDB Mongoose et dotenv
 require('dotenv').config();
@@ -32,31 +31,25 @@ mongoose.connect(url, {useNewUrlParser: true,useUnifiedTopology: true})
 .then(() => {console.log("MongoDB connected");})
 .catch(err => {console.log(err);});
 
-//Les modèles
-const messageSchema = new mongoose.Schema({
-  expediteur: { type: String },
-  destinataire: { type: String },
-  message: { type: String },
-  datetime: { type: Date }
-});
-const userSchema = new mongoose.Schema({
-  pseudo: { type: String, required: true },
-  email: { type: String, required: true },
-  password: { type: String, required: true },
-  status: { type: String, required: false },
-  role: { type: String, required: true }
-});
-
-// Les middlewares
+// EJS : 
 app.set('view engine', 'ejs');
+
+// BodyParser
+const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
   secret: 'your-secret-key',
   resave: false,
   saveUninitialized: false
 }));
+
+// Method-override :
+const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
 
+
+// For Datetime
+app.locals.getCurrentDateTime = getCurrentDateTime;
 
 //  - - - - - - - - - - R O U T E - - - - - - - - - - - //
 
@@ -73,16 +66,17 @@ app.get('/register', (req, res) => {
 });
 
 // POST REGISTER
-app.post('/register', async (req, res) => {
-  try {
-    const { pseudo, email, password, role } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ 
-    pseudo: pseudo,email: email,password: hashedPassword,role: role});
-    await user.save();
-    req.session.user = user;
-    res.redirect('/login');
-  } catch (error) {console.error(error);}
+app.post('/register', function(req, res){
+  const userData = new User({
+    pseudo: req.body.pseudo,
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password,10),
+    role: req.body.role
+    })
+  userData.save()
+    .then(()=>{ res.redirect('/login')})
+    .catch((err)=>{console.log(err); 
+  });
 });
 
 // GET LOGIN
