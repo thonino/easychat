@@ -5,7 +5,7 @@ const messageSchema = new mongoose.Schema({
   expediteur: { type: 'String'},
   destinataire: { type: 'String', },
   message: { type: 'String',required: true },
-  datetime: { type: 'Date', default: Date.now }
+  datetime: { type: 'String' }
 });
 
 module.exports = mongoose.model('Message', messageSchema);

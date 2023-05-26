@@ -20,7 +20,7 @@
               <label for="message">Message</label>
               <textarea class="form-control" id="message" name="message" rows="4" required><%= message.message %></textarea>
             </div>
-            <input type="hidden" name="datetime" id="datetime" value="<%= getCurrentDateTime() %>">      
+            <input type="hidden" name="datetime" id="datetime" value="<%= heure %>">      
             <button type="submit" class="btn btn-primary mt-2">Enregistrer</button>
           </form>
         <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">

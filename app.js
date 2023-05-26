@@ -1,15 +1,3 @@
-// For Datetime
-function getCurrentDateTime() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
-
 //  - - - - - - - - -D E P E N D A N C E S- - - - - - - - - - //
 
 // express & express-session
@@ -38,25 +26,26 @@ app.set('view engine', 'ejs');
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
-  secret: 'your-secret-key',
-  resave: false,
-  saveUninitialized: false
+secret: 'your-secret-key',
+resave: false,
+saveUninitialized: false
 }));
 
 // Method-override :
 const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
 
-
-// For Datetime
-app.locals.getCurrentDateTime = getCurrentDateTime;
+// get datetime
+// npm install moment --save
+const moment = require('moment'); 
 
 //  - - - - - - - - - - R O U T E - - - - - - - - - - - //
 
 // GET HOME
 app.get('/', (req, res) => {
   const user = req.session.user;
-  res.render('home', { user: user }); 
+  const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+  res.render('home', { user: user, heure: heure} ); 
 });
 
 // GET REGISTER
@@ -67,12 +56,12 @@ app.get('/register', (req, res) => {
 
 // POST REGISTER
 app.post('/register', function(req, res){
-  const userData = new User({
-    pseudo: req.body.pseudo,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password,10),
-    role: req.body.role
-    })
+const userData = new User({
+  pseudo: req.body.pseudo,
+  email: req.body.email,
+  password: bcrypt.hashSync(req.body.password,10),
+  role: req.body.role
+  })
   userData.save()
     .then(()=>{ res.redirect('/login')})
     .catch((err)=>{console.log(err); 
@@ -81,96 +70,101 @@ app.post('/register', function(req, res){
 
 // GET LOGIN
 app.get('/login', (req, res) => {const user = req.session.user;
-  res.render('LoginForm', { user: user });});
+res.render('LoginForm', { user: user });});
 
 // POST LOGIN
 app.post('/login', (req, res) => {
-  User.findOne({ pseudo: req.body.pseudo }).then(user => {
-    if (!user) {res.send('Pseudo invalide');}
-    if (!bcrypt.compareSync(req.body.password, user.password)) {
-      res.send('Mot de passe invalide');}
-    req.session.user = user;
-    res.redirect('/userpage');
-  })
-  .catch(err => console.log(err));
+User.findOne({ pseudo: req.body.pseudo }).then(user => {
+  if (!user) {res.send('Pseudo invalide');}
+  if (!bcrypt.compareSync(req.body.password, user.password)) {
+    res.send('Mot de passe invalide');}
+  req.session.user = user;
+  res.redirect('/userpage');
+})
+.catch(err => console.log(err));
 });
 
 // GET LOGOUT
 app.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {console.log(err);} 
-    else {res.redirect('/login');}
-  });
+req.session.destroy((err) => {
+  if (err) {console.log(err);} 
+  else {res.redirect('/login');}
+});
 });
 
 // GET USER PAGE
 
 app.get('/userpage', (req, res) => {
-  if (!req.session.user) { return res.redirect('/login');}
-  const user = req.session.user;
-  Message.find({$or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
-  }).then(messages => {
-    const messagesSent = messages.filter(message => message.expediteur === user.pseudo);
-    const messagesReceived = messages.filter(message => message.destinataire === user.pseudo);
-    res.render('userpage', {  
-      user: user, messagesSent: messagesSent,
-      messagesReceived: messagesReceived });
-  })
-  .catch(err => {console.log(err);});
+if (!req.session.user) { return res.redirect('/login');}
+const user = req.session.user;
+Message.find({$or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
+}).then(messages => {
+  const messagesSent = messages.filter(message => message.expediteur === user.pseudo);
+  const messagesReceived = messages.filter(message => message.destinataire === user.pseudo);
+  res.render('userpage', {  
+    user: user, messagesSent: messagesSent,
+    messagesReceived: messagesReceived });
+})
+.catch(err => {console.log(err);});
 });
 
 // GET NEW MESSAGE
 app.get('/message/new', (req, res) => {
-  if (!req.session.user) {return res.redirect('/login');}
-  const user = req.session.user;
-  res.render('messageForm', { user: user });
+if (!req.session.user) {return res.redirect('/login');}
+const user = req.session.user;
+const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+res.render('messageForm', { user: user, heure: heure});
 });
 
 // POST NEW MESSAGE
-  app.post('/message', (req, res) => {
-    if (!req.session.user) {return res.redirect('/login');}
-    const user = req.session.user;
-    const messageData = new Message({
-      expediteur: user.pseudo,
-      destinataire: req.body.destinataire,
-      message: req.body.message,
-      datetime: new Date()
-    });
-    messageData.save()
-      .then(() => res.redirect('/userpage'))
-      .catch(err => {
-        console.log(err);
-      });
+app.post('/message', (req, res) => {
+  if (!req.session.user) {return res.redirect('/login');}
+  const user = req.session.user;
+  const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+  const messageData = new Message({
+    expediteur: user.pseudo,
+    destinataire: req.body.destinataire,
+    message: req.body.message,
+    datetime: heure
   });
+  messageData.save()
+    .then(() => res.redirect('/userpage'))
+    .catch(err => {
+      console.log(err);
+    });
+});
 
 // GET EDIT PAGE 
 app.get('/edit-message/:id', (req, res) => {
-  const user = req.session.user;
-  Message.findById(req.params.id)
-    .then((message) => {res.render('edit', { message: message , user: user });})
-    .catch(err => {console.log(err);});
+const user = req.session.user;
+const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+Message.findById(req.params.id)
+  .then((message) => {res.render('edit', { 
+    message: message , user: user, heure: heure });})
+  .catch(err => {console.log(err);});
 });
 
 // PUT EDIT PAGE
 app.put('/edit-message/:id', (req, res) => {
-  const messageData = {
-    destinataire: req.body.destinataire,
-    message: req.body.message,
-    datetime: new Date()
-  };
-  Message.findByIdAndUpdate(req.params.id, messageData)
-    .then(() => {res.redirect('/userpage');})
-    .catch(err => {console.log(err);});
+const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+const messageData = {
+  destinataire: req.body.destinataire,
+  message: req.body.message,
+  datetime: heure
+};
+Message.findByIdAndUpdate(req.params.id, messageData)
+  .then(() => {res.redirect('/userpage');})
+  .catch(err => {console.log(err);});
 });
 
 // DELETE 
 app.delete('/delete-message/:messageId', (req, res) => {
-  Message.findByIdAndRemove(req.params.messageId)
-    .then(() => {res.redirect('/userpage');})
-    .catch(err => {console.log(err);});
+Message.findByIdAndRemove(req.params.messageId)
+  .then(() => {res.redirect('/userpage');})
+  .catch(err => {console.log(err);});
 });
 
 // Démarrage du serveur
 var server = express(); app.listen(5000, function () {
-  console.log("server listening : http://localhost:5000");
+console.log("server listening : http://localhost:5000");
 });
