@@ -104,6 +104,7 @@ app.get('/logout', (req, res) => {
 });
 
 // GET USER PAGE
+
 app.get('/userpage', (req, res) => {
   if (!req.session.user) { return res.redirect('/login');}
   const user = req.session.user;
@@ -126,23 +127,21 @@ app.get('/message/new', (req, res) => {
 });
 
 // POST NEW MESSAGE
-app.post('/message', (req, res) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-  const user = req.session.user;
-  const { destinataire, message } = req.body;
-  const newMessage = new Message({
-    expediteur: user.pseudo,
-    destinataire: destinataire,
-    message: message,
-    datetime: new Date()
-  });
-  newMessage.save()
-    .then(() => res.redirect('/userpage'))
-    .catch(err => {console.log(err);
+  app.post('/message', (req, res) => {
+    if (!req.session.user) {return res.redirect('/login');}
+    const user = req.session.user;
+    const messageData = new Message({
+      expediteur: user.pseudo,
+      destinataire: req.body.destinataire,
+      message: req.body.message,
+      datetime: new Date()
     });
-});
+    messageData.save()
+      .then(() => res.redirect('/userpage'))
+      .catch(err => {
+        console.log(err);
+      });
+  });
 
 // GET EDIT PAGE 
 app.get('/edit-message/:id', (req, res) => {
