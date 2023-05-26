@@ -8,7 +8,9 @@
   <%- include('./partials/nav') %>
   <div class="d-flex flex-column align-items-center ">
     <div class="container col-6">
-      <h1 class="text-center">Nouveau Message</h1>
+      <h1 class="text-center">Nouveau message de 
+        <span class="text-success"><%= user.pseudo %> </span>
+      </h1>
       <form method="POST" action="/message">
         <div class="form-group ">
           <label for="destinataire" class="fst-italic">Pseudo du destinataire</label>
