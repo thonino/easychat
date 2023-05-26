@@ -145,22 +145,20 @@ app.get('/message/new', (req, res) => {
 
 // GET EDIT PAGE 
 app.get('/edit-message/:id', (req, res) => {
-  const messageId = req.params.id;
   const user = req.session.user;
-  Message.findById(messageId)
+  Message.findById(req.params.id)
     .then((message) => {res.render('edit', { message: message , user: user });})
     .catch(err => {console.log(err);});
 });
 
 // PUT EDIT PAGE
 app.put('/edit-message/:id', (req, res) => {
-  const messageId = req.params.id;
-  const updatedMessage = {
+  const messageData = {
     destinataire: req.body.destinataire,
     message: req.body.message,
     datetime: new Date()
   };
-  Message.findByIdAndUpdate(messageId, updatedMessage)
+  Message.findByIdAndUpdate(req.params.id, messageData)
     .then(() => {res.redirect('/userpage');})
     .catch(err => {console.log(err);});
 });
@@ -171,17 +169,6 @@ app.delete('/delete-message/:messageId', (req, res) => {
     .then(() => {res.redirect('/userpage');})
     .catch(err => {console.log(err);});
 });
-
-// await
-// await est utilisé pour attendre la résolution d'une promesse avant de 
-// poursuivre l'exécution du code. Lorsqu'une fonction est déclarée avec 
-// le mot-clé async, cela signifie qu'elle peut contenir des 
-//  opérations asynchrones qui renvoient des promesses.
-
-// $orcls
-// Chaque condition spécifiée entre crochets représente une expression 
-// de recherche indépendante. Si au moins l'une des conditions est satisfaite, 
-// le document correspondant sera retourné dans les résultats de la requête.
 
 // Démarrage du serveur
 var server = express(); app.listen(5000, function () {
