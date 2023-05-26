@@ -8,7 +8,9 @@
     <%- include('./partials/nav'); %>
   <div class="d-flex flex-column align-items-center ">
     <div class="container col-6">
-      <h1 class="text-center">Modifier Message</h1>
+      <h1 class="text-center">Modifier le message de 
+        <span class="text-success"><%= user.pseudo %> </span>
+      </h1>
           <form action="/edit-message/<%= message._id %>?_method=PUT" method="POST">
             <input type="hidden" name="_method" value="PUT">
             <input type="hidden" class="form-control text-capitalize"  name="expediteur" value="<%= message.expediteur %>">
