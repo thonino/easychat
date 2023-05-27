@@ -22,10 +22,7 @@
           <div class="card-body">
             <h5 class="card-title fst-italic text-capitalize"><span class="text-success ">Expéditeur :</span> <%= message.expediteur %></h5>
             <p class="card-text"><%= message.message %></p>
-            <p class="card-text"><%= message.datetime.toLocaleString('en-US', {
-              year: 'numeric',month: '2-digit',day: '2-digit',hour: '2-digit',
-              minute: '2-digit',second: '2-digit',hour12: false,hourCycle: 'h24'}) %>
-            </p>
+            <p class="card-text"><%= message.datetime %></p>
           </div>
           <div class="d-flex flex-column align-items-end me-2 mb-2">
             <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
@@ -42,11 +39,7 @@
           <div class="card-body">
             <h5 class="card-title fst-italic text-capitalize"><span class="text-success ">Destinataire :</span> <%= message.destinataire %></h5>
             <p class="card-text"> <%= message.message %></p>
-            <p class="card-text"><%= message.datetime.toLocaleString('en-US', {
-              year: 'numeric',
-              year: 'numeric',month: '2-digit',day: '2-digit',hour: '2-digit',
-              minute: '2-digit',second: '2-digit',hour12: false,hourCycle: 'h24'}) %>
-            </p>
+            <p class="card-text"><%= message.datetime %></p>
           </div>
           <div class="d-flex flex-row justify-content-end me-2 mb-2">
             <a href="/edit-message/<%= message._id %>" class="btn btn-warning btn-sm">Modifier</a>
