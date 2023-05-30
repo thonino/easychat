@@ -95,17 +95,36 @@ req.session.destroy((err) => {
 // GET USER PAGE
 
 app.get('/userpage', (req, res) => {
-if (!req.session.user) { return res.redirect('/login');}
-const user = req.session.user;
-Message.find({$or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
-}).then(messages => {
-  const messagesSent = messages.filter(message => message.expediteur === user.pseudo);
-  const messagesReceived = messages.filter(message => message.destinataire === user.pseudo);
-  res.render('userpage', {  
-    user: user, messagesSent: messagesSent,
-    messagesReceived: messagesReceived });
-})
-.catch(err => {console.log(err);});
+  
+  if (!req.session.user) { return res.redirect('/login');}
+  const user = req.session.user;
+  Message.find({$or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
+  }).then(messages => {
+    const messagesSent = messages.filter(message => message.expediteur === user.pseudo);
+    const messagesReceived = messages.filter(message => message.destinataire === user.pseudo);
+    res.render('userpage', {  
+      user: user, messagesSent: messagesSent,
+      messagesReceived: messagesReceived });
+  })
+  .catch(err => {console.log(err);});
+});
+app.get('/userpage/:pseudo', (req, res) => {
+  
+  if (!req.session.user) { return res.redirect('/login');}
+  const user = req.session.user;
+  var pseudo = req.params.pseudo;
+  
+  Message.find({$or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
+  }).then(messages => {
+    const messagesSent = messages.filter(message => message.expediteur === user.pseudo && message.destinataire === pseudo);
+    const messagesReceived = messages.filter(message => message.destinataire === user.pseudo && message.expediteur  === pseudo);
+    const ContactsMsgContactsMsg = messages.filter(message => message.destinataire === user.pseudo );
+    res.render('Dialogue', {  
+      user: user, messagesSent: messagesSent,
+      messagesReceived: messagesReceived,
+      ContactsMsg: ContactsMsg, });
+  })
+  .catch(err => {console.log(err);});
 });
 
 // GET NEW MESSAGE

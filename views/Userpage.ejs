@@ -12,45 +12,22 @@
     <div>
       <a href="/message/new" class="btn btn-primary mt-2">Nouveau Message</a>
     </div>
+    
   </div>
-  <!-- Affichage des messages reçus -->
-    <div class="row">
-      <div class="col">
-        <h3 class="text-center mb-3">Messages Reçus</h3>
-        <% messagesReceived.forEach(message => { %>
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title fst-italic text-capitalize"><span class="text-success ">Expéditeur :</span> <%= message.expediteur %></h5>
-            <p class="card-text"><%= message.message %></p>
-            <p class="card-text"><%= message.datetime %></p>
-          </div>
-          <div class="d-flex flex-column align-items-end me-2 mb-2">
-            <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
-              <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-            </form>
-          </div>
-        </div>
-        <% }) %>
-      </div>
-      <div class="col">
-        <h3 class="text-center mb-3">Messages Envoyés</h3>
-        <% messagesSent.forEach(message => { %>
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title fst-italic text-capitalize"><span class="text-success ">Destinataire :</span> <%= message.destinataire %></h5>
-            <p class="card-text"> <%= message.message %></p>
-            <p class="card-text"><%= message.datetime %></p>
-          </div>
-          <div class="d-flex flex-row justify-content-end me-2 mb-2">
-            <a href="/edit-message/<%= message._id %>" class="btn btn-warning btn-sm">Modifier</a>
-            <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
-              <input type="hidden" name="_method" value="DELETE">
-              <button type="submit" class="btn btn-danger btn-sm ms-2">Supprimer</button>
-            </form>
-          </div>
-        </div>
-        <% }) %>
+
+  <div class="d-flex ">
+    <div>
+      <h3 class="text-center mb-3">contacts</h3>
+      <div>
+        <%
+          var contacts = [...new Set(messagesReceived.map(message => message.expediteur))];   
+          contacts.forEach(contact => { 
+        %>
+          <a href="/userpage/<%=contact %>"class=""><%= contact %><br></a>
+        <% }); %>
       </div>
     </div>
+  
+  </div>
 </body>
 </html>

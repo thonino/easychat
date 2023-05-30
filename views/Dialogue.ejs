@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dialogue</title>
+  <%- include('./partials/bootstrap') %>
+</head>
+<body >
+  <%- include('./partials/nav') %>
+<div class="container">
+  <div class="d-flex flex-column align-items-center mb-5">
+    <h1><span class="text-success text-capitalize"><%= user.pseudo %> </h1>
+    <div>
+      <a href="/message/new" class="btn btn-primary mt-2">Nouveau Message</a>
+    </div>
+    
+  </div>
+
+  <div class="d-flex ">
+    <div>
+      <h3 class="text-center mb-3">contacts</h3>
+      <div>
+        <%
+          var contacts = [...new Set(ContactsMsg.map(message => message.expediteur))];   
+          contacts.forEach(contact => { 
+        %>
+          <a href="/userpage/<%=contact %>"class=""><%= contact %><br></a>
+        <% }); %>
+      </div>
+    </div>
+    
+    
+    <div class="d-flex flex-column ms-5">
+      <div>
+        <h3>Messages Reçus </h3>
+        <%  messagesReceived.forEach(message => { %>
+        <div>
+          <div>
+            <h5><%=  message.expediteur %></h5>
+            <p><%=  message.message %></p>
+            <p><%=  message.datetime %></p>
+          </div>
+        </div>
+        <%  }) %>
+      </div>
+      <div class="col">
+        <h3>Messages Envoyés</h3>
+        <% messagesSent.forEach(message => { %>
+        <div>
+          <div>
+            <h5><span>Destinataire :</span> <%=  message.destinataire %></h5>
+            <p><%=  message.message %></p>
+            <p><%=  message.datetime %></p>
+          </div>
+        </div>
+        <%  }) %>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
