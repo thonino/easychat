@@ -8,7 +8,8 @@
   <%- include('./partials/nav') %>
 <div class="container">
   <div class="d-flex flex-column align-items-center mb-5">
-    <h1>Bonjour <span class="text-success text-capitalize"><%= user.pseudo %></span> ! </h1>
+    <h1 class="fw-bold text-success ">Bonjour 
+      <span class="text-dark text-capitalize"><%= user.pseudo %></span> ! </h1>
   </div>
 
   <div class="d-flex ">
@@ -25,6 +26,10 @@
         </a>
         <% }); %>
       </div>
+    </div>
+    <div class="ms-3 ">
+      <h3 class="fw-bold fst-italic">Ecrire un nouveau message : </h3>
+      <a href="/message/new" class="btn btn-lg btn-success mt-2">Cliquez ici !</a>
     </div>
   
   </div>

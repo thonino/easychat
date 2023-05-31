@@ -8,9 +8,8 @@
   <%- include('./partials/nav') %>
   <div class="d-flex flex-column align-items-center ">
     <div class="container col-6">
-      <h1 class="text-center">Nouveau message de 
-        <span class="text-success"><%= user.pseudo %> </span>
-      </h1>
+      <h1 class="text-center text-success text-capitalize"><%= user.pseudo %></h1>
+      <h3 class="text-center fst-italic">Ecrire un nouveau message :</h3>
       <form method="POST" action="/message">
         <div class="form-group ">
           <label for="destinataire" class="fst-italic">Pseudo du destinataire</label>
@@ -22,7 +21,7 @@
         </div>
         <input type="hidden" name="datetime" id="datetime" value="<%= heure %>">      
         
-        <button type="submit" class="btn btn-primary mt-2">Envoyer</button>
+        <button type="submit" class="btn btn-success fst-italic mt-2">Envoyer</button>
       </form>
     </div>
   </div>

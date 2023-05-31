@@ -7,12 +7,9 @@
 <body >
   <%- include('./partials/nav') %>
 <div class="container">
-  <div class="d-flex flex-column align-items-center mb-5">
-    <h1><span class="text-success text-capitalize"><%= user.pseudo %></h1>
-    <div>
-      <a href="/userpage" class="btn btn-primary mt-2">Retour</a>
-    </div>
-    
+  <div class="d-flex flex-column align-items-center mb-2">
+    <h1 class="fw-bold text-capitalize fst-italic"><%= user.pseudo %> : 
+      <span class="text-success"><%= pseudo %></span></h1>
   </div>
 
   <div class="d-flex ">
@@ -29,13 +26,14 @@
       <%= contact %><br>
       </a>
       <% }}); %>  
+      <a href="/userpage" class="btn btn-sm btn-primary fst-italic mt-2">Retour</a>
     </div>
     <div class="d-flex flex-column ms-5">
       <div>
         <%  messagesFilter.forEach(message => { %>
         <div>
           <div>
-            <h4 class="text-capitalize fw-bold fst-italic "><%= message.expediteur %> : 
+            <h4 class="text-capitalize fw-bold fst-italic"><%= message.expediteur %> : 
               <span class="fs-6 text-muted fw-light"><%= message.datetime %></span></h4>
             <p><%=  message.message %></p>
           </div>
@@ -50,7 +48,7 @@
             <input type="hidden" name="datetime" value="<%= heure %>">      
           </div>
           <div>
-            <button type="submit" class="btn btn-sm btn-primary  ms-2">Envoyer</button>
+            <button type="submit" class="btn btn-sm btn-success fst-italic  ms-2 mt-4">Envoyer</button>
           </div>
         </div>
       </form>
