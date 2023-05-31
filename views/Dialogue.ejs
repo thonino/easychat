@@ -8,52 +8,52 @@
   <%- include('./partials/nav') %>
 <div class="container">
   <div class="d-flex flex-column align-items-center mb-5">
-    <h1><span class="text-success text-capitalize"><%= user.pseudo %> </h1>
+    <h1><span class="text-success text-capitalize"><%= user.pseudo %></h1>
     <div>
-      <a href="/message/new" class="btn btn-primary mt-2">Nouveau Message</a>
+      <a href="/userpage" class="btn btn-primary mt-2">Retour</a>
     </div>
     
   </div>
 
   <div class="d-flex ">
     <div>
-      <h3 class="text-center mb-3">contacts</h3>
-      <div>
-        <%
-          var contacts = [...new Set(ContactsMsg.map(message => message.expediteur))];   
-          contacts.forEach(contact => { 
-        %>
-          <a href="/userpage/<%=contact %>"class=""><%= contact %><br></a>
-        <% }); %>
-      </div>
+      <h3 class="fw-bold mb-3 text-info">Liste</h3>
+      <%
+        var contacts = [...new Set(ContactsMsg.map(message => message.expediteur))];
+            contacts = [...new Set(ContactsMsg.map(message => message.destinataire))]; 
+            contacts.forEach(contact => { 
+              if (contact !== user.pseudo) { 
+      %>
+      <a  href="/userpage/<%=contact %>" 
+          class="text-decoration-none text-dark text-capitalize fw-bold fs-3">
+      <%= contact %><br>
+      </a>
+      <% }}); %>  
     </div>
-    
-    
     <div class="d-flex flex-column ms-5">
       <div>
-        <h3>Messages Reçus </h3>
-        <%  messagesReceived.forEach(message => { %>
+        <%  messagesFilter.forEach(message => { %>
         <div>
           <div>
-            <h5><%=  message.expediteur %></h5>
+            <h4 class="text-capitalize fw-bold fst-italic "><%= message.expediteur %> : 
+              <span class="fs-6 text-muted fw-light"><%= message.datetime %></span></h4>
             <p><%=  message.message %></p>
-            <p><%=  message.datetime %></p>
           </div>
         </div>
-        <%  }) %>
+        <% }) %>
       </div>
-      <div class="col">
-        <h3>Messages Envoyés</h3>
-        <% messagesSent.forEach(message => { %>
-        <div>
+      <form class=""method="POST" action="/message">
+        <div class="d-flex">
+          <div class="form-group ">
+            <input type="hidden" class="form-control"  name="destinataire" value="<%= pseudo %>">
+            <textarea class="form-control" style="resize: none;" name="message" rows="3" required></textarea>
+            <input type="hidden" name="datetime" value="<%= heure %>">      
+          </div>
           <div>
-            <h5><span>Destinataire :</span> <%=  message.destinataire %></h5>
-            <p><%=  message.message %></p>
-            <p><%=  message.datetime %></p>
+            <button type="submit" class="btn btn-sm btn-primary  ms-2">Envoyer</button>
           </div>
         </div>
-        <%  }) %>
-      </div>
+      </form>
     </div>
   </div>
 </body>

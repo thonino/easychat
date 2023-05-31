@@ -108,20 +108,29 @@ app.get('/userpage', (req, res) => {
   })
   .catch(err => {console.log(err);});
 });
+
 app.get('/userpage/:pseudo', (req, res) => {
   
   if (!req.session.user) { return res.redirect('/login');}
   const user = req.session.user;
   var pseudo = req.params.pseudo;
-  
   Message.find({$or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
   }).then(messages => {
-    const messagesSent = messages.filter(message => message.expediteur === user.pseudo && message.destinataire === pseudo);
-    const messagesReceived = messages.filter(message => message.destinataire === user.pseudo && message.expediteur  === pseudo);
-    const ContactsMsgContactsMsg = messages.filter(message => message.destinataire === user.pseudo );
+    const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+    // filtrer messages pour afficher le dialogue 
+    const messagesFilter = messages.filter(
+      message =>  (message.expediteur === user.pseudo && message.destinataire === pseudo) ||
+                  (message.destinataire === user.pseudo && message.expediteur === pseudo)
+    );
+    const ContactsMsg = messages.filter
+      (message => (message.destinataire === user.pseudo) ||
+                  (message.expediteur === user.pseudo));
     res.render('Dialogue', {  
-      user: user, messagesSent: messagesSent,
-      messagesReceived: messagesReceived,
+      heure: heure,
+      user: user,
+      pseudo: pseudo, 
+      messagesFilter: messagesFilter,
+
       ContactsMsg: ContactsMsg, });
   })
   .catch(err => {console.log(err);});
@@ -147,7 +156,7 @@ app.post('/message', (req, res) => {
     datetime: heure
   });
   messageData.save()
-    .then(() => res.redirect('/userpage'))
+    .then(() => res.redirect(`/userpage/${req.body.destinataire}`))
     .catch(err => {
       console.log(err);
     });
