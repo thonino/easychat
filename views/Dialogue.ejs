@@ -1,58 +1,59 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Dialogue</title>
-  <%- include('./partials/bootstrap') %>
-</head>
-<body >
-  <%- include('./partials/nav') %>
-<div class="container">
-  <div class="d-flex flex-column align-items-center mb-2">
-    <h1 class="fw-bold text-capitalize fst-italic"><%= user.pseudo %> : 
-      <span class="text-success"><%= pseudo %></span></h1>
-  </div>
-
-  <div class="d-flex ">
-    <div>
-      <h3 class="fw-bold mb-3 text-info">Liste</h3>
-      <%
-        var contacts = [...new Set(ContactsMsg.map(message => message.expediteur))];
-            contacts = [...new Set(ContactsMsg.map(message => message.destinataire))]; 
-            contacts.forEach(contact => { 
-              if (contact !== user.pseudo) { 
-      %>
-      <a  href="/userpage/<%=contact %>" 
-          class="text-decoration-none text-dark text-capitalize fw-bold fs-3">
-      <%= contact %><br>
-      </a>
-      <% }}); %>  
-      <a href="/userpage" class="btn btn-sm btn-primary fst-italic mt-2">Retour</a>
-    </div>
-    <div class="d-flex flex-column ms-5">
-      <div>
-        <%  messagesFilter.forEach(message => { %>
-        <div>
-          <div>
-            <h4 class="text-capitalize fw-bold fst-italic"><%= message.expediteur %> : 
-              <span class="fs-6 text-muted fw-light"><%= message.datetime %></span></h4>
-            <p><%=  message.message %></p>
-          </div>
-        </div>
-        <% }) %>
+  <head>
+    <%- include('./partials/bootstrap') %>
+    <style>.reverseMessage{ max-height: 60vh;flex-direction: column-reverse;}</style>
+    <title>Dialogue</title>
+  </head>
+  <body  >
+    <%- include('./partials/nav'); %>
+    <!-- parent -->
+    <div class="d-flex"  >
+      <div class="ps-2 pe-2 bg-secondary vh-100 text-center" >
+        <%-  include('./partials/contact') %>
       </div>
-      <form class=""method="POST" action="/message">
-        <div class="d-flex">
-          <div class="form-group ">
-            <input type="hidden" class="form-control"  name="destinataire" value="<%= pseudo %>">
-            <textarea class="form-control" style="resize: none;" name="message" rows="3" required></textarea>
-            <input type="hidden" name="datetime" value="<%= heure %>">      
-          </div>
-          <div>
-            <button type="submit" class="btn btn-sm btn-success fst-italic  ms-2 mt-4">Envoyer</button>
+      <!-- parent dialogue-->
+      <div class="d-flex flex-column w-100" style="margin-top:55px">
+        <!-- Title -->
+        <div class="text-center">
+          <div class=" align-items-center">
+            <h3 class="fw-bold text-capitalize fst-italic text-info"><%= user.pseudo %> : 
+              <span class="text-success"><%= pseudo %></span>
+            </h3>
           </div>
         </div>
-      </form>
+        <!-- fin Title -->
+        <!-- parent message-->
+        <div class="d-flex flex-column container"  >
+          <!-- Messages -->
+          <div id="messageBox" class="text-center d-flex reverseMessage overflow-y-auto">
+            <% messagesFilter.reverse().forEach(message => { %>
+            <div>
+              <h5 class="text-capitalize fw-bold fst-italic"><%= message.expediteur %> :
+                <span class="fs-6 text-muted fw-light"><%= message.datetime %></span>
+              </h5>
+              <p><%= message.message %></p>
+            </div>
+            <% }) %>
+          </div>
+          <!-- fin Message -->
+          <!-- champ texte -->
+          <form class="text-center "   method="POST" action="/message">
+            <div class=" mt-4 ">
+              <textarea class="form-control" style="resize: none;" name="message" rows="3" required></textarea>
+              <input type="hidden" name="destinataire" value="<%= pseudo %>">
+              <input type="hidden" name="datetime" value="<%= heure %>">
+            </div>
+            <div class="mb-2 ">
+              <button type="submit" class="btn btn-success fst-italic ms-2 mt-2">envoyer</button>
+            </div>
+          </form>
+          <!-- fin champ texte -->
+        </div>
+        <!-- fin parent message-->
+      </div>
+      <!-- fin parent dialogue-->
     </div>
-  </div>
-</body>
+    <!-- fin parent -->
+  </body>
 </html>

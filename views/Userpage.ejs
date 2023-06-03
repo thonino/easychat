@@ -4,34 +4,28 @@
   <title>Page utilisateur</title>
   <%- include('./partials/bootstrap') %>
 </head>
-<body >
+<body style="margin-top:55px ">
   <%- include('./partials/nav') %>
-<div class="container">
-  <div class="d-flex flex-column align-items-center mb-5">
-    <h1 class="fw-bold text-success ">Bonjour 
-      <span class="text-dark text-capitalize"><%= user.pseudo %></span> ! </h1>
-  </div>
+    <div class="d-flex text-center">
+      <div class="ps-2 pe-2 bg-secondary " >
+        <%- include('./partials/contact2') %>
+    </div>
+      <div class="w-100"style="margin-top:55px">
+        <div class="d-flex flex-column align-items-center text-center">
+          <h1 class="fw-bold text-success">Bonjour 
+            <span class="text-dark text-capitalize"><%= user.pseudo %></span> !
+          </h1>
+        </div>
+      <div class="d-flex justify-content-center w-100 text-center" > 
+        <div class="" >
+          <h3 class="fw-bold fst-italic ">Ecrire un nouveau message :</h3>
+          <div class=""> 
+            <a href="/message/new" class="btn btn-lg btn-success mt-2">Cliquez ici !</a>
+          </div>
+        </div>
 
-  <div class="d-flex ">
-    <div>
-      <h3 class="fw-bold mb-3 text-info">Liste</h3>
-      <div>
-        <%
-          var contacts = [...new Set(messagesReceived.map(message => message.expediteur))];
-              contacts = [...new Set(messagesSent.map(message => message.destinataire))]; 
-              contacts.forEach(contact => { 
-        %>
-        <a href="/userpage/<%=contact %>"class="text-decoration-none text-dark text-capitalize fw-bold fs-3">
-            <%= contact %><br>
-        </a>
-        <% }); %>
       </div>
     </div>
-    <div class="ms-3 ">
-      <h3 class="fw-bold fst-italic">Ecrire un nouveau message : </h3>
-      <a href="/message/new" class="btn btn-lg btn-success mt-2">Cliquez ici !</a>
-    </div>
-  
   </div>
 </body>
 </html>

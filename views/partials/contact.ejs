@@ -1,0 +1,16 @@
+<!-- contacts -->
+  <div style="margin-top:55px">
+    <h3 class="fw-bold text-info ">Contacts</h3>
+    <% 
+    var contactsReceived = [...new Set(ContactsMsg.map(message => message.expediteur))];
+    var contactsSent = [...new Set(ContactsMsg.map(message => message.destinataire))];
+    var contacts = [...new Set([...contactsReceived, ...contactsSent])];
+    contacts.forEach(contact => {if (contact !== user.pseudo) {
+  %>
+    <a href="/userpage/<%=contact %>" class="text-decoration-none text-white text-capitalize fw-bold fs-3">
+      <%= contact %><br>
+    </a>
+    <% }}); %> 
+    <a href="/userpage" class="btn btn-info fw-bold mt-2">Userpage</a>
+  </div>
+

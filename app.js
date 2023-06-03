@@ -39,6 +39,8 @@ app.use(methodOverride('_method'));
 // npm install moment --save
 const moment = require('moment'); 
 
+app.use('/public', express.static('public'));
+
 //  - - - - - - - - - - R O U T E - - - - - - - - - - - //
 
 // GET HOME

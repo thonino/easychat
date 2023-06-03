@@ -1,0 +1,16 @@
+<!-- contacts 2 -->
+  <div class="vh-100" >
+    <h3 class="fw-bold text-info ">Contacts</h3>
+    <% 
+    var contactsReceived = [...new Set(messagesReceived.map(message => message.expediteur))];
+    var contactsSent = [...new Set(messagesSent.map(message => message.destinataire))];
+    var contacts = [...new Set([...contactsReceived, ...contactsSent])];
+    
+    contacts.forEach(contact => { 
+  %>
+    <a href="/userpage/<%=contact %>" class="text-decoration-none text-white text-capitalize fw-bold fs-3">
+      <%= contact %><br>
+    </a>
+    <% }); %> 
+  </div>
+
