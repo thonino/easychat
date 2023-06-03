@@ -2,21 +2,21 @@
 <html>
   <head>
     <%- include('./partials/bootstrap') %>
-    <style>.reverseMessage{ max-height: 60vh;flex-direction: column-reverse;}</style>
+    <style>.reverseMessage{ max-height: 65vh;flex-direction: column-reverse;}</style>
     <title>Dialogue</title>
   </head>
   <body  >
     <%- include('./partials/nav'); %>
     <!-- parent -->
     <div class="d-flex"  >
-      <div class="ps-2 pe-2 bg-secondary vh-100 text-center" >
+      <div class="ps-2 pe-2 bg-dark vh-100 text-center" >
         <%-  include('./partials/contact') %>
       </div>
       <!-- parent dialogue-->
       <div class="d-flex flex-column w-100" style="margin-top:55px">
         <!-- Title -->
-        <div class="text-center">
-          <div class=" align-items-center">
+        <div class="ms-2 text-center">
+          <div class="align-items-center mt-2">
             <h3 class="fw-bold text-capitalize fst-italic text-info"><%= user.pseudo %> : 
               <span class="text-success"><%= pseudo %></span>
             </h3>
@@ -24,28 +24,37 @@
         </div>
         <!-- fin Title -->
         <!-- parent message-->
-        <div class="d-flex flex-column container"  >
+        <div class="d-flex flex-column">
           <!-- Messages -->
-          <div id="messageBox" class="text-center d-flex reverseMessage overflow-y-auto">
+          <div id="messageBox" class="d-flex reverseMessage overflow-y-auto ms-2 container">
             <% messagesFilter.reverse().forEach(message => { %>
-            <div>
-              <h5 class="text-capitalize fw-bold fst-italic"><%= message.expediteur %> :
-                <span class="fs-6 text-muted fw-light"><%= message.datetime %></span>
-              </h5>
-              <p><%= message.message %></p>
+            <div class="text-center fw-bold fst-italic">
+              <span class="fs-6 text-muted fw-light"><%= message.datetime %></span>
+              <% if(message.expediteur===user.pseudo){%>
+                <div class="d-flex justify-content-end fs-5 me-3 bg-light pe-2 rounded">
+                  <p class="text-capitalize  text-info "><%= message.expediteur %> :</p>
+                  <p class="fw-light text-dark ms-2"><%= message.message %> </p>
+                </div>
+              <% }%>
+              <% if(message.expediteur!== user.pseudo){%> 
+                <div class="d-flex  fs-5 me-3 bg-light ps-2 rounded">
+                  <p class="fs-5 text-start text-capitalize text-success "><%= message.expediteur %> :</p>
+                  <p  class="text-start fw-light text-dark ms-2"><%= message.message %></p>
+                </div>
+              <% }%>
             </div>
             <% }) %>
           </div>
           <!-- fin Message -->
           <!-- champ texte -->
-          <form class="text-center "   method="POST" action="/message">
+          <form class="container text-center"   method="POST" action="/message">
             <div class=" mt-4 ">
               <textarea class="form-control" style="resize: none;" name="message" rows="3" required></textarea>
               <input type="hidden" name="destinataire" value="<%= pseudo %>">
               <input type="hidden" name="datetime" value="<%= heure %>">
             </div>
             <div class="mb-2 ">
-              <button type="submit" class="btn btn-success fst-italic ms-2 mt-2">envoyer</button>
+              <button type="submit" class="btn btn-success fst-italic ms-2 mt-2">Envoyer</button>
             </div>
           </form>
           <!-- fin champ texte -->

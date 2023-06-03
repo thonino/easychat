@@ -8,7 +8,7 @@
   <%- include('./partials/nav') %>
   <div class="d-flex flex-column align-items-center ">
     <div class="container col-6">
-      <h1 class="text-center text-success text-capitalize"><%= user.pseudo %></h1>
+      <h1 class="text-center text-success text-capitalize "><%= user.pseudo %></h1>
       <h3 class="text-center fst-italic">Ecrire un nouveau message :</h3>
       <form method="POST" action="/message">
         <div class="form-group ">
@@ -22,6 +22,7 @@
         <input type="hidden" name="datetime" id="datetime" value="<%= heure %>">      
         
         <button type="submit" class="btn btn-success fst-italic mt-2">Envoyer</button>
+        <a href="/userpage" class="btn btn-primary fw-bold mt-2">Retour</a>
       </form>
     </div>
   </div>

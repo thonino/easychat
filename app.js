@@ -118,7 +118,8 @@ app.get('/userpage/:pseudo', (req, res) => {
   var pseudo = req.params.pseudo;
   Message.find({$or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
   }).then(messages => {
-    const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+    // const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+    const heure = moment().format('h:mm:ss');
     // filtrer messages pour afficher le dialogue 
     const messagesFilter = messages.filter(
       message =>  (message.expediteur === user.pseudo && message.destinataire === pseudo) ||
@@ -142,7 +143,8 @@ app.get('/userpage/:pseudo', (req, res) => {
 app.get('/message/new', (req, res) => {
 if (!req.session.user) {return res.redirect('/login');}
 const user = req.session.user;
-const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+// const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+const heure = moment().format('h:mm:ss');
 res.render('messageForm', { user: user, heure: heure});
 });
 
@@ -150,7 +152,8 @@ res.render('messageForm', { user: user, heure: heure});
 app.post('/message', (req, res) => {
   if (!req.session.user) {return res.redirect('/login');}
   const user = req.session.user;
-  const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+  // const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+  const heure = moment().format(' h:mm:ss');
   const messageData = new Message({
     expediteur: user.pseudo,
     destinataire: req.body.destinataire,
@@ -167,7 +170,8 @@ app.post('/message', (req, res) => {
 // GET EDIT PAGE 
 app.get('/edit-message/:id', (req, res) => {
 const user = req.session.user;
-const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+// const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+const heure = moment().format('h:mm:ss');
 Message.findById(req.params.id)
   .then((message) => {res.render('edit', { 
     message: message , user: user, heure: heure });})
@@ -176,7 +180,8 @@ Message.findById(req.params.id)
 
 // PUT EDIT PAGE
 app.put('/edit-message/:id', (req, res) => {
-const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+// const heure = moment().format('DD-MM-YYYY, h:mm:ss');
+const heure = moment().format('h:mm:ss');
 const messageData = {
   destinataire: req.body.destinataire,
   message: req.body.message,
