@@ -153,7 +153,7 @@ app.post('/message', (req, res) => {
   if (!req.session.user) {return res.redirect('/login');}
   const user = req.session.user;
   // const heure = moment().format('DD-MM-YYYY, h:mm:ss');
-  const heure = moment().format(' h:mm:ss');
+  const heure = moment().format('h:mm:ss');
   const messageData = new Message({
     expediteur: user.pseudo,
     destinataire: req.body.destinataire,
