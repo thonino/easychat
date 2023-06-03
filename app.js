@@ -195,7 +195,7 @@ Message.findByIdAndUpdate(req.params.id, messageData)
 // DELETE 
 app.delete('/delete-message/:messageId', (req, res) => {
 Message.findByIdAndRemove(req.params.messageId)
-  .then(() => {res.redirect('/userpage');})
+  .then(() => {res.redirect('/userpage/');})
   .catch(err => {console.log(err);});
 });
 

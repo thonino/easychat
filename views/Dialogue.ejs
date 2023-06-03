@@ -2,7 +2,7 @@
 <html>
   <head>
     <%- include('./partials/bootstrap') %>
-    <style>.reverseMessage{ max-height: 65vh;flex-direction: column-reverse;}</style>
+    <link rel="stylesheet" href="/public/css/dialogue.css">
     <title>Dialogue</title>
   </head>
   <body  >
@@ -16,8 +16,12 @@
       <div class="d-flex flex-column w-100" style="margin-top:55px">
         <!-- Title -->
         <div class="ms-2 text-center">
+          <div class="text-center d-inline ">
+            <button id="toggle" class="btn btn-secondary  mt-2 "><i class="bi bi-gear-fill"></i></button>
+          </div>
           <div class="align-items-center mt-2">
-            <h3 class="fw-bold text-capitalize fst-italic text-info"><%= user.pseudo %> : 
+            <h3 class="fw-bold text-capitalize fst-italic text-info">
+              <%= user.pseudo %> : 
               <span class="text-success"><%= pseudo %></span>
             </h3>
           </div>
@@ -26,28 +30,55 @@
         <!-- parent message-->
         <div class="d-flex flex-column">
           <!-- Messages -->
-          <div id="messageBox" class="d-flex reverseMessage overflow-y-auto ms-2 container ">
+          <div id="messageBox" class="d-flex reverseMessage overflow-y-auto ms-2 container-fluid ">
             <% messagesFilter.reverse().forEach(message => { %>
-            <div class="text-center fw-bold fst-italic">
+            <div class="text-center fw-bold fst-italic ">
               <span class="fs-6 text-muted fw-light"><%= message.datetime %></span>
               <% if(message.expediteur===user.pseudo){%>
-                <div class="d-flex justify-content-end fs-5 me-3 bg-light pe-2 rounded">
-                  <p class="text-capitalize  text-info "><%= message.expediteur %> :</p>
-                  <p class="fw-light text-dark ms-2"><%= message.message %> </p>
+                <div class="d-flex justify-content-end fs-5 me-3 bg-light pe-2 pt-2 rounded">
+                  <p class="text-capitalize   text-info "><%= message.expediteur %> :</p>
+                  <p class="fw-light text-dark  ms-2"><%= message.message %> </p>
+
+                  <!-- edit et delete -->
+                  <div class="cible hidden">
+                    <div class="d-flex justify-content-center ms-2 ">
+                      <div class="">
+                        <a href="/edit-message/<%=  message._id %>" class="btn btn-success btn-sm ">
+                          <i class="bi bi-pencil-square -"></i>
+                        </a>
+                      </div>
+                      <form action="/delete-message/<%=  message._id %>?_method=DELETE" method="POST">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-danger ms-2 me-2 btn-sm" >
+                          <i class='bi bi-trash'></i>
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                  <!-- delete -->
                 </div>
               <% }%>
               <% if(message.expediteur!== user.pseudo){%> 
-                <div class="d-flex  fs-5 me-3 bg-light ps-2 rounded">
+                <div class="d-flex  fs-5 me-3 bg-light ps-2 pt-2 rounded">
+                  <div class="cible hidden">
+                    <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
+                      <input type="hidden" name="_method" value="DELETE">
+                      <button type="submit" class="btn btn-danger ms-2 me-2 btn-sm " >
+                        <i class='bi bi-trash'></i>
+                      </button>
+                    </form>
+                  </div>
                   <p class="fs-5 text-start text-capitalize text-success "><%= message.expediteur %> :</p>
                   <p  class="text-start fw-light text-dark ms-2"><%= message.message %></p>
                 </div>
+                
               <% }%>
             </div>
             <% }) %>
           </div>
           <!-- fin Message -->
-          <!-- champ texte -->
-          <form class="container text-center"   method="POST" action="/message">
+          <!-- textarea -->
+          <form class="container-fluid text-center"   method="POST" action="/message">
             <div class=" mt-4 ">
               <textarea class="form-control" style="resize: none;" name="message" rows="3" required></textarea>
               <input type="hidden" name="destinataire" value="<%= pseudo %>">
@@ -57,12 +88,15 @@
               <button type="submit" class="btn btn-success fst-italic ms-2 mt-2">Envoyer</button>
             </div>
           </form>
-          <!-- fin champ texte -->
+          <!-- fin textarea -->
         </div>
         <!-- fin parent message-->
+
       </div>
       <!-- fin parent dialogue-->
     </div>
     <!-- fin parent -->
+
+    <script src="/public/js/dialogue.js"></script>
   </body>
 </html>

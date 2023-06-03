@@ -23,14 +23,19 @@
               <label for="message">Message</label>
               <textarea class="form-control" id="message" name="message" rows="4" required><%= message.message %></textarea>
             </div>
-            <input type="hidden" name="datetime" id="datetime" value="<%= heure %>">      
-            <button type="submit" class="btn btn-primary mt-2">Enregistrer</button>
-          </form>
-        <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
-          <input type="hidden" name="_method" value="DELETE">
-          <button type="submit" class="btn btn-danger mt-2">Supprimer</button>
-        </form>
-      </div>
+            <input type="hidden" name="datetime" id="datetime" value="<%= heure %>">  
+            <!-- boutons     -->
+            <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success mt-2">Enregistrer</button>
+                  </form>
+                <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
+                  <input type="hidden" name="_method" value="DELETE">
+                  <button type="submit" class="btn btn-danger mt-2">Supprimer</button>
+                </form>
+                <a href="/userpage/<%= message.destinataire %>" class="btn btn-primary fw-bold mt-2">Retour</a>
+              </div>
+            </div>
+            <!-- fin boutons -->
     </div>
   </div>
   <script>
