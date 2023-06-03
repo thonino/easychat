@@ -1,4 +1,8 @@
 
-
-.reverseMessage{ max-height: 60vh;flex-direction: column-reverse;}
-.hidden{ display:none }
+.reverseMessage{ 
+    max-height: 60vh;
+    flex-direction: column-reverse;
+}
+.hidden{ 
+    display:none 
+}
