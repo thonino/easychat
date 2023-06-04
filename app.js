@@ -188,16 +188,31 @@ const messageData = {
   datetime: heure
 };
 Message.findByIdAndUpdate(req.params.id, messageData)
-  .then(() => {res.redirect('/userpage');})
+  .then(() => {res.redirect(`/userpage/${req.body.destinataire}`);})
   .catch(err => {console.log(err);});
 });
 
 // DELETE 
+// app.delete('/delete-message/:messageId', (req, res) => {
+// Message.findByIdAndRemove(req.params.messageId)
+//   .then(() => {res.redirect(`/userpage/${pseudo}`);})
+//   .catch(err => {console.log(err);});
+// });
+
 app.delete('/delete-message/:messageId', (req, res) => {
-Message.findByIdAndRemove(req.params.messageId)
-  .then(() => {res.redirect('/userpage/');})
-  .catch(err => {console.log(err);});
+  const messageId = req.params.messageId;
+  const pseudo = req.body.pseudo; 
+  Message.findByIdAndRemove(messageId)
+    .then(() => {
+      res.redirect(`/userpage/${pseudo}`);
+    })
+    .catch(err => {
+      console.log(err);
+      res.redirect('/'); // Ou rediriger vers une autre page d'erreur
+    });
 });
+
+
 
 // Démarrage du serveur
 var server = express(); app.listen(5000, function () {

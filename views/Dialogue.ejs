@@ -47,12 +47,14 @@
                           <i class="bi bi-pencil-square -"></i>
                         </a>
                       </div>
-                      <form action="/delete-message/<%=  message._id %>?_method=DELETE" method="POST">
+                      <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
+                        <input type="hidden" name="pseudo" value="<%= pseudo %>">
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="btn btn-danger ms-2 me-2 btn-sm" >
                           <i class='bi bi-trash'></i>
                         </button>
                       </form>
+                      
                     </div>
                   </div>
                   <!-- delete -->
@@ -62,6 +64,7 @@
                 <div class="d-flex  fs-5 me-3 bg-light ps-2 pt-2 rounded">
                   <div class="cible hidden">
                     <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
+                      <input type="hidden" name="pseudo" value="<%= pseudo %>">
                       <input type="hidden" name="_method" value="DELETE">
                       <button type="submit" class="btn btn-danger ms-2 me-2 btn-sm " >
                         <i class='bi bi-trash'></i>
