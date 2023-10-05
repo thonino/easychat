@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Page utilisateur</title>
   <%- include('./partials/bootstrap') %>
 </head>
-<body >
+
+<body>
   <%- include('./partials/nav') %>
     <div class="d-flex text-center">
       <div class="ps-2 pe-2 bg-dark " style="margin-top:55px">
         <%- include('./partials/contact2') %>
-    </div>
-      <div class="w-100"style="margin-top:55px">
+      </div>
+      <div class="w-100" style="margin-top:55px">
         <div class="d-flex flex-column align-items-center text-center">
-          <h1 class="fw-bold ">Bonjour 
-            <span class="text-info text-capitalize"><%= user.pseudo %></span> !
+          <h1 class="fw-bold ">Bonjour
+            <span class="text-info text-capitalize">
+              <%= user.pseudo %>
+            </span> !
           </h1>
         </div>
-      <div class="d-flex justify-content-center w-100 text-center" > 
-        <div class="fst-italic" >
-          <h3 class="fw-light">Ecrire un nouveau message :</h3>
+        <div class="d-flex justify-content-center w-100 text-center">
+          <div class="fst-italic">
+            <h3 class="fw-light">Ecrire un nouveau message :</h3>
             <a href="/message/new" class="btn btn-success mt-2 text-decoration-underline">
               Cliquez ici !
             </a>
-        </div>
+          </div>
 
+        </div>
       </div>
     </div>
-  </div>
 </body>
+
 </html>
