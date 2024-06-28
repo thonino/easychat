@@ -215,25 +215,31 @@ app.delete('/delete-message/:messageId', (req, res) => {
 });
 
 // Socket.IO: Écouter les connexions des clients
+// Socket.IO: Écouter les connexions des clients
 io.on('connection', (socket) => {
   const user = socket.handshake.session.user;
   if (user) {
     console.log(user.pseudo + ' est connecté');
 
     // Écouter les messages du client
-    socket.on('sendText', (text) => {
+    socket.on('sendText', ({ text, destinataire }) => {
       const heure = moment().format('h:mm:ss');
       const newMessage = new Message({
         expediteur: user.pseudo,
-        destinataire: socket.handshake.query.destinataire,
+        destinataire: destinataire,
         message: text,
         datetime: heure
       });
 
       newMessage.save()
         .then(() => {
-          io.emit('receiveText', { pseudo: user.pseudo, text: text, datetime: heure });
-        })
+          console.log(`Message saved: ${text} from ${user.pseudo} to ${destinataire}`); // Log pour debug
+          io.emit('receiveText', { 
+            pseudo: user.pseudo, 
+            text: text, 
+            destinataire: destinataire, 
+            datetime: heure })
+        ;})
         .catch(err => console.log(err));
     });
 
@@ -242,6 +248,9 @@ io.on('connection', (socket) => {
     });
   }
 });
+
+
+
 
 const PORT = 5001;
 server.listen(PORT, () => {

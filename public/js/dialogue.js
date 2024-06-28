@@ -16,32 +16,60 @@ document.querySelector("#toggle").addEventListener("click", () => {
 });
 
 // socket.io
-// Initialisation de la connexion Socket.IO avec le destinataire comme query parameter
 const socket = io({
   query: {
     destinataire: document.querySelector('input[name="destinataire"]').value
   }
 });
+
+// Références 
 const textInput = document.getElementById('textInput');
 const sendButton = document.getElementById('sendButton');
 const messageBox = document.getElementById('messageBox');
 
-sendButton.addEventListener('click', (e) => {
+const userElement = document.querySelector('.fw-bold.text-capitalize.fst-italic.text-info');
+const userName = userElement.innerText.split(' ')[0];
+const currentUser = userName.toLowerCase();
+
+// envoyer un message
+const sendMessage = (e) => {
   e.preventDefault();
   const text = textInput.value;
-  socket.emit('sendText', text);
+  const destinataireElement = document.querySelector('input[name="destinataire"]');
+  const destinataire = destinataireElement.value.toLowerCase();
+  socket.emit('sendText', { text, destinataire });
   textInput.value = '';
-});
+};
 
-socket.on('receiveText', (data) => {
+// recevoiressages
+const displayMessage = (data) => {
   const messageDiv = document.createElement('div');
-  messageDiv.classList.add('d-flex', 'justify-content-end', 'fs-5', 'me-3', 'bg-light', 'pe-2', 'pt-2', 'rounded');
-  messageDiv.innerHTML = `
-    <p class="text-capitalize fst-italic fw-bold text-info">${data.pseudo} :</p>
-    <p class="fw-light text-dark fst-italic ms-2">${data.text}</p>
-  `;
-  messageBox.prepend(messageDiv);
-});
+  const isCurrentUser = data.pseudo.toLowerCase() === currentUser;
+  const isCurrentDestinataire = data.destinataire.toLowerCase() === currentUser;
+
+  if (isCurrentUser || isCurrentDestinataire) {
+    const alignmentClass = isCurrentUser ? 'justify-content-end' : 'justify-content-start';
+    const textColorClass = isCurrentUser ? 'text-info' : 'text-success';
+    messageDiv.classList.add('text-center', 'fw-bold', 'fst-italic');
+    messageDiv.innerHTML = `
+      <span class="fs-6 text-muted fw-light">${data.datetime}</span>
+      <div class="d-flex ${alignmentClass} fs-5 me-3 bg-light pe-2 pt-2 rounded">
+        <p class="text-capitalize ${textColorClass}">${data.pseudo} :</p>
+        <p class="fw-light text-dark ms-2">${data.text}</p>
+      </div>
+    `;
+    messageBox.prepend(messageDiv);
+  }
+};
+
+
+sendButton.addEventListener('click', sendMessage); // Écoute le bouton submit
+socket.on('receiveText', displayMessage); // Écoute les messages reçus
+
+
+
+
+
 
 
 
