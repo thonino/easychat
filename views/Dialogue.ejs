@@ -1,120 +1,100 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <%- include('./partials/bootstrap') %>
-    <link rel="stylesheet" href="/public/css/dialogue.css">
-    <title>Chat</title>
+  <link rel="stylesheet" href="/public/css/dialogue.css">
+  <title>Chat</title>
 </head>
-
 <body>
   <%- include('./partials/nav'); %>
-    <!-- parent -->
-    <div class="d-flex">
-      <div class="ps-2 pe-2 bg-dark vh-100 text-center">
-        <%- include('./partials/contact') %>
-      </div>
-      <!-- parent dialogue-->
-      <div class="d-flex flex-column w-100" style="margin-top:55px">
-        <!-- Title -->
-        <div class="ms-2 text-center">
-          <div class="text-center d-inline ">
-            <button id="toggle" class="btn btn-secondary  mt-2 "><i class="bi bi-gear-fill"></i></button>
-          </div>
-          <div class="align-items-center mt-2">
-            <h3 class="fw-bold text-capitalize fst-italic text-info">
-              <%= user.pseudo %> :
-                <span class="text-success">
-                  <%= pseudo %>
-                </span>
-            </h3>
-          </div>
-        </div>
-        <!-- fin Title -->
-        <!-- parent message-->
-        <div class="d-flex flex-column">
-          <!-- Messages -->
-          <div id="messageBox" class="d-flex reverseMessage overflow-y-auto ms-2  bor">
-            <% messagesFilter.reverse().forEach(message=> { %>
-              <div class="text-center fw-bold fst-italic ">
-                <span class="fs-6 text-muted fw-light">
-                  <%= message.datetime %>
-                </span>
-                <% if(message.expediteur===user.pseudo){%>
-                  <div class="d-flex justify-content-end fs-5 me-3 bg-light pe-2 pt-2 rounded">
-                    <p class="text-capitalize   text-info ">
-                      <%= message.expediteur %> :
-                    </p>
-                    <p class="fw-light text-dark  ms-2">
-                      <%= message.message %>
-                    </p>
-
-                    <!-- edit et delete -->
-                    <div class="cible hidden">
-                      <div class="d-flex justify-content-center ms-2 ">
-                        <div class="">
-                          <a href="/edit-message/<%=  message._id %>" class="btn btn-success btn-sm ">
-                            <i class="bi bi-pencil-square -"></i>
-                          </a>
-                        </div>
-                        <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
-                          <input type="hidden" name="pseudo" value="<%= pseudo %>">
-                          <input type="hidden" name="_method" value="DELETE">
-                          <button type="submit" class="btn btn-danger ms-2 me-2 btn-sm">
-                            <i class='bi bi-trash'></i>
-                          </button>
-                        </form>
-
-                      </div>
-                    </div>
-                    <!-- delete -->
-                  </div>
-                  <% }%>
-                    <% if(message.expediteur!==user.pseudo){%>
-                      <div class="d-flex  fs-5 me-3 bg-light ps-2 pt-2 rounded">
-                        <div class="cible hidden">
-                          <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
-                            <input type="hidden" name="pseudo" value="<%= pseudo %>">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="btn btn-danger ms-2 me-2 btn-sm ">
-                              <i class='bi bi-trash'></i>
-                            </button>
-                          </form>
-                        </div>
-                        <p class="fs-5 text-start text-capitalize text-success ">
-                          <%= message.expediteur %> :
-                        </p>
-                        <p class="text-start fw-light text-dark ms-2">
-                          <%= message.message %>
-                        </p>
-                      </div>
-
-                      <% }%>
-              </div>
-              <% }) %>
-          </div>
-          <!-- fin Message -->
-          <!-- textarea -->
-          <form class="container-fluid text-center" method="POST" action="/message">
-            <div class=" mt-4 ">
-              <textarea class="form-control" style="resize: none;" name="message" rows="3" required></textarea>
-              <input type="hidden" name="destinataire" value="<%= pseudo %>">
-              <input type="hidden" name="datetime" value="<%= heure %>">
-            </div>
-            <div class="mb-2 ">
-              <button type="submit" class="btn btn-success fst-italic ms-2 mt-2">Envoyer</button>
-            </div>
-          </form>
-          <!-- fin textarea -->
-        </div>
-        <!-- fin parent message-->
-
-      </div>
-      <!-- fin parent dialogue-->
+  <div class="d-flex">
+    <div class="ps-2 pe-2 bg-dark vh-100 text-center">
+      <%- include('./partials/contact') %>
     </div>
-    <!-- fin parent -->
-
-    <script src="/public/js/dialogue.js"></script>
+    <div class="d-flex flex-column w-100" style="margin-top:55px">
+      <div class="ms-2 text-center">
+        <div class="text-center d-inline ">
+          <button id="toggle" class="btn btn-secondary mt-2"><i class="bi bi-gear-fill"></i></button>
+        </div>
+        <div class="align-items-center mt-2">
+          <h3 class="fw-bold text-capitalize fst-italic text-info">
+            <%= user.pseudo %> :
+            <span class="text-success">
+              <%= pseudo %>
+            </span>
+          </h3>
+        </div>
+      </div>
+      <div class="d-flex flex-column">
+        <div id="messageBox" class="d-flex reverseMessage overflow-y-auto ms-2 bor">
+          <% messagesFilter.reverse().forEach(message => { %>
+            <div class="text-center fw-bold fst-italic ">
+              <span class="fs-6 text-muted fw-light">
+                <%= message.datetime %>
+              </span>
+              <% if (message.expediteur === user.pseudo) { %>
+                <div class="d-flex justify-content-end fs-5 me-3 bg-light pe-2 pt-2 rounded">
+                  <p class="text-capitalize text-info">
+                    <%= message.expediteur %> :
+                  </p>
+                  <p class="fw-light text-dark ms-2">
+                    <%= message.message %>
+                  </p>
+                  <div class="cible hidden">
+                    <div class="d-flex justify-content-center ms-2">
+                      <div>
+                        <a href="/edit-message/<%= message._id %>" class="btn btn-success btn-sm">
+                          <i class="bi bi-pencil-square"></i>
+                        </a>
+                      </div>
+                      <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
+                        <input type="hidden" name="pseudo" value="<%= pseudo %>">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-danger ms-2 me-2 btn-sm">
+                          <i class='bi bi-trash'></i>
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              <% } else { %>
+                <div class="d-flex fs-5 me-3 bg-light ps-2 pt-2 rounded">
+                  <div class="cible hidden">
+                    <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
+                      <input type="hidden" name="pseudo" value="<%= pseudo %>">
+                      <input type="hidden" name="_method" value="DELETE">
+                      <button type="submit" class="btn btn-danger ms-2 me-2 btn-sm">
+                        <i class='bi bi-trash'></i>
+                      </button>
+                    </form>
+                  </div>
+                  <p class="fs-5 text-start text-capitalize text-success">
+                    <%= message.expediteur %> :
+                  </p>
+                  <p class="text-start fw-light text-dark ms-2">
+                    <%= message.message %>
+                  </p>
+                </div>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
+        <form class="container-fluid text-center" method="POST" action="/message">
+          <div class="mt-4">
+            <textarea id="textInput" class="form-control" style="resize: none;" name="message" rows="3" required></textarea>
+            <input type="hidden" name="destinataire" value="<%= pseudo %>">
+            <input type="hidden" name="datetime" value="<%= heure %>">
+          </div>
+          <div class="mb-2">
+            <button id="sendButton" type="submit" class="btn btn-success fst-italic ms-2 mt-2">
+              Envoyer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/public/js/dialogue.js"></script>
 </body>
-
 </html>

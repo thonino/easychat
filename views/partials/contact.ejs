@@ -8,12 +8,12 @@
   contacts.forEach(contact => {
     if (contact !== user.pseudo) {
       if (contact === pseudo){ %>
-        <a  href="/userpage/<%=contact %>" 
+        <a  href="/dialogue/<%=contact %>" 
             class="text-decoration-none text-light text-capitalize fw-bold fs-3">
           <%= contact %><br>
         </a> <% 
       } else { %>
-        <a  href="/userpage/<%=contact %>" 
+        <a  href="/dialogue/<%=contact %>" 
             class="text-decoration-none text-secondary text-capitalize fw-bold fs-3">
           <%= contact %><br>
         </a> <% 
