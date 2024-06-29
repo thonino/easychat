@@ -1,8 +1,60 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr 3fr;
+  height: 100vh;
+}
+
+.topbar {
+  grid-column: 1 / span 2;
+  padding: 20px;
+  text-align: center;
+}
+
+.sidebar {
+  background-color: #343a40;
+  overflow-y: auto;
+  height: 100%; 
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* 
+.above-content {
+  background-color: #e9ecef;
+} */
+
+
+.middle-content {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.below-content {
+  background-color: #e9ecef;
+  position: relative;
+  bottom: 0;
+  padding-bottom: 20px;
+  width: 100%;
+}
+
+.txt-area { resize: none; }
+
+
 
 .reverseMessage{ 
-    max-height: 60vh;
+    height: 100vh;
     flex-direction: column-reverse;
 }
-.hidden{ 
-    display:none 
-}
+.hidden{ display:none }
+
+.underline{ text-decoration: underline;}

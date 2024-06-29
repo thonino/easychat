@@ -210,17 +210,15 @@ app.delete('/delete-message/:messageId', (req, res) => {
     })
     .catch(err => {
       console.log(err);
-      res.redirect('/'); // Ou rediriger vers une autre page d'erreur
+      res.redirect('/'); // Ou rediriger 404
     });
 });
 
-// Socket.IO: Écouter les connexions des clients
 // Socket.IO: Écouter les connexions des clients
 io.on('connection', (socket) => {
   const user = socket.handshake.session.user;
   if (user) {
     console.log(user.pseudo + ' est connecté');
-
     // Écouter les messages du client
     socket.on('sendText', ({ text, destinataire }) => {
       const heure = moment().format('h:mm:ss');
@@ -230,7 +228,6 @@ io.on('connection', (socket) => {
         message: text,
         datetime: heure
       });
-
       newMessage.save()
         .then(() => {
           console.log(`Message saved: ${text} from ${user.pseudo} to ${destinataire}`); // Log pour debug
@@ -242,7 +239,6 @@ io.on('connection', (socket) => {
         ;})
         .catch(err => console.log(err));
     });
-
     socket.on('disconnect', () => {
       console.log('Un utilisateur s\'est déconnecté');
     });
