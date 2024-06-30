@@ -214,12 +214,12 @@ app.delete('/delete-message/:messageId', (req, res) => {
     });
 });
 
-// Socket.IO: Écouter les connexions des clients
+// Socket.IO: Écouter connexions 
 io.on('connection', (socket) => {
   const user = socket.handshake.session.user;
   if (user) {
     console.log(user.pseudo + ' est connecté');
-    // Écouter les messages du client
+    // Écouter messages
     socket.on('sendText', ({ text, destinataire }) => {
       const heure = moment().format('h:mm:ss');
       const newMessage = new Message({
@@ -230,7 +230,7 @@ io.on('connection', (socket) => {
       });
       newMessage.save()
         .then(() => {
-          console.log(`Message saved: ${text} from ${user.pseudo} to ${destinataire}`); // Log pour debug
+          console.log(`Send : ${text} from ${user.pseudo} to ${destinataire}`); // Log pour debug
           io.emit('receiveText', { 
             pseudo: user.pseudo, 
             text: text, 
@@ -244,9 +244,6 @@ io.on('connection', (socket) => {
     });
   }
 });
-
-
-
 
 const PORT = 5001;
 server.listen(PORT, () => {

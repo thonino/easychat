@@ -18,9 +18,16 @@ body, html {
 }
 
 .sidebar {
-  background-color: #343a40;
   overflow-y: auto;
-  height: 100%; 
+  height: 100%;
+  position: relative; 
+}
+
+.addFriend {
+  position: absolute;
+  bottom: 10px; 
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .main-content {
@@ -28,11 +35,6 @@ body, html {
   flex-direction: column;
   overflow: hidden;
 }
-/* 
-.above-content {
-  background-color: #e9ecef;
-} */
-
 
 .middle-content {
   flex-grow: 1;
@@ -40,16 +42,20 @@ body, html {
 }
 
 .below-content {
-  background-color: #e9ecef;
   position: relative;
   bottom: 0;
-  padding-bottom: 20px;
   width: 100%;
 }
 
 .txt-area { resize: none; }
 
-
+.bg-dark-75 {background-color: #404040;}
+.bg-dark-less { background-color: #343a40; }
+.bg-info-light { background-color: #f0fcfd; }
+.bg-success-light { background-color: #e9fff5; }
+.bg-danger-light { background-color: #fdecea; }
+.bg-warning-light { background-color: #fff9e6; }
+.bg-primary-light { background-color: #e7f0ff; }
 
 .reverseMessage{ 
     height: 100vh;
