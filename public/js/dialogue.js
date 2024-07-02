@@ -1,22 +1,13 @@
-
-// // syntaxe toggle avec condition (fonctionnel)
-// document.querySelector("#toggle").addEventListener("click", () => {
-//   var settings = document.querySelectorAll(".cible");
-//   settings.forEach((setting) => {
-//     if (setting.style.display === "block") {setting.style.display = "none";} 
-//     else {setting.style.display = "block";}
-//   });
-// });
-
-// syntaxe vrai toggle 
 document.addEventListener('DOMContentLoaded', () => {
+  // Toggle settings visibility
   document.querySelector("#toggle").addEventListener("click", () => {
-    var settings = document.querySelectorAll(".cible");
+    const settings = document.querySelectorAll(".cible");
     settings.forEach((setting) => {
       setting.classList.toggle("hidden");
     });
   });
 
+  // Socket.io setup
   const socket = io({
     query: {
       destinataire: document.querySelector('input[name="destinataire"]').value
@@ -26,49 +17,93 @@ document.addEventListener('DOMContentLoaded', () => {
   const textInput = document.getElementById('textInput');
   const sendButton = document.getElementById('sendButton');
   const messageBox = document.getElementById('messageBox');
-  const userElement = document.querySelector('.target');
-  const userName = userElement.innerText.split(' ')[0];
-  const currentUser = userName.toLowerCase();
+
+  console.log("Current user:", userPseudo); // Log current user for debugging
 
   sendButton.addEventListener('click', (e) => {
     e.preventDefault();
     const text = textInput.value;
     const destinataireElement = document.querySelector('input[name="destinataire"]');
     const destinataire = destinataireElement.value.toLowerCase();
+    console.log('Sending message:', { text, destinataire }); // Log the message being sent
     socket.emit('sendText', { text, destinataire });
     textInput.value = '';
   });
 
   socket.on('receiveText', (data) => {
+    console.log('Received message:', data);  // Log the received message
     const messageDiv = document.createElement('div');
-    const isCurrentUser = data.pseudo.toLowerCase() === currentUser;
-    const isCurrentDestinataire = data.destinataire.toLowerCase() === currentUser;
+    const isCurrentUser = data.pseudo.toLowerCase() === userPseudo;
+    const isCurrentDestinataire = data.destinataire.toLowerCase() === userPseudo;
+
+    console.log('isCurrentUser:', 
+      isCurrentUser, 'isCurrentDestinataire:', 
+      isCurrentDestinataire);  // Log comparison results
+    console.log('check data.id :', data.id); // 
+
+    if (!data.id) {
+      console.error('Message ID is missing:', data); // Log if _id is missing
+      return; // Don't proceed if the ID is missing
+    }
 
     if (isCurrentUser || isCurrentDestinataire) {
-      console.log('isCurrentUser:', isCurrentUser, 'isCurrentDestinataire:', isCurrentDestinataire);
-      const alignmentClass = isCurrentUser ? 'justify-content-end' : 'justify-content-start';
-      const textColorClass = isCurrentUser ? 'text-info' : 'text-success';
-      messageDiv.classList.add('text-center', 'fw-bold', 'fst-italic');
-      messageDiv.innerHTML = `
-        <span class="fs-6 text-muted fw-light">${data.datetime}</span>
-        <div class="d-flex ${alignmentClass} fs-5 me-3 bg-light pe-2 pt-2 rounded">
-          <p class="text-capitalize ${textColorClass}">${data.pseudo} :</p>
-          <p class="fw-light text-dark ms-2">${data.text}</p>
-        </div>
-      `;
-      messageBox.prepend(messageDiv);
+      if (isCurrentUser) {
+        messageDiv.innerHTML = `
+          <div class="d-flex justify-content-end align-items-center fs-5 bg-success-light pe-2 gap-2">
+            <div class="d-flex flex-row gap-2 align-items-center">
+              <p class="text-capitalize text-success m-2">${data.pseudo} :</p>
+              <p class="fw-light text-dark m-2">${data.text}</p>
+            </div>
+            <div class="cible hidden">
+              <div class="d-flex justify-content-center">
+                <div>
+                  <a href="/edit-message/${data.id}" class="btn btn-success btn-sm">
+                    <i class="bi bi-pencil-square"></i>
+                  </a>
+                </div>
+                <form action="/delete-message/${data.id}?_method=DELETE" method="POST">
+                  <input type="hidden" name="pseudo" value="${userPseudo}">
+                  <input type="hidden" name="_method" value="DELETE">
+                  <button type="submit" class="btn btn-danger ms-2 btn-sm">
+                    <i class='bi bi-trash'></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        messageDiv.innerHTML = `
+          <div class="d-flex fs-5 bg-info-light align-items-center ps-2 gap-2">
+            <div class="d-flex justify-content-start align-items-center">
+              <div class="cible hidden">
+                <form action="/delete-message/${data.id}?_method=DELETE" method="POST" class="d-flex align-items-center">
+                  <input type="hidden" name="pseudo" value="${userPseudo}">
+                  <input type="hidden" name="_method" value="DELETE">
+                  <button type="submit" class="btn btn-danger btn-sm">
+                    <i class='bi bi-trash'></i>
+                  </button>
+                </form>
+              </div>
+              <div class="d-flex flex-row gap-2 align-items-center">
+                <p class="fs-5 text-capitalize text-info m-2">${data.pseudo} :</p>
+                <p class="fw-light text-dark m-2">${data.text}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      const dateSpan = document.createElement('span');
+      dateSpan.classList.add('fs-6', 'text-muted', 'fw-light');
+      dateSpan.textContent = data.datetime;
+
+      const messageWrapper = document.createElement('div');
+      messageWrapper.classList.add('text-center', 'fw-bold', 'fst-italic');
+      messageWrapper.appendChild(dateSpan);
+      messageWrapper.appendChild(messageDiv);
+
+      messageBox.prepend(messageWrapper);
+      console.log('Message appended to messageBox');
     }
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-

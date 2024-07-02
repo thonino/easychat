@@ -1,15 +1,16 @@
 <!-- contacts -->
-<div style="margin-top:55px">
-  <h3 class="fw-bold text-info">Contacts</h3>
+<div class="sidebar bg-dark-less text-center pb-3">
+  <h3 class="fw-bold text-light bg-secondary py-2">Contacts</h3>
   <% 
   var contactsReceived = [...new Set(ContactsMsg.map(message => message.expediteur))];
   var contactsSent = [...new Set(ContactsMsg.map(message => message.destinataire))];
   var contacts = [...new Set([...contactsReceived, ...contactsSent])];
+  
   contacts.forEach(contact => {
     if (contact !== user.pseudo) {
       if (contact === pseudo){ %>
         <a  href="/dialogue/<%=contact %>" 
-            class="text-decoration-none text-light text-capitalize fw-bold fs-3">
+            class="text-decoration-none text-info text-capitalize fw-bold fs-3">
           <%= contact %><br>
         </a> <% 
       } else { %>
@@ -20,10 +21,11 @@
       }
     }
   }); %> 
-  <a href="/message/new" class="btn btn-success fw-bold mt-2">Nouveau</a>
-</div>
-<a href="/userpage" class="btn btn-primary fw-bold mt-2">Retour</a>
 
-
-
-
+    <div>
+      <a href="/message/new" class="btn btn-success btn-sm fw-bold mt-2">Nouveau</a>
+    </div>
+    <div >
+      <a href="/userpage" class="btn btn-primary btn-sm fw-bold mt-2">Retour</a>
+    </div>
+  </div>
