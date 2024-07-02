@@ -203,15 +203,27 @@ app.put('/edit-message/:id', (req, res) => {
 // DELETE MESSAGE
 app.delete('/delete-message/:messageId', (req, res) => {
   const messageId = req.params.messageId;
-  const pseudo = req.body.pseudo;
-  Message.findByIdAndRemove(messageId)
+  Message.findById(messageId)
+  .then(message => {
+    const user = req.session.user;
+    const destinataire = message.destinataire;
+    const expediteur = message.expediteur;
+    let redirection = "";
+    if (destinataire === user.pseudo){ redirection = expediteur;}
+    else { redirection = destinataire;};
+    Message.findByIdAndRemove(messageId)
     .then(() => {
-      res.redirect(`/dialogue/${pseudo}`);
+      res.redirect(`/dialogue/${redirection}`);
     })
     .catch(err => {
       console.log(err);
-      res.redirect('/'); // Ou rediriger 404
+      // Ou rediriger 404
+      res.redirect('/'); 
     });
+  })
+  .catch(error => {
+    console.error('Erreur lors de la récupération du destinataire :', error);
+  });
 });
 
 // Socket.IO: Écouter connexions 
@@ -229,14 +241,17 @@ io.on('connection', (socket) => {
         datetime: heure
       });
       newMessage.save()
-        .then(() => {
-          console.log(`Send : ${text} from ${user.pseudo} to ${destinataire}`); // Log pour debug
+        .then((savedMessage) => {  // Accéder au message 
+        
+          console.log(`Send : ${text} from ${user.pseudo} to ${destinataire}`);  // Log pour debug
           io.emit('receiveText', { 
+            id: savedMessage._id,  
             pseudo: user.pseudo, 
             text: text, 
             destinataire: destinataire, 
-            datetime: heure })
-        ;})
+            datetime: heure 
+          });
+        })
         .catch(err => console.log(err));
     });
     socket.on('disconnect', () => {
@@ -244,6 +259,7 @@ io.on('connection', (socket) => {
     });
   }
 });
+
 
 const PORT = 5001;
 server.listen(PORT, () => {

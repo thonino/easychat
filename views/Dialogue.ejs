@@ -76,7 +76,7 @@
                     </div>
                     <div class="cible hidden">
                       <div class="d-flex justify-content-center">
-                        <div class="">
+                        <div>
                           <a href="/edit-message/<%= message._id %>" class="btn btn-success btn-sm">
                             <i class="bi bi-pencil-square"></i>
                           </a>
@@ -84,7 +84,6 @@
                         <form 
                           action="/delete-message/<%= message._id %>?_method=DELETE" 
                           method="POST"
-                          class=""
                         >
                           <input type="hidden" name="pseudo" value="<%= pseudo %>">
                           <input type="hidden" name="_method" value="DELETE">

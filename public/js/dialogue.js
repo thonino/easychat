@@ -36,7 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const isCurrentUser = data.pseudo.toLowerCase() === userPseudo;
     const isCurrentDestinataire = data.destinataire.toLowerCase() === userPseudo;
 
-    console.log('isCurrentUser:', isCurrentUser, 'isCurrentDestinataire:', isCurrentDestinataire);  // Log comparison results
+    console.log('isCurrentUser:', 
+      isCurrentUser, 'isCurrentDestinataire:', 
+      isCurrentDestinataire);  // Log comparison results
+    console.log('check data.id :', data.id); // 
+
+    if (!data.id) {
+      console.error('Message ID is missing:', data); // Log if _id is missing
+      return; // Don't proceed if the ID is missing
+    }
 
     if (isCurrentUser || isCurrentDestinataire) {
       if (isCurrentUser) {
@@ -49,11 +57,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="cible hidden">
               <div class="d-flex justify-content-center">
                 <div>
-                  <a href="/edit-message/${data._id}" class="btn btn-success btn-sm">
+                  <a href="/edit-message/${data.id}" class="btn btn-success btn-sm">
                     <i class="bi bi-pencil-square"></i>
                   </a>
                 </div>
-                <form action="/delete-message/${data._id}?_method=DELETE" method="POST">
+                <form action="/delete-message/${data.id}?_method=DELETE" method="POST">
                   <input type="hidden" name="pseudo" value="${userPseudo}">
                   <input type="hidden" name="_method" value="DELETE">
                   <button type="submit" class="btn btn-danger ms-2 btn-sm">
@@ -69,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="d-flex fs-5 bg-info-light align-items-center ps-2 gap-2">
             <div class="d-flex justify-content-start align-items-center">
               <div class="cible hidden">
-                <form action="/delete-message/${data._id}?_method=DELETE" method="POST" class="d-flex align-items-center">
+                <form action="/delete-message/${data.id}?_method=DELETE" method="POST" class="d-flex align-items-center">
                   <input type="hidden" name="pseudo" value="${userPseudo}">
                   <input type="hidden" name="_method" value="DELETE">
                   <button type="submit" class="btn btn-danger btn-sm">
