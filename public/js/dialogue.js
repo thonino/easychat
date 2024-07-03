@@ -70,19 +70,23 @@ document.addEventListener('DOMContentLoaded', () => {
       messageContentDiv.appendChild(messageParagraph);
 
       const cibleDiv = document.createElement('div');
-      cibleDiv.classList.add('cible', 'hidden', 'd-flex', 'justify-content-center');
+      cibleDiv.classList.add('cible', 'hidden');
       messageContentDiv.appendChild(cibleDiv);
+
+      const container = document.createElement('div');
+      container.classList.add('d-flex','justify-content-center');
+      cibleDiv.appendChild(container);
 
       const editLink = document.createElement('a');
       editLink.href = `/edit-message/${data.id}`;
       editLink.classList.add('btn', 'btn-success', 'btn-sm');
       editLink.innerHTML = '<i class="bi bi-pencil-square"></i>';
-      cibleDiv.appendChild(editLink);
+      container.appendChild(editLink);
 
       const deleteForm = document.createElement('form');
       deleteForm.action = `/delete-message/${data.id}?_method=DELETE`;
       deleteForm.method = 'POST';
-      cibleDiv.appendChild(deleteForm);
+      container.appendChild(deleteForm);
 
       const hiddenPseudoInput = document.createElement('input');
       hiddenPseudoInput.type = 'hidden';
@@ -105,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
       messageContentDiv.classList.add('justify-content-start', 'bg-info-light', 'ps-2');
 
       const cibleDiv = document.createElement('div');
-      cibleDiv.classList.add('cible', 'hidden', 'd-flex', 'align-items-center');
+      cibleDiv.classList.add('cible', 'hidden', 'align-items-center');
       messageContentDiv.appendChild(cibleDiv);
 
       const deleteForm = document.createElement('form');
