@@ -16,6 +16,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const Message = require('./models/Message');
 const User = require('./models/User');
+const Friend = require('./models/Friend');
 const { log } = require('console');
 const url = process.env.DATABASE_URL;
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -50,11 +51,67 @@ io.use(sharedSession(sessionMiddleware, {
   autoSave: true
 }));
 
+// SESSION CHATTING
+app.use((req, res, next) => {
+  if (req.query.chatting) {
+    req.session.chatting = req.query.chatting;
+  }
+  res.locals.chatting = req.session.chatting;
+  next();
+});
+
+// Make available for all
+const makeAvailable = async (req, res, next) => {
+  try {
+    const user = req.session.user;
+    let userPublicList = [];
+    let friends = [];
+    let friendsAsk = [];
+
+    if (user) {
+      userPublicList = await User.find();
+      const allFriends = await Friend.find();
+
+      // Trier les utilisateurs disponnible pseudo
+      userPublicList.sort((a, b) => a.pseudo.localeCompare(b.pseudo));
+
+      // Filter and push for confirmed friends
+      friends = allFriends.filter(friend => {
+        return friend.confirm === true && 
+              (friend.adder === user.pseudo || friend.asked === user.pseudo);
+      }).map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
+
+      // Filter and push for friend requests
+      friendsAsk = allFriends.filter(friend => {
+        return friend.confirm === false && 
+              (friend.adder === user.pseudo || friend.asked === user.pseudo);
+      }).map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
+    }
+    res.locals.user = user;
+    res.locals.userPublicList = userPublicList;
+    res.locals.friends = friends;
+    res.locals.friendsAsk = friendsAsk;
+
+    next();
+  } catch (err) {
+    console.error("Erreur lors de la récupération des thèmes et de l'utilisateur :", err);
+    res.render("error", { message: "Erreur lors de la récupération des thèmes et de l'utilisateur" });
+  }
+};
+
+app.use(makeAvailable);
+
+
+//---------------------------------ROOTS---------------------------------//
+
+
+
+
 // GET HOME
 app.get('/', (req, res) => {
   const user = req.session.user;
   const heure = moment().format('DD-MM-YYYY, h:mm:ss');
-  res.render('home', { user: user, heure: heure });
+  res.render('home', { user: user, heure: heure, userPublic: res.locals.userPublic, });
 });
 
 // GET REGISTER
@@ -105,44 +162,75 @@ app.get('/logout', (req, res) => {
 
 // GET USER PAGE
 app.get('/userpage', (req, res) => {
-  if (!req.session.user) { return res.redirect('/login'); }
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  // Friends
+  const friends= res.locals.friends;
+  const friendsAsk= res.locals.friendsAsk;
+  res.render('userpage', {
+    user: res.locals.user,
+    contacts: res.locals.contacts,
+    userPublicList: res.locals.userPublicList,
+    chatting: res.locals.chatting,
+    friends,
+    friendsAsk,
+  });
+});
 
-  const user = req.session.user;
-  Message.find({
-    $or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
-  }).then(messages => {
-    const messagesSent = messages.filter(message => message.expediteur === user.pseudo);
-    const messagesReceived = messages.filter(message => message.destinataire === user.pseudo);
-    res.render('userpage', {
-      user: user, messagesSent: messagesSent,
-      messagesReceived: messagesReceived
-    });
-  })
-    .catch(err => { console.log(err); });
+// ADD FRIEND PAGE
+app.get('/addfriend', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  res.render('AddFriend', {
+    user: res.locals.user,
+    userPublicList: res.locals.userPublicList,
+    chatting: res.locals.chatting,
+    friends: res.locals.friends,
+    friendsAsk: res.locals.friendsAsk,
+
+  });
+});
+
+// SEND FRIEND REQUEST
+app.post('/sendrequest', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  const adder = req.body.adder; 
+  const asked = req.body.asked; 
+  if (adder && asked){
+    const addFriend = new Friend({adder: adder, asked: asked,});
+    addFriend.save()
+    .then(() => { res.redirect(`/dialogue/${asked}`) })
+    .catch((err) => { console.log(err); });
+  }
 });
 
 // GET DIALOGUE
-app.get('/dialogue/:pseudo', (req, res) => {
+app.get('/dialogue/:chatting', (req, res) => {
   if (!req.session.user) { return res.redirect('/login'); }
   const user = req.session.user;
-  const pseudo = req.params.pseudo;
+  const chatting = res.locals.chatting;
+  const friends = res.locals.friends;
+  const friendsAsk = res.locals.friendsAsk;
+
   Message.find({
     $or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
   }).then(messages => {
     const heure = moment().format('h:mm:ss');
     const messagesFilter = messages.filter(
-      message => (message.expediteur === user.pseudo && message.destinataire === pseudo) ||
-        (message.destinataire === user.pseudo && message.expediteur === pseudo)
+      message => (message.expediteur === user.pseudo && message.destinataire === chatting) ||
+        (message.destinataire === user.pseudo && message.expediteur === chatting)
     );
-    const ContactsMsg = messages.filter(
-      message => (message.destinataire === user.pseudo) ||
-        (message.expediteur === user.pseudo));
     res.render('Dialogue', {
       heure: heure,
       user: user,
-      pseudo: pseudo,
       messagesFilter: messagesFilter,
-      ContactsMsg: ContactsMsg,
+      chatting,
+      friends,
+      friendsAsk,
     });
   })
     .catch(err => { console.log(err); });
@@ -180,7 +268,7 @@ app.get('/edit-message/:id', (req, res) => {
   const heure = moment().format('h:mm:ss');
   Message.findById(req.params.id)
     .then((message) => {
-      res.render('edit', {
+      res.render('EditMessage', {
         message: message, user: user, heure: heure
       });
     })

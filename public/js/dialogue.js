@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const hiddenPseudoInput = document.createElement('input');
       hiddenPseudoInput.type = 'hidden';
-      hiddenPseudoInput.name = 'pseudo';
+      hiddenPseudoInput.name = 'chatting';
       hiddenPseudoInput.value = userPseudo;
       deleteForm.appendChild(hiddenPseudoInput);
 
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const hiddenPseudoInput = document.createElement('input');
       hiddenPseudoInput.type = 'hidden';
-      hiddenPseudoInput.name = 'pseudo';
+      hiddenPseudoInput.name = 'chatting';
       hiddenPseudoInput.value = userPseudo;
       deleteForm.appendChild(hiddenPseudoInput);
 
