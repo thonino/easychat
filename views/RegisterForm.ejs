@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register</title>
-  <%- include('./partials/bootstrap') %>
+  <%- include('./partials/link') %>
 </head>
 <body style="margin-top:55px">
   <%- include('./partials/nav') %>
@@ -24,13 +21,13 @@
           <label for="password" class="fst-italic">Mot de passe</label>
           <input type="password" class="form-control" id="password" name="password" required>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="status" class="fst-italic">Statut</label>
           <select class="form-control" id="status" name="status" required>
             <option value="visible" class="fst-italic">Visible</option>
             <option value="prive" class="fst-italic">Privé</option>
           </select>
-        </div>
+        </div> -->
         <input type="hidden" class="form-control" id="role" name="role" value="user">
         <button type="submit" class="btn btn-primary mt-2">Inscription</button>
       </form>

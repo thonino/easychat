@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Page utilisateur</title>
+  <title>Add friend</title>
   <%- include('./partials/link') %>
   <link rel="stylesheet" href="/public/css/styles.css">
 </head>
@@ -15,11 +15,11 @@
       <%- include('./partials/contact'); %>
       <div class="link">
         <a 
-          href="/addfriend" 
-          class="btn btn-success btn-sm d-flex align-items-center fw-bold p-0 gap-2 px-1"
+          href="javascript:history.back()" 
+          class="btn btn-info btn-sm align-items-center d-flex text-dark-75 fw-bold p-0 gap-2 px-1"
         >
-          <i class="bi bi-person-fill-add fs-3"></i>
-          Friend
+          <i class="bi bi-arrow-left fs-3 "></i>
+          Retour
         </a>
       </div>
     </div>
@@ -49,8 +49,21 @@
             </ul>
           </div>
         </div>
-        <!-- will add -->
-
+        <p class="mt-2 fs-4 text-center">Les utilisateurs disponiles :</p>
+        <% userPublicList.forEach(userFree => { %>
+          <div class="container d-flex justify-content-between bg-success-light col-md-7 mb-2 gap-2">
+            <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
+              <form action="/sendrequest" method="POST" class="d-flex justify-content-between">
+                <input type="hidden" name="adder" value="<%= user.pseudo %>"/>
+                <input type="hidden" name="asked" value="<%= userFree.pseudo %>"/>
+                <button class="btn btn-success btn-sm px-2" type="submit">
+                  <i class="bi bi-person-plus-fill"></i>
+                </button>
+              </form>
+              <span class="text-capitalize"><%= userFree.pseudo %></span>
+            </div>
+          </div>
+        <% }); %>        
       </div>
     </div>
   </div>
