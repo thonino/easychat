@@ -66,14 +66,12 @@ const makeAvailable = async (req, res, next) => {
     const user = req.session.user;
     let userPublicList = [];
     let friends = [];
-    let friendsAsk = [];
+    let friendsReceived = [];
+    let friendsSend = [];
 
     if (user) {
       userPublicList = await User.find();
       const allFriends = await Friend.find();
-
-      // Trier les utilisateurs disponnible pseudo
-      userPublicList.sort((a, b) => a.pseudo.localeCompare(b.pseudo));
 
       // Filter and push for confirmed friends
       friends = allFriends.filter(friend => {
@@ -81,16 +79,30 @@ const makeAvailable = async (req, res, next) => {
               (friend.adder === user.pseudo || friend.asked === user.pseudo);
       }).map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
 
-      // Filter and push for friend requests
-      friendsAsk = allFriends.filter(friend => {
-        return friend.confirm === false && 
-              (friend.adder === user.pseudo || friend.asked === user.pseudo);
-      }).map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
+      // Filter demandes reçues
+      friendsReceived = allFriends
+      .filter(friend => friend.confirm === false && friend.asked === user.pseudo)
+      .map(friend => friend.adder);
+
+      // Filter demandes envoyées
+      friendsSend = allFriends
+      .filter(friend => friend.confirm === false && friend.adder === user.pseudo)
+      .map(friend => friend.asked);
+
+      // Trier les utilisateurs disponibles par pseudo
+      userPublicList = userPublicList.sort((a, b) => a.pseudo.localeCompare(b.pseudo));
+      userPublicList = userPublicList.filter(data => !friends.includes(data.pseudo));
+      userPublicList = userPublicList.filter(data => !friendsReceived.includes(data.pseudo));
+      userPublicList = userPublicList.filter(data => !friendsSend.includes(data.pseudo));
+      userPublicList = userPublicList.filter(data => data.pseudo !== user.pseudo); 
+
+
     }
     res.locals.user = user;
     res.locals.userPublicList = userPublicList;
     res.locals.friends = friends;
-    res.locals.friendsAsk = friendsAsk;
+    res.locals.friendsReceived = friendsReceived;
+    res.locals.friendsSend = friendsSend;
 
     next();
   } catch (err) {
@@ -167,14 +179,14 @@ app.get('/userpage', (req, res) => {
   }
   // Friends
   const friends= res.locals.friends;
-  const friendsAsk= res.locals.friendsAsk;
+  const friendsRecieved= res.locals.friendsRecieved;
+  const friendsSend= res.locals.friendsSend;
   res.render('userpage', {
     user: res.locals.user,
     contacts: res.locals.contacts,
     userPublicList: res.locals.userPublicList,
     chatting: res.locals.chatting,
-    friends,
-    friendsAsk,
+    friends, friendsRecieved, friendsSend
   });
 });
 
@@ -183,13 +195,16 @@ app.get('/addfriend', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
+  const asked = req.params.asked;
+  let confirm = "" ; 
+  if(asked){confirm =`Demande d'ami envoyé à ${asked}`}
   res.render('AddFriend', {
     user: res.locals.user,
     userPublicList: res.locals.userPublicList,
     chatting: res.locals.chatting,
     friends: res.locals.friends,
     friendsAsk: res.locals.friendsAsk,
-
+    confirm,
   });
 });
 
@@ -203,7 +218,9 @@ app.post('/sendrequest', (req, res) => {
   if (adder && asked){
     const addFriend = new Friend({adder: adder, asked: asked,});
     addFriend.save()
-    .then(() => { res.redirect(`/dialogue/${asked}`) })
+    .then(() => { res.redirect(
+      `/addfriend/?asked=${asked}`
+    ) })
     .catch((err) => { console.log(err); });
   }
 });
@@ -212,7 +229,7 @@ app.post('/sendrequest', (req, res) => {
 app.get('/dialogue/:chatting', (req, res) => {
   if (!req.session.user) { return res.redirect('/login'); }
   const user = req.session.user;
-  const chatting = res.locals.chatting;
+  const chatting = req.params.chatting;
   const friends = res.locals.friends;
   const friendsAsk = res.locals.friendsAsk;
 
@@ -225,9 +242,9 @@ app.get('/dialogue/:chatting', (req, res) => {
         (message.destinataire === user.pseudo && message.expediteur === chatting)
     );
     res.render('Dialogue', {
+      messagesFilter: messagesFilter,
       heure: heure,
       user: user,
-      messagesFilter: messagesFilter,
       chatting,
       friends,
       friendsAsk,

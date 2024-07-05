@@ -1,24 +1,13 @@
 <p class="fw-bold text-light bg-secondary fs-3 py-1 p-0 mb-2 m-0">
-  Amis :
+  Chats :
 </p>
 <% friends.forEach(friend => { %>
   <a 
-    href="/dialogue/<%= friend %>?chatting=<%= friend %>" 
+    href="/dialogue/<%= friend %>" 
     class="text-decoration-none text-capitalize fw-bold fs-5 m-0 p-0
     <%= chatting === friend ? 'text-info' : 'text-secondary' %>">
     <%= friend %><br>
   </a>
 <% }); %>
 
-<p class="fw-bold text-light bg-secondary fs-3 py-1 p-0 m-0 my-2" >
-  Demandes :
-</p>
-<% friendsAsk.forEach(friend => { %>
-  <a 
-    href="/dialogue/<%= friend %>?chatting=<%= friend %>" 
-    class="text-decoration-none text-capitalize fw-bold fs-5
-    <%= chatting === friend ? 'text-info' : 'text-secondary' %>">
-    <%= friend %><br>
-  </a>
-<% }); %>
 
