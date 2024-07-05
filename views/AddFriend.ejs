@@ -49,21 +49,59 @@
             </ul>
           </div>
         </div>
-        <p class="mt-2 fs-4 text-center">Les utilisateurs disponiles :</p>
-        <% userPublicList.forEach(userFree => { %>
-          <div class="container d-flex justify-content-between bg-success-light col-md-7 mb-2 gap-2">
-            <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
-              <form action="/sendrequest" method="POST" class="d-flex justify-content-between">
-                <input type="hidden" name="adder" value="<%= user.pseudo %>"/>
-                <input type="hidden" name="asked" value="<%= userFree.pseudo %>"/>
-                <button class="btn btn-success btn-sm px-2" type="submit">
-                  <i class="bi bi-person-plus-fill"></i>
+        <div>
+          <p class="text-center fw-bold mt-2 fs-4">Demandes reçus :</p>
+          <% friendsReceived.forEach(data =>  { %>
+            <div class="container d-flex justify-content-between bg-warning-light col-md-7 mb-2 gap-2">
+              <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
+                <div class="d-flex justify-content-between">
+                  <span class="cursor-default" type="submit">
+                    <i class="bi bi-person-plus-fill btn btn-warning btn-sm text-dark-75 cursor-default px-2"></i>
+                  </span>
+                </div>
+                <span class="text-capitalize"><%= data %></span>
+              </div>
+              <form action="/answer">
+                <input type="hidden" name="asked" value="<%= data %>"/>
+                <button type="submit" class="btn bg-warning-light px-2">
+                  <i class='bi bi-check-circle-fill'></i>
                 </button>
               </form>
-              <span class="text-capitalize"><%= userFree.pseudo %></span>
             </div>
-          </div>
-        <% }); %>        
+          <% }); %> 
+        </div> 
+        <div>
+          <p class="text-center fw-bold mt-2 fs-4">Demandes envoyé :</p>
+          <% friendsSend.forEach(data =>  { %>
+            <div class="container d-flex justify-content-between bg-secondary-light col-md-7 mb-2 gap-2">
+              <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
+                <div class="d-flex justify-content-between ">
+                  <span class="cursor-default" type="submit">
+                    <i class="bi bi-person-plus-fill btn btn-secondary btn-sm text-light cursor-default px-2"></i>
+                  </span>
+                </div>
+                <span class="text-capitalize"><%= data %></span>
+              </div>
+            </div>
+          <% }); %> 
+        </div>   
+        <div>
+          <p class="text-center fw-bold mt-2 fs-4">Les utilisateurs disponiles :</p>
+          <% userPublicList.forEach(data => { %>
+            <div class="container d-flex justify-content-between bg-success-light col-md-7 mb-2 gap-2">
+              <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
+                <form action="/sendrequest" method="POST" class="d-flex justify-content-between">
+                  <input type="hidden" name="adder" value="<%= user.pseudo %>"/>
+                  <input type="hidden" name="asked" value="<%= data.pseudo %>"/>
+                  <button class="btn btn-success btn-sm px-2" type="submit">
+                    <i class="bi bi-person-plus-fill"></i>
+                  </button>
+                </form>
+                <span class="text-capitalize"><%= data.pseudo %></span>
+              </div>
+            </div>
+          <% }); %> 
+        </div>     
       </div>
     </div>
   </div>
