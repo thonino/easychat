@@ -18,7 +18,7 @@
           href="/addfriend" 
           class="btn btn-success btn-sm d-flex align-items-center fw-bold p-0 gap-2 px-1"
         >
-          <i class="bi bi-person-fill-add fs-3"></i>
+          <i class="bi bi-person-fill-add fs-4"></i>
           Friend
         </a>
       </div>
@@ -50,7 +50,7 @@
           </div>
         </div>
         <div>
-          <p class="mt-2 fs-4 text-center">Mes Amis :</p>
+          <p class="text-center fw-bold text-info mt-2 fs-4">Friends :</p>
           <% friends.forEach(data =>  { %>
             <div class="container d-flex justify-content-between bg-info-light col-md-7 mb-2 gap-2">
               <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
@@ -61,6 +61,12 @@
                 </div>
                 <span class="text-capitalize"><%= data %></span>
               </div>
+              <form action="/write" method="POST" class="d-flex justify-content-between">
+                <input type="hidden" name="asked" value="<%= data.pseudo %>"/>
+                <button class="btn px-2 fst-italic" type="submit">
+                  <i class="bi bi-chat-square-text-fill text-success fw-bold"> Write..</i> 
+                </button>
+              </form>
             </div>
           <% }); %> 
         </div> 
