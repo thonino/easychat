@@ -61,6 +61,16 @@ app.use((req, res, next) => {
   next();
 });
 
+// Confirm message
+app.use((req, res, next) => {
+  res.locals.confirm = req.session.confirm;
+  res.locals.alertType = req.session.alertType;
+  delete req.session.confirm;
+  delete req.session.alertType;
+  next();
+});
+
+
 // Make available for all
 const makeAvailable = async (req, res, next) => {
   try {
@@ -76,29 +86,28 @@ const makeAvailable = async (req, res, next) => {
 
       // Filter and push for confirmed friends
       friends = allFriends.filter(friend => {
-        return friend.confirm === true && 
+        return friend.confirm === true &&
               (friend.adder === user.pseudo || friend.asked === user.pseudo);
       }).map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
 
       // Filter demandes reçues
       friendsReceived = allFriends
-      .filter(friend => friend.confirm === false && friend.asked === user.pseudo)
-      .map(friend => friend.adder);
+        .filter(friend => friend.confirm === false && friend.asked === user.pseudo)
+        .map(friend => friend.adder);
 
       // Filter demandes envoyées
       friendsSend = allFriends
-      .filter(friend => friend.confirm === false && friend.adder === user.pseudo)
-      .map(friend => friend.asked);
+        .filter(friend => friend.confirm === false && friend.adder === user.pseudo)
+        .map(friend => friend.asked);
 
       // Trier les utilisateurs disponibles par pseudo
       userPublicList = userPublicList.sort((a, b) => a.pseudo.localeCompare(b.pseudo));
       userPublicList = userPublicList.filter(data => !friends.includes(data.pseudo));
       userPublicList = userPublicList.filter(data => !friendsReceived.includes(data.pseudo));
       userPublicList = userPublicList.filter(data => !friendsSend.includes(data.pseudo));
-      userPublicList = userPublicList.filter(data => data.pseudo !== user.pseudo); 
-
-
+      userPublicList = userPublicList.filter(data => data.pseudo !== user.pseudo);
     }
+
     res.locals.user = user;
     res.locals.userPublicList = userPublicList;
     res.locals.friends = friends;
@@ -194,16 +203,12 @@ app.get('/addfriend', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
-  const asked = req.params.asked;
-  let confirm = "" ; 
-  if(asked){confirm =`Demande d'ami envoyé à ${asked}`}
   res.render('AddFriend', {
     user: res.locals.user,
     userPublicList: res.locals.userPublicList,
     chatting: res.locals.chatting,
     friends: res.locals.friends,
     friendsAsk: res.locals.friendsAsk,
-    confirm,
   });
 });
 
@@ -212,16 +217,65 @@ app.post('/sendrequest', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
-  const adder = req.body.adder; 
-  const asked = req.body.asked; 
-  if (adder && asked){
-    const addFriend = new Friend({adder: adder, asked: asked,});
+  const adder = req.body.adder;
+  const asked = req.body.asked;
+  if (adder && asked) {
+    const addFriend = new Friend({adder: adder, asked: asked});
     addFriend.save()
-    .then(() => { res.redirect(
-      `/addfriend/?asked=${asked}`
-    ) })
-    .catch((err) => { console.log(err); });
+      .then(() => {
+        req.session.confirm = `Demande d'ami envoyée à ${asked}`;
+        req.session.alertType = 'success';
+        res.redirect('/addfriend');
+      })
+      .catch((err) => { console.log(err); });
   }
+});
+
+// AGREE
+app.post('/agree', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  const user = req.session.user;
+  const adder = req.body.adder;
+  const asked = user.pseudo;
+
+  Friend.findOneAndUpdate({ adder, asked, confirm: false }, { confirm: true })
+    .then(() => {
+      req.session.confirm = `Vous avez accepté ${adder} en amis`;
+      req.session.alertType = 'success';
+      res.redirect('/addfriend');
+    })
+    .catch(err => {
+      console.log(err);
+      res.redirect('/error');
+    });
+});
+
+// DISAGREE DELETED
+app.post('/remove/:element', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  const user = req.session.user;
+  const adder = req.body.adder;
+  const asked = user.pseudo;
+
+  Friend.findOneAndRemove({
+    $or: [
+      { adder, asked },
+      { adder: asked, asked: adder }
+    ]
+  })
+    .then(() => {
+      req.session.confirm = `Vous avez supprimé ${adder}`;
+      req.session.alertType = 'danger';
+      res.redirect(`/addfriend`);
+    })
+    .catch(err => {
+      console.log(err);
+      res.redirect('/error');
+    });
 });
 
 // GET DIALOGUE
@@ -229,7 +283,6 @@ app.get('/dialogue/:chatting', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
-  
   const user = req.session.user;
   const chatting = req.params.chatting;
   const friends = res.locals.friends;

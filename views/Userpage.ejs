@@ -36,7 +36,7 @@
               <span class="me-2 fst-italic text-info-light text-capitalize">
                 A : 
                 <span class="text-info fw-bold">
-                  <%= chatting && friends.includes(chatting) ? chatting : '' %>
+                  <%= chatting && friends.includes(chatting) ? chatting : 'Destinataire' %>
                 </span>
               </span>
               <button 
@@ -48,40 +48,50 @@
                 <i class="bi bi-chat-square-text-fill"></i>
               </button>
             </div>
-            <!-- Options -->
+            <!-- Account -->
             <div>
-              <button id="toggle" class="btn btn-light btn-sm text-secondary">
-                <i class="bi bi-gear-fill"></i>
-              </button>
+              <a href="/account" class="btn btn-light btn-sm text-secondary">
+                <i class="bi bi-person-lines-fill"></i>
+              </a>
             </div>
           </div>
         </div>
-        <div class="flex flex-column ">
-          <div>
-            <h1 class="text-center text-secondary my-2 fw-bold">Mes Amis :</h1>
-            <% friends.forEach(data =>  { %>
-              <div class="container d-flex justify-content-between bg-info-light mb-2 gap-2">
-                <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
-                  <div class="d-flex justify-content-between">
-                    <span class="cursor-default" type="submit">
-                      <i class="bi bi-person-check-fill text-dark-75 btn btn-info cursor-default btn-sm px-2"></i>
-                    </span>
-                  </div>
-                  <span class="text-capitalize"><%= data %></span>
+        <div class="flex flex-column">
+          <h1 class="text-center text-secondary my-2 fw-bold">Mes Amis :</h1>
+          <% friends.forEach(data =>  { %>
+            <div class="container d-flex justify-content-between bg-info-light py-1 mt-1">
+              <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2">
+                <div class="d-flex justify-content-between">
+                  <span class="cursor-default" type="submit">
+                    <i class="bi bi-person-check-fill text-light btn bg-info btn-sm cursor-default px-1 py-1"></i>
+                  </span>
                 </div>
-                <form action="/write" method="POST" class="d-flex justify-content-between">
-                  <input type="hidden" name="asked" value="<%= data.pseudo %>"/>
-                  <button class="btn px-2 fst-italic" type="submit">
-                    <i class="bi bi-chat-square-text-fill text-secondary fw-bold"> Ecrire..</i> 
-                  </button>
-                </form>
+                <span class="text-capitalize"><%= data %></span>
               </div>
-            <% }); %> 
-          </div> 
-        </div>
+              <form action="/write" method="POST">
+                <input type="hidden" name="asked" value=""/>
+                <button class="btn px-2 fst-italic" type="submit">
+                  <i class="bi bi-chat-square-text-fill text-secondary fw-bold"> Ecrire..</i> 
+                </button>
+              </form>
+              <!-- delete friend -->
+              <form id="deleteFriend<%= data %>" action="/remove/deleted" method="POST">
+                <input type="hidden" name="adder" value="<%= data %>"/>
+                <button 
+                  type="button" 
+                  class="btn bg-danger-light fst-italic fw-bold px-2 py-1 p-0 m-0"
+                  onclick="confirmDeleteFriend('<%= data %>')"
+                >
+                  <i class="bi bi-dash-circle-fill text-danger"></i>
+                </button>
+              </form>
+            </div>
+          <% }); %> 
+        </div> 
       </div>
     </div>
     <!-- Offcanvas -->
     <%- include('./partials/offcanvas'); %>
+    <script src="/public/js/userpage.js"></script>
   </body>
 </html>

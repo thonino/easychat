@@ -72,10 +72,5 @@ body, html {
 
 /* Styles pour screen sm */
 @media (max-width:  768px) {
-  .grid-container {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    grid-template-columns: 1fr; 
-    height: 100vh;
-  }
+  .grid-container { grid-template-columns: 1fr;}
 }

@@ -31,7 +31,7 @@
             <span class="me-2 fst-italic text-info-light text-capitalize">
               A : 
               <span class="text-info fw-bold">
-                <%= chatting && friends.includes(chatting) ? chatting : '' %>
+                <%= chatting && friends.includes(chatting) ? chatting : 'Destinataire' %>
               </span>
             </span>
             <button 
@@ -46,10 +46,17 @@
         </div>
       </div>
       <div class="flex flex-column">
+        <% if (confirm) { %>
+          <div id="alert" class="alert alert-<%= alertType %> text-center m-2" role="alert">
+            <span class="fw-bold text-<%= alertType %> text-capitalize">
+              <%= confirm %>
+            </span>
+          </div> 
+        <% } %>   
         <h1 class="text-center text-secondary my-2 fw-bold">Ajouter des amis !</h1>
         <!-- Gestion statut -->
         <div class="d-flex justify-content-center mt-2">
-          <div class="dropdown ">
+          <div class="dropdown w-50">
             <button 
               class="btn btn-light dropdown-toggle fw-bold text-secondary w-100" 
               type="button" 
@@ -66,66 +73,62 @@
         </div>
         <!-- Demandes reçues -->
         <div>
-          <p class="text-center fw-bold text-warning-dark mt-4 fs-4">Demmandes reçues :</p>
-          <% friendsReceived.forEach(data =>  { %>
-            <div class="container d-flex justify-content-between bg-warning-light mb-2 gap-2">
-              <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
-                <div class="d-flex justify-content-between">
-                  <span class="cursor-default" type="submit">
-                    <i class="bi bi-person-plus-fill text-light btn bg-warning-dark btn-sm cursor-default px-2"></i>
-                  </span>
-                </div>
+          <p class="text-center fw-bold text-warning-dark mt-4 fs-4">Demandes reçues :</p>
+          <% friendsReceived.forEach(data => { %>
+            <div class="container d-flex justify-content-between bg-warning-light py-1 mt-1">
+              <div class="d-flex fw-bold text-secondary fs-5 gap-2 align-items-center">
+                <span class="cursor-default">
+                  <i class="bi bi-person-fill text-light btn bg-warning-dark btn-sm cursor-default px-1 py-1"></i>
+                </span>
                 <span class="text-capitalize"><%= data %></span>
               </div>
-              <form action="/answer">
-                <input type="hidden" name="agree" value="<%= data %>"/>
-                <button type="submit" class="btn bg-warning-light fst-italic fw-bold px-2 m-0 ">
-                  <i class='bi bi-check-circle-fill text-success'> Accepter</i>
-                </button>
-              </form>
-              <form action="/answer">
-                <input type="hidden" name="disagree" value="<%= data %>"/>
-                <button type="submit" class="btn bg-warning-light fst-italic fw-bold px-2 m-0">
-                  <i class="bi bi-x-circle-fill text-danger"> Refuser</i>
-                </button>
-              </form>
+              <div class="d-flex gap-2">
+                <form action="/agree" method="POST">
+                  <input type="hidden" name="adder" value="<%= data %>"/>
+                  <button type="submit" class="btn bg-warning-light fst-italic fw-bold px-2 py-1 p-0 m-0">
+                    <i class='bi bi-check-circle-fill text-success'> Accepter</i>
+                  </button>
+                </form>
+                <form action="/remove/disagree" method="POST">
+                  <input type="hidden" name="adder" value="<%= data %>"/>
+                  <button type="submit" class="btn bg-warning-light fst-italic fw-bold px-2 py-1 p-0 m-0">
+                    <i class="bi bi-x-circle-fill text-danger"> Refuser</i>
+                  </button>
+                </form>
+              </div>
             </div>
           <% }); %> 
         </div> 
         <!-- Demandes envoyées -->
         <div>
-          <p class="text-center fw-bold text-secondary mt-4 fs-4">Demandes Envoyées :</p>
-          <% friendsSend.forEach(data =>  { %>
-            <div class="container d-flex justify-content-between bg-primary-light mb-2 gap-2">
-              <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
-                <div class="d-flex justify-content-between ">
-                  <span class="cursor-default" type="submit">
-                    <i class="bi bi-person-plus-fill btn btn-primary btn-sm text-light cursor-default px-2"></i>
-                  </span>
-                </div>
+          <p class="text-center fw-bold text-secondary mt-4 fs-4">Demandes envoyées :</p>
+          <% friendsSend.forEach(data => { %>
+            <div class="container d-flex justify-content-between bg-primary-light py-1 mt-1">
+              <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2">
+                <span class="cursor-default">
+                  <i class="bi bi-person-fill text-light btn bg-primary btn-sm cursor-default px-1 py-1"></i>
+                </span>
                 <span class="text-capitalize"><%= data %></span>
               </div>
             </div>
           <% }); %> 
         </div>   
-        <!-- Utilisateurs Disponibles -->
+        <!-- Utilisateurs disponibles -->
         <div>
-          <p class="text-center fw-bold text-success mt-4 fs-4">Utilisateurs Disponibles :</p>
+          <p class="text-center fw-bold text-success mt-4 fs-4">Utilisateurs disponibles :</p>
           <% userPublicList.forEach(data => { %>
-            <div class="container d-flex justify-content-between bg-success-light mb-2 gap-2">
-              <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
-                <div class="d-flex justify-content-between ">
-                  <span class="cursor-default" type="submit">
-                    <i class="bi bi-person-plus-fill btn btn-success btn-sm text-light cursor-default px-2"></i>
-                  </span>
-                </div>
+            <div class="container d-flex justify-content-between bg-success-light py-1 mt-1">
+              <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2">
+                <span class="cursor-default">
+                  <i class="bi bi-person-fill text-light btn bg-success btn-sm cursor-default px-1 py-1"></i>
+                </span>
                 <span class="text-capitalize"><%= data.pseudo %></span>
               </div>
-              <form action="/sendrequest" method="POST" class="d-flex justify-content-between">
+              <form action="/sendrequest" method="POST" >
                 <input type="hidden" name="adder" value="<%= user.pseudo %>"/>
                 <input type="hidden" name="asked" value="<%= data.pseudo %>"/>
                 <button class="btn px-2 fst-italic" type="submit">
-                  <i class="bi bi-plus-circle-fill text-success fw-bold"> Add</i>
+                  <i class="bi bi-plus-circle-fill text-success fw-bold"> Ajouter</i>
                 </button>
               </form>
             </div>
@@ -136,5 +139,6 @@
   </div>
   <!-- Offcanvas -->
   <%- include('./partials/offcanvas'); %>
+  <script src="/public/js/addFriend.js"></script>
 </body>
 </html>
