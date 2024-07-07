@@ -33,7 +33,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const sessionMiddleware = session({
   secret: 'your-secret-key',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: { secure: false }
 });
 app.use(sessionMiddleware);
 
@@ -53,8 +54,8 @@ io.use(sharedSession(sessionMiddleware, {
 
 // SESSION CHATTING
 app.use((req, res, next) => {
-  if (req.query.chatting) {
-    req.session.chatting = req.query.chatting;
+  if (req.params && req.params.chatting) {
+    req.session.chatting = req.params.chatting;
   }
   res.locals.chatting = req.session.chatting;
   next();
@@ -115,8 +116,6 @@ app.use(makeAvailable);
 
 
 //---------------------------------ROOTS---------------------------------//
-
-
 
 
 // GET HOME
@@ -227,11 +226,18 @@ app.post('/sendrequest', (req, res) => {
 
 // GET DIALOGUE
 app.get('/dialogue/:chatting', (req, res) => {
-  if (!req.session.user) { return res.redirect('/login'); }
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  
   const user = req.session.user;
   const chatting = req.params.chatting;
   const friends = res.locals.friends;
   const friendsAsk = res.locals.friendsAsk;
+
+  // Update session chatting 
+  req.session.chatting = chatting;
+  res.locals.chatting = chatting;
 
   Message.find({
     $or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
@@ -249,9 +255,11 @@ app.get('/dialogue/:chatting', (req, res) => {
       friends,
       friendsAsk,
     });
-  })
-    .catch(err => { console.log(err); });
+  }).catch(err => {
+    console.log(err);
+  });
 });
+
 
 // GET NEW MESSAGE
 app.get('/message/new', (req, res) => {

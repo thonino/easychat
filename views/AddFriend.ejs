@@ -11,7 +11,7 @@
     <div class="topbar">
       <%- include('./partials/nav'); %>
     </div>
-    <div class="sidebar bg-dark-less text-center pb-3">
+    <div class="bg-dark-less text-center pb-3 sidebar  d-none d-md-block">
       <%- include('./partials/contact'); %>
       <div class="link">
         <a 
@@ -19,24 +19,39 @@
           class="btn btn-info btn-sm align-items-center d-flex text-dark-75 fw-bold p-0 gap-2 px-1"
         >
           <i class="bi bi-arrow-left fs-4"></i>
-          Back
+          Retour
         </a>
       </div>
     </div>
     <div class="flex-column align-items-center m-0 p-0">
       <div class="text-center bg-dark-less gap-2 p-1 px-2">
-        <div class="d-flex justify-content-center align-items-center">
-          <p class="fw-bold fs-3 m-0">
-            <i class="bi bi-person-vcard-fill text-white-50"></i>
-            <span class="text-success text-capitalize"><%= user.pseudo %></span>
-          </p>
+        <div class="d-flex justify-content-center align-items-center py-2">
+          <!-- Offcanvas toggle -->
+          <div class="d-flex justify-content-between align-items-center text-light">
+            <span class="me-2 fst-italic text-info-light text-capitalize">
+              A : 
+              <span class="text-info fw-bold">
+                <%= chatting && friends.includes(chatting) ? chatting : '' %>
+              </span>
+            </span>
+            <button 
+              class="btn btn-light btn-sm d-md-none text-secondary text-capitalize fw-bold" 
+              type="button" 
+              data-bs-toggle="offcanvas" 
+              data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+              Chat
+              <i class="bi bi-chat-square-text-fill"></i>
+            </button>
+          </div>
         </div>
       </div>
       <div class="flex flex-column">
+        <h1 class="text-center text-secondary my-2 fw-bold">Ajouter des amis !</h1>
+        <!-- Gestion statut -->
         <div class="d-flex justify-content-center mt-2">
           <div class="dropdown ">
             <button 
-              class="btn btn-light dropdown-toggle fw-bold  w-100" 
+              class="btn btn-light dropdown-toggle fw-bold text-secondary w-100" 
               type="button" 
               data-bs-toggle="dropdown" 
               aria-expanded="false"
@@ -49,10 +64,11 @@
             </ul>
           </div>
         </div>
+        <!-- Demandes reçues -->
         <div>
-          <p class="text-center fw-bold text-warning-dark mt-2 fs-4">Request Received :</p>
+          <p class="text-center fw-bold text-warning-dark mt-4 fs-4">Demmandes reçues :</p>
           <% friendsReceived.forEach(data =>  { %>
-            <div class="container d-flex justify-content-between bg-warning-light col-md-7 mb-2 gap-2">
+            <div class="container d-flex justify-content-between bg-warning-light mb-2 gap-2">
               <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
                 <div class="d-flex justify-content-between">
                   <span class="cursor-default" type="submit">
@@ -64,22 +80,23 @@
               <form action="/answer">
                 <input type="hidden" name="agree" value="<%= data %>"/>
                 <button type="submit" class="btn bg-warning-light fst-italic fw-bold px-2 m-0 ">
-                  <i class='bi bi-check-circle-fill text-success'> Yes</i>
+                  <i class='bi bi-check-circle-fill text-success'> Accepter</i>
                 </button>
               </form>
               <form action="/answer">
                 <input type="hidden" name="disagree" value="<%= data %>"/>
                 <button type="submit" class="btn bg-warning-light fst-italic fw-bold px-2 m-0">
-                  <i class="bi bi-x-circle-fill text-danger"> Not</i>
+                  <i class="bi bi-x-circle-fill text-danger"> Refuser</i>
                 </button>
               </form>
             </div>
           <% }); %> 
         </div> 
+        <!-- Demandes envoyées -->
         <div>
-          <p class="text-center fw-bold text-primary mt-2 fs-4">Request Sent :</p>
+          <p class="text-center fw-bold text-secondary mt-4 fs-4">Demandes Envoyées :</p>
           <% friendsSend.forEach(data =>  { %>
-            <div class="container d-flex justify-content-between bg-primary-light col-md-7 mb-2 gap-2">
+            <div class="container d-flex justify-content-between bg-primary-light mb-2 gap-2">
               <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
                 <div class="d-flex justify-content-between ">
                   <span class="cursor-default" type="submit">
@@ -91,10 +108,11 @@
             </div>
           <% }); %> 
         </div>   
+        <!-- Utilisateurs Disponibles -->
         <div>
-          <p class="text-center fw-bold text-success mt-2 fs-4">User Available :</p>
+          <p class="text-center fw-bold text-success mt-4 fs-4">Utilisateurs Disponibles :</p>
           <% userPublicList.forEach(data => { %>
-            <div class="container d-flex justify-content-between bg-success-light col-md-7 mb-2 gap-2">
+            <div class="container d-flex justify-content-between bg-success-light mb-2 gap-2">
               <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
                 <div class="d-flex justify-content-between ">
                   <span class="cursor-default" type="submit">
@@ -116,5 +134,7 @@
       </div>
     </div>
   </div>
+  <!-- Offcanvas -->
+  <%- include('./partials/offcanvas'); %>
 </body>
 </html>

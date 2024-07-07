@@ -1,0 +1,26 @@
+<!-- Offcanvas -->
+<div class="offcanvas offcanvas-start bg-dark-less  " tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title text-light fw-bold" id="offcanvasNavbarLabel">Chats :</h5>
+      <i class="bi bi-x-lg text-light ms-auto fs-3" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></i>
+  </div>
+  <div class="offcanvas-body">
+    <% friends.forEach(friend => { %>
+      <a 
+        href="/dialogue/<%= friend %>" 
+        class="text-decoration-none text-capitalize fw-bold fs-5 m-0 p-0
+        <%= chatting === friend ? 'text-info' : 'text-secondary' %>">
+        <%= friend %><br>
+      </a>
+    <% }); %>
+    <div class="link">
+      <a 
+        href="/addfriend" 
+        class="btn btn-success btn-sm d-flex align-items-center fw-bold p-0 gap-2 px-1"
+      >
+        <i class="bi bi-person-fill-add fs-4"></i>
+        Ajouter
+      </a>
+    </div>
+  </div>
+</div>

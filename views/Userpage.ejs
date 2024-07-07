@@ -1,77 +1,87 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Page utilisateur</title>
-  <%- include('./partials/link') %>
-  <link rel="stylesheet" href="/public/css/styles.css">
-</head>
-<body>
-  <%- include('./partials/nav') %>
-  <div class="grid-container bg-white">
-    <div class="topbar">
-      <%- include('./partials/nav'); %>
-    </div>
-    <div class="sidebar bg-dark-less text-center pb-3">
-      <%- include('./partials/contact'); %>
-      <div class="link">
-        <a 
-          href="/addfriend" 
-          class="btn btn-success btn-sm d-flex align-items-center fw-bold p-0 gap-2 px-1"
-        >
-          <i class="bi bi-person-fill-add fs-4"></i>
-          Friend
-        </a>
+  <head>
+    <title>Page utilisateur</title>
+    <%- include('./partials/link') %>
+  </head>
+  <body>
+    <%- include('./partials/nav') %>
+    <div class="grid-container bg-white">
+      <div class="topbar">
+        <%- include('./partials/nav'); %>
       </div>
-    </div>
-    <div class="flex-column align-items-center">
-      <div class="text-center bg-dark-less gap-2 p-1 px-2">
-        <div class="d-flex justify-content-center align-items-center">
-          <p class="fw-bold fs-3 m-0">
-            <i class="bi bi-person-vcard-fill text-white-50"></i>
-            <span class="text-success text-capitalize"><%= user.pseudo %></span>
-          </p>
+      <div class="sidebar bg-dark-less text-center d-none d-md-block">
+        <%- include('./partials/contact'); %>
+        <div class="link">
+          <a 
+            href="/addfriend" 
+            class="btn btn-success btn-sm d-flex align-items-center fw-bold p-0 gap-2 px-1"
+          >
+            <i class="bi bi-person-fill-add fs-4"></i>
+            Ajouter
+          </a>
         </div>
       </div>
-      <div class="flex flex-column ">
-        <div class="d-flex justify-content-center mt-2">
-          <div class="dropdown ">
-            <button 
-              class="btn btn-light dropdown-toggle fw-bold  w-100" 
-              type="button" 
-              data-bs-toggle="dropdown" 
-              aria-expanded="false"
-            >
-              Mon Statut <span class="text-success"> ( visible )</span>
-            </button>
-            <ul class="dropdown-menu w-100 text-center">
-              <li><a class="dropdown-item text-success" href="#">Public</a></li>
-              <li><a class="dropdown-item text-danger" href="#">Privé</a></li>
-            </ul>
+      <div class="flex-column align-items-center">
+        <div class="bg-dark-less px-2">
+          <div class="d-flex justify-content-between align-items-center py-2">
+            <!-- Add friend -->
+            <div>
+              <a href="/addfriend" class="btn btn-success btn-sm">
+                <i class="bi bi-plus-lg"></i>
+              </a>
+            </div>
+            <!-- Offcanvas toggle button for smaller screens -->
+            <div class="d-flex justify-content-between align-items-center text-light">
+              <span class="me-2 fst-italic text-info-light text-capitalize">
+                A : 
+                <span class="text-info fw-bold">
+                  <%= chatting && friends.includes(chatting) ? chatting : '' %>
+                </span>
+              </span>
+              <button 
+                class="btn btn-light btn-sm d-md-none text-secondary text-capitalize fw-bold" 
+                type="button" 
+                data-bs-toggle="offcanvas" 
+                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                Chat
+                <i class="bi bi-chat-square-text-fill"></i>
+              </button>
+            </div>
+            <!-- Options -->
+            <div>
+              <button id="toggle" class="btn btn-light btn-sm text-secondary">
+                <i class="bi bi-gear-fill"></i>
+              </button>
+            </div>
           </div>
         </div>
-        <div>
-          <p class="text-center fw-bold text-info mt-2 fs-4">Friends :</p>
-          <% friends.forEach(data =>  { %>
-            <div class="container d-flex justify-content-between bg-info-light col-md-7 mb-2 gap-2">
-              <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
-                <div class="d-flex justify-content-between">
-                  <span class="cursor-default" type="submit">
-                    <i class="bi bi-person-check-fill text-dark-75 btn btn-info cursor-default btn-sm px-2"></i>
-                  </span>
+        <div class="flex flex-column ">
+          <div>
+            <h1 class="text-center text-secondary my-2 fw-bold">Mes Amis :</h1>
+            <% friends.forEach(data =>  { %>
+              <div class="container d-flex justify-content-between bg-info-light mb-2 gap-2">
+                <div class="d-flex justify-content-between align-items-center fw-bold text-secondary fs-5 gap-2">
+                  <div class="d-flex justify-content-between">
+                    <span class="cursor-default" type="submit">
+                      <i class="bi bi-person-check-fill text-dark-75 btn btn-info cursor-default btn-sm px-2"></i>
+                    </span>
+                  </div>
+                  <span class="text-capitalize"><%= data %></span>
                 </div>
-                <span class="text-capitalize"><%= data %></span>
+                <form action="/write" method="POST" class="d-flex justify-content-between">
+                  <input type="hidden" name="asked" value="<%= data.pseudo %>"/>
+                  <button class="btn px-2 fst-italic" type="submit">
+                    <i class="bi bi-chat-square-text-fill text-secondary fw-bold"> Ecrire..</i> 
+                  </button>
+                </form>
               </div>
-              <form action="/write" method="POST" class="d-flex justify-content-between">
-                <input type="hidden" name="asked" value="<%= data.pseudo %>"/>
-                <button class="btn px-2 fst-italic" type="submit">
-                  <i class="bi bi-chat-square-text-fill text-success fw-bold"> Write..</i> 
-                </button>
-              </form>
-            </div>
-          <% }); %> 
-        </div> 
+            <% }); %> 
+          </div> 
+        </div>
       </div>
     </div>
-  </div>
-</body>
+    <!-- Offcanvas -->
+    <%- include('./partials/offcanvas'); %>
+  </body>
 </html>

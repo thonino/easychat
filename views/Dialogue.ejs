@@ -10,7 +10,7 @@
       <div class="topbar">
         <%- include('./partials/nav'); %>
       </div>
-      <div class="sidebar bg-dark-less text-center pb-3 ">
+      <div class="bg-dark-less text-center p-0 sidebar d-none d-md-block">
         <%- include('./partials/contact'); %>
         <div class="link">
           <a 
@@ -18,26 +18,44 @@
             class="btn btn-success btn-sm d-flex align-items-center fw-bold p-0 gap-2 px-1"
           >
             <i class="bi bi-person-fill-add fs-4"></i>
-            Friend
+            Ajouter
           </a>
         </div>
       </div>
-      <div class="d-flex flex-column main-content">
-        <div class="text-center bg-dark-less gap-2 p-1 px-1">
-          <div class="d-flex justify-content-between align-items-center ">
-            <div class="fw-bold text-capitalize fst-italic fs-3 text-white-50 target">
-              à :
-              <span class="text-info">
-                <%= chatting %>
-              </span>
+      <div class="d-flex flex-column main-content"> 
+        <div class="bg-dark-less px-2">
+          <div class="d-flex justify-content-between align-items-center py-2">
+            <!-- Add friend -->
+            <div>
+              <a href="/addfriend" class="btn btn-success btn-sm">
+                <i class="bi bi-plus-lg"></i>
+              </a>
             </div>
-            <div class="text-center d-inline">
-              <button id="toggle" class="btn btn-light text-secondary btn-sm">
+            <!-- Offcanvas toggle button for smaller screens -->
+            <div class="d-flex justify-content-between align-items-center text-light">
+              <span class="me-2 fst-italic text-info-light text-capitalize">
+                A : 
+                <span class="text-info fw-bold">
+                  <%= chatting && friends.includes(chatting) ? chatting : '' %>
+                </span>
+              </span>
+              <button 
+                class="btn btn-light btn-sm d-md-none text-secondary text-capitalize fw-bold" 
+                type="button" 
+                data-bs-toggle="offcanvas" 
+                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                Chat
+                <i class="bi bi-chat-square-text-fill"></i>
+              </button>
+            </div>
+            <!-- Options -->
+            <div>
+              <button id="toggle" class="btn btn-light btn-sm text-secondary">
                 <i class="bi bi-gear-fill"></i>
               </button>
             </div>
           </div>
-        </div>
+        </div>        
         <div class="d-flex flex-column overflow-hidden">
           <div id="messageBox" class="d-flex reverseMessage overflow-y-auto mb-3">
             <% messagesFilter.reverse().forEach(message => { %>
@@ -117,10 +135,9 @@
           </div>
         </div>
       </div>
-    </div>
-    <script>
-      var userPseudo = "<%= user.pseudo.toLowerCase() %>";
-    </script>
+    <!-- Offcanvas -->
+    <%- include('./partials/offcanvas'); %>
+    <script> var userPseudo = "<%= user.pseudo.toLowerCase() %>"; </script>
     <script src="/public/js/dialogue.js"></script>
     <script src="/socket.io/socket.io.js"></script>
   </body>
