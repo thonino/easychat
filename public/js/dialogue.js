@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+
   // Socket.io setup : with appendChild() and  createElement()
   const socket = io({
     query: {

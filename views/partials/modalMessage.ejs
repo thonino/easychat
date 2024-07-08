@@ -1,0 +1,54 @@
+<!-- Modals for editing and deleting messages -->
+<% messagesFilter.forEach(message => { %>
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editMessageModal<%= message._id %>" tabindex="-1" aria-labelledby="editMessageModalLabel<%= message._id %>" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-success-light">
+          <h5 class="modal-title" id="editMessageModalLabel<%= message._id %>">Modifier Message</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/edit-message/<%= message._id %>?_method=PUT" method="POST">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="destinataire" value="<%= message.destinataire %>">
+            <div class="form-group text-center">
+              <label for="message" class="text-capitalize fst-italic fw-bold mb-2 ">à : 
+                <span class=" text-info"><%= message.destinataire %> </span>
+              </label>
+              <textarea class="form-control bg-info-light" name="message" rows="4" required><%= message.message %></textarea>
+            </div>
+            <input type="hidden" name="datetime" value="<%= heure %>">
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" class="btn btn-success">Enregistrer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteMessageModal<%= message._id %>" tabindex="-1" aria-labelledby="deleteMessageModalLabel<%= message._id %>" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger-light">
+          <h5 class="modal-title fw-bold" id="deleteMessageModalLabel<%= message._id %>">Confirmer la suppression</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p>Confirmer la suppression du message ?</p>
+          <p class="text-secondary fst-italic">" <%= message.message %>" </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
+            <input type="hidden" name="chatting" value="<%= chatting %>">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-danger">Supprimer</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+<% }) %>

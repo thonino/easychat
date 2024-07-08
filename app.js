@@ -242,7 +242,7 @@ app.post('/agree', (req, res) => {
 
   Friend.findOneAndUpdate({ adder, asked, confirm: false }, { confirm: true })
     .then(() => {
-      req.session.confirm = `Vous avez accepté ${adder} en amis`;
+      req.session.confirm = `Vous avez accepté : ${adder}`;
       req.session.alertType = 'success';
       res.redirect('/addfriend');
     })
@@ -257,6 +257,10 @@ app.post('/remove/:element', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
+  const element = req.params.element;
+  let action = "";
+  if (element === "disagree") { action = "refusé : ";} 
+  else  { action = "supprimé : "; }
   const user = req.session.user;
   const adder = req.body.adder;
   const asked = user.pseudo;
@@ -268,7 +272,7 @@ app.post('/remove/:element', (req, res) => {
     ]
   })
     .then(() => {
-      req.session.confirm = `Vous avez supprimé ${adder}`;
+      req.session.confirm = `Vous avez ${action} ${adder}`;
       req.session.alertType = 'danger';
       res.redirect(`/addfriend`);
     })
@@ -313,7 +317,6 @@ app.get('/dialogue/:chatting', (req, res) => {
   });
 });
 
-
 // GET NEW MESSAGE
 app.get('/message/new', (req, res) => {
   if (!req.session.user) { return res.redirect('/login'); }
@@ -341,19 +344,6 @@ app.post('/message', (req, res) => {
 });
 
 // GET EDIT PAGE
-app.get('/edit-message/:id', (req, res) => {
-  const user = req.session.user;
-  const heure = moment().format('h:mm:ss');
-  Message.findById(req.params.id)
-    .then((message) => {
-      res.render('EditMessage', {
-        message: message, user: user, heure: heure
-      });
-    })
-    .catch(err => { console.log(err); });
-});
-
-// PUT EDIT PAGE
 app.put('/edit-message/:id', (req, res) => {
   const heure = moment().format('h:mm:ss');
   const messageData = {
@@ -365,6 +355,9 @@ app.put('/edit-message/:id', (req, res) => {
     .then(() => { res.redirect(`/dialogue/${req.body.destinataire}`); })
     .catch(err => { console.log(err); });
 });
+
+
+
 
 // DELETE MESSAGE
 app.delete('/delete-message/:messageId', (req, res) => {

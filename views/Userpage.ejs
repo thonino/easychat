@@ -27,7 +27,7 @@
           <div class="d-flex justify-content-between align-items-center py-2">
             <!-- Add friend -->
             <div>
-              <a href="/addfriend" class="btn btn-success btn-sm">
+              <a href="/addfriend" class="btn btn-success btn-sm d-md-none">
                 <i class="bi bi-plus-lg"></i>
               </a>
             </div>
@@ -75,23 +75,67 @@
                 </button>
               </form>
               <!-- delete friend -->
-              <form id="deleteFriend<%= data %>" action="/remove/deleted" method="POST">
-                <input type="hidden" name="adder" value="<%= data %>"/>
-                <button 
-                  type="button" 
-                  class="btn bg-danger-light fst-italic fw-bold px-2 py-1 p-0 m-0"
-                  onclick="confirmDeleteFriend('<%= data %>')"
-                >
-                  <i class="bi bi-dash-circle-fill text-danger"></i>
-                </button>
-              </form>
+              <button 
+                type="button" 
+                class="btn btn-sm ms-2" 
+                data-bs-toggle="modal" 
+                data-bs-target="#deleteFriendModal<%= data %>"
+              >
+                <i class="bi bi-dash-circle-fill text-danger"></i>
+              </button>
+            </div>
+            <!-- Delete Modal -->
+            <div 
+            class="modal fade" 
+            id="deleteFriendModal<%= data %>" tabindex="-1" 
+            aria-labelledby="deleteFriendModalLabel<%= data %>" 
+            aria-hidden="true"
+            >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <!--Title modal -->
+                <div class="modal-header bg-danger-light">
+                  <h5 
+                    class="modal-title fw-bold" 
+                    id="deleteFriendModalLabel<%= data %>"
+                  >
+                    Confirmer la suppression
+                  </h5>
+                  <!--Close btn -->
+                  <button 
+                    type="button" 
+                    class="btn-close" 
+                    data-bs-dismiss="modal" 
+                    aria-label="Close">
+                  </button>
+                </div>
+                <!--Body modal -->
+                <div class="modal-body text-center">
+                  <p>
+                    Supprimer 
+                    <span class="text-secondary fst-italic text-capitalize fw-bold"> 
+                      "<%= data %>"
+                    </span> 
+                    de vos amis ?
+                  </p>
+                  
+                </div>
+                <!--Footer modal -->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                  <form id="deleteFriend<%= data %>" action="/remove/deleted" method="POST">
+                    <input type="hidden" name="adder" value="<%= data %>"/>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                  </button>
+                  </form>
+                </div>
+              </div>
+            </div>
             </div>
           <% }); %> 
         </div> 
       </div>
     </div>
-    <!-- Offcanvas -->
     <%- include('./partials/offcanvas'); %>
-    <script src="/public/js/userpage.js"></script>
   </body>
 </html>
