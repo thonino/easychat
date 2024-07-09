@@ -8,6 +8,7 @@ const sharedSession = require('express-socket.io-session');
 const server = http.createServer(app);
 const io = socketIo(server);
 
+
 // bcrypt
 const bcrypt = require('bcrypt');
 
@@ -77,6 +78,7 @@ const makeAvailable = async (req, res, next) => {
     const user = req.session.user;
     let userPublicList = [];
     let friends = [];
+    let chats = [];
     let friendsReceived = [];
     let friendsSend = [];
 
@@ -88,7 +90,16 @@ const makeAvailable = async (req, res, next) => {
       friends = allFriends.filter(friend => {
         return friend.confirm === true &&
               (friend.adder === user.pseudo || friend.asked === user.pseudo);
-      }).map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
+      });
+
+      // Filter user who is chatting
+      chats = friends.filter(friend => friend.chat && friend.chat.includes(user.pseudo));
+
+      // Map the friends to get only the pseudo values
+      friends = friends.map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
+
+      // Map the chats to get only the pseudo values
+      chats = chats.map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
 
       // Filter demandes reçues
       friendsReceived = allFriends
@@ -113,6 +124,7 @@ const makeAvailable = async (req, res, next) => {
     res.locals.friends = friends;
     res.locals.friendsReceived = friendsReceived;
     res.locals.friendsSend = friendsSend;
+    res.locals.chats = chats;
 
     next();
   } catch (err) {
@@ -124,8 +136,7 @@ const makeAvailable = async (req, res, next) => {
 app.use(makeAvailable);
 
 
-//---------------------------------ROOTS---------------------------------//
-
+//---------------------------------------ROOTS---------------------------------------//
 
 // GET HOME
 app.get('/', (req, res) => {
@@ -185,38 +196,85 @@ app.get('/userpage', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
-  // Friends
-  const friends= res.locals.friends;
-  const friendsRecieved= res.locals.friendsRecieved;
-  const friendsSend= res.locals.friendsSend;
+  // Utilisation de la variable res.locals.chats
+  const user = req.session.user;
+  const friends = res.locals.friends;
+  const friendsReceived = res.locals.friendsReceived;
+  const friendsSend = res.locals.friendsSend;
+  const chats = res.locals.chats; 
+
+  console.log(chats); 
+
   res.render('userpage', {
     user: res.locals.user,
     contacts: res.locals.contacts,
     userPublicList: res.locals.userPublicList,
     chatting: res.locals.chatting,
-    friends, friendsRecieved, friendsSend
+    user,
+    friends,
+    friendsReceived,
+    friendsSend,
+    chats
   });
 });
 
+// Create new chat
+app.post('/chat', async (req, res) => {
+  try {
+    const user = req.session.user;
+    const destinataire = req.body.destinataire;
+
+    // Trouver une relation d'amitié entre les deux utilisateurs
+    const friend = await Friend.findOne({
+      $or: [
+        { adder: user.pseudo, asked: destinataire },
+        { adder: destinataire, asked: user.pseudo }
+      ]
+    });
+
+    // Si une relation existe, mettre à jour la propriété 'chat' du document
+    if (friend) {
+      if (!friend.chat.includes(user.pseudo)) {
+        friend.chat.push(user.pseudo);
+      }
+      if (!friend.chat.includes(destinataire)) {
+        friend.chat.push(destinataire);
+      }
+      await friend.save();
+    } else {
+      // Si aucune relation n'existe, créer une nouvelle relation d'amitié avec le chat initialisé
+      await Friend.create({
+        adder: user.pseudo,
+        asked: destinataire,
+        confirm: true, // Vous pouvez ajuster cette valeur selon vos besoins
+        chat: [user.pseudo, destinataire]
+      });
+    }
+
+    res.redirect(`/dialogue/${destinataire}`);
+  } catch (err) {
+    console.log(err);
+    res.redirect('/error');
+  }
+});
+
+
 // ADD FRIEND PAGE
 app.get('/addfriend', (req, res) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
+  if (!req.session.user){ return res.redirect('/login'); }
   res.render('AddFriend', {
     user: res.locals.user,
     userPublicList: res.locals.userPublicList,
     chatting: res.locals.chatting,
     friends: res.locals.friends,
     friendsAsk: res.locals.friendsAsk,
+    chats: res.locals.chats,
   });
 });
 
 // SEND FRIEND REQUEST
 app.post('/sendrequest', (req, res) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
+  if (!req.session.user){ return res.redirect('/login'); }
   const adder = req.body.adder;
   const asked = req.body.asked;
   if (adder && asked) {
@@ -233,13 +291,10 @@ app.post('/sendrequest', (req, res) => {
 
 // AGREE
 app.post('/agree', (req, res) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
+  if (!req.session.user){ return res.redirect('/login'); }
   const user = req.session.user;
   const adder = req.body.adder;
   const asked = user.pseudo;
-
   Friend.findOneAndUpdate({ adder, asked, confirm: false }, { confirm: true })
     .then(() => {
       req.session.confirm = `Vous avez accepté : ${adder}`;
@@ -254,9 +309,7 @@ app.post('/agree', (req, res) => {
 
 // DISAGREE DELETED
 app.post('/remove/:element', (req, res) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
+  if (!req.session.user){ return res.redirect('/login'); }
   const element = req.params.element;
   let action = "";
   if (element === "disagree") { action = "refusé : ";} 
@@ -287,12 +340,14 @@ app.get('/dialogue/:chatting', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
+
   const user = req.session.user;
   const chatting = req.params.chatting;
   const friends = res.locals.friends;
   const friendsAsk = res.locals.friendsAsk;
+  const chats = res.locals.chats;
 
-  // Update session chatting 
+  // Mettre à jour la session chatting
   req.session.chatting = chatting;
   res.locals.chatting = chatting;
 
@@ -311,6 +366,7 @@ app.get('/dialogue/:chatting', (req, res) => {
       chatting,
       friends,
       friendsAsk,
+      chats,
     });
   }).catch(err => {
     console.log(err);
@@ -355,9 +411,6 @@ app.put('/edit-message/:id', (req, res) => {
     .then(() => { res.redirect(`/dialogue/${req.body.destinataire}`); })
     .catch(err => { console.log(err); });
 });
-
-
-
 
 // DELETE MESSAGE
 app.delete('/delete-message/:messageId', (req, res) => {
@@ -418,7 +471,6 @@ io.on('connection', (socket) => {
     });
   }
 });
-
 
 const PORT = 5001;
 server.listen(PORT, () => {

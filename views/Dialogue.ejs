@@ -137,9 +137,10 @@
         </div>
       </div>
     </div>
-    <script> var userPseudo = "<%=  user.pseudo.toLowerCase() %>"; </script>
-    <%- include('./partials/offcanvas'); %>
+    <div id="modalsContainer"></div>
     <%- include('./partials/modalMessage'); %>
+    <%- include('./partials/offcanvas'); %>
+    <script> var userPseudo = "<%=  user.pseudo.toLowerCase() %>"; </script>
     <script src="/public/js/dialogue.js"></script>
     <script src="/socket.io/socket.io.js"></script>
   </body>

@@ -33,224 +33,162 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('receiveText', (data) => {
-    console.log('Received message:', data);  // Log the received message
-    const messageDiv = document.createElement('div');
-    const isCurrentUser = data.pseudo.toLowerCase() === userPseudo;
-    const isCurrentDestinataire = data.destinataire.toLowerCase() === userPseudo;
+  console.log('Received message:', data);  // Log the received message
+  const messageDiv = document.createElement('div');
+  const isCurrentUser = data.pseudo.toLowerCase() === userPseudo;
+  const isCurrentDestinataire = data.destinataire.toLowerCase() === userPseudo;
 
-    console.log('isCurrentUser:', isCurrentUser, 'isCurrentDestinataire:', isCurrentDestinataire);  // Log comparison results
+  console.log('isCurrentUser:', isCurrentUser, 'isCurrentDestinataire:', isCurrentDestinataire);  // Log comparison results
 
-    if (!data.id) {
-      console.error('Message ID is missing:', data); // Log if _id is missing
-      return; // Don't proceed if the ID is missing
-    }
+  if (!data.id) {
+    console.error('Message ID is missing:', data); // Log if _id is missing
+    return; // Don't proceed if the ID is missing
+  }
 
-    const messageWrapper = document.createElement('div');
-    messageWrapper.classList.add('text-center', 'fw-bold', 'fst-italic');
+  const messageWrapper = document.createElement('div');
+  messageWrapper.classList.add('text-center', 'fw-bold', 'fst-italic');
 
-    const dateSpan = document.createElement('span');
-    dateSpan.classList.add('fs-6', 'text-muted', 'fw-light');
-    dateSpan.textContent = data.datetime;
-    messageWrapper.appendChild(dateSpan);
+  const dateSpan = document.createElement('span');
+  dateSpan.classList.add('fs-6', 'text-muted', 'fw-light');
+  dateSpan.textContent = data.datetime;
+  messageWrapper.appendChild(dateSpan);
 
-    const messageContentDiv = document.createElement('div');
-    messageContentDiv.classList.add('d-flex', 'fs-5', 'gap-2', 'align-items-center');
-    messageWrapper.appendChild(messageContentDiv);
+  const messageContentDiv = document.createElement('div');
+  messageContentDiv.classList.add('d-flex', 'fs-5', 'gap-2', 'align-items-center');
+  messageWrapper.appendChild(messageContentDiv);
 
-    if (isCurrentUser) {
-      messageContentDiv.classList.add('justify-content-end', 'bg-success-light', 'pe-2');
+  if (isCurrentUser) {
+    messageContentDiv.classList.add('justify-content-end', 'bg-success-light', 'pe-2');
 
-      const pseudoParagraph = document.createElement('p');
-      pseudoParagraph.classList.add('text-capitalize', 'text-success', 'm-2');
-      pseudoParagraph.textContent = `${data.pseudo} :`;
-      messageContentDiv.appendChild(pseudoParagraph);
+    const pseudoParagraph = document.createElement('p');
+    pseudoParagraph.classList.add('text-capitalize', 'text-success', 'm-2');
+    pseudoParagraph.textContent = `${data.pseudo} :`;
+    messageContentDiv.appendChild(pseudoParagraph);
 
-      const messageParagraph = document.createElement('p');
-      messageParagraph.classList.add('fw-light', 'text-dark', 'm-2');
-      messageParagraph.textContent = data.text;
-      messageContentDiv.appendChild(messageParagraph);
+    const messageParagraph = document.createElement('p');
+    messageParagraph.classList.add('fw-light', 'text-dark', 'm-2');
+    messageParagraph.textContent = data.text;
+    messageContentDiv.appendChild(messageParagraph);
 
-      const cibleDiv = document.createElement('div');
-      cibleDiv.classList.add('cible', 'hidden');
-      messageContentDiv.appendChild(cibleDiv);
+    const cibleDiv = document.createElement('div');
+    cibleDiv.classList.add('cible', 'hidden');
+    messageContentDiv.appendChild(cibleDiv);
 
-      const container = document.createElement('div');
-      container.classList.add('d-flex','justify-content-center');
-      cibleDiv.appendChild(container);
+    const container = document.createElement('div');
+    container.classList.add('d-flex','justify-content-center');
+    cibleDiv.appendChild(container);
 
-      const editLink = document.createElement('a');
-      editLink.href = `/edit-message/${data.id}`;
-      editLink.classList.add('btn', 'btn-success', 'btn-sm');
-      editLink.innerHTML = '<i class="bi bi-pencil-square"></i>';
-      container.appendChild(editLink);
+    const editButton = document.createElement('button');
+    editButton.type = 'button';
+    editButton.classList.add('btn', 'btn-success', 'btn-sm');
+    editButton.setAttribute('data-bs-toggle', 'modal');
+    editButton.setAttribute('data-bs-target', `#editMessageModal${data.id}`);
+    editButton.innerHTML = '<i class="bi bi-pencil-square"></i>';
+    container.appendChild(editButton);
 
-      const deleteForm = document.createElement('form');
-      deleteForm.action = `/delete-message/${data.id}?_method=DELETE`;
-      deleteForm.method = 'POST';
-      container.appendChild(deleteForm);
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ms-2');
+    deleteButton.setAttribute('data-bs-toggle', 'modal');
+    deleteButton.setAttribute('data-bs-target', `#deleteMessageModal${data.id}`);
+    deleteButton.innerHTML = '<i class="bi bi-trash"></i>';
+    container.appendChild(deleteButton);
+  } else {
+    messageContentDiv.classList.add('justify-content-start', 'bg-info-light', 'ps-2');
 
-      const hiddenPseudoInput = document.createElement('input');
-      hiddenPseudoInput.type = 'hidden';
-      hiddenPseudoInput.name = 'chatting';
-      hiddenPseudoInput.value = userPseudo;
-      deleteForm.appendChild(hiddenPseudoInput);
+    const cibleDiv = document.createElement('div');
+    cibleDiv.classList.add('cible', 'hidden', 'align-items-center');
+    messageContentDiv.appendChild(cibleDiv);
 
-      const hiddenMethodInput = document.createElement('input');
-      hiddenMethodInput.type = 'hidden';
-      hiddenMethodInput.name = '_method';
-      hiddenMethodInput.value = 'DELETE';
-      deleteForm.appendChild(hiddenMethodInput);
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.classList.add('btn', 'btn-danger', 'btn-sm');
+    deleteButton.setAttribute('data-bs-toggle', 'modal');
+    deleteButton.setAttribute('data-bs-target', `#deleteMessageModal${data.id}`);
+    deleteButton.innerHTML = '<i class="bi bi-trash"></i>';
+    cibleDiv.appendChild(deleteButton);
 
-      const deleteButton = document.createElement('button');
-      deleteButton.type = 'submit';
-      deleteButton.classList.add('btn', 'btn-danger', 'ms-2', 'btn-sm');
-      deleteButton.innerHTML = '<i class="bi bi-trash"></i>';
-      deleteForm.appendChild(deleteButton);
-    } else {
-      messageContentDiv.classList.add('justify-content-start', 'bg-info-light', 'ps-2');
+    const pseudoParagraph = document.createElement('p');
+    pseudoParagraph.classList.add('fs-5', 'text-capitalize', 'text-info', 'm-2');
+    pseudoParagraph.textContent = `${data.pseudo} :`;
+    messageContentDiv.appendChild(pseudoParagraph);
 
-      const cibleDiv = document.createElement('div');
-      cibleDiv.classList.add('cible', 'hidden', 'align-items-center');
-      messageContentDiv.appendChild(cibleDiv);
+    const messageParagraph = document.createElement('p');
+    messageParagraph.classList.add('fw-light', 'text-dark', 'm-2');
+    messageParagraph.textContent = data.text;
+    messageContentDiv.appendChild(messageParagraph);
+  }
 
-      const deleteForm = document.createElement('form');
-      deleteForm.action = `/delete-message/${data.id}?_method=DELETE`;
-      deleteForm.method = 'POST';
-      deleteForm.classList.add('d-flex', 'align-items-center');
-      cibleDiv.appendChild(deleteForm);
+  messageBox.prepend(messageWrapper);
+  console.log('Message appended to messageBox');
 
-      const hiddenPseudoInput = document.createElement('input');
-      hiddenPseudoInput.type = 'hidden';
-      hiddenPseudoInput.name = 'chatting';
-      hiddenPseudoInput.value = userPseudo;
-      deleteForm.appendChild(hiddenPseudoInput);
+  // Create the edit modal
+  const editModal = document.createElement('div');
+  editModal.classList.add('modal', 'fade');
+  editModal.id = `editMessageModal${data.id}`;
+  editModal.setAttribute('tabindex', '-1');
+  editModal.setAttribute('aria-labelledby', `editMessageModalLabel${data.id}`);
+  editModal.setAttribute('aria-hidden', 'true');
+  editModal.innerHTML = `
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-success-light">
+          <h5 class="modal-title" id="editMessageModalLabel${data.id}">Modifier Message</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/edit-message/${data.id}?_method=PUT" method="POST">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="destinataire" value="${data.destinataire}">
+            <div class="form-group">
+              <label for="message" class="mb-2 text-capitalize"> à : 
+                <span class="fw-bold text-info">${data.destinataire}</span>
+              </label>
+              <textarea class="form-control bg-info-light" name="message" rows="4" required>${data.text}</textarea>
+            </div>
+            <input type="hidden" name="datetime" value="${data.datetime}">
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" class="btn btn-success">Enregistrer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
 
-      const hiddenMethodInput = document.createElement('input');
-      hiddenMethodInput.type = 'hidden';
-      hiddenMethodInput.name = '_method';
-      hiddenMethodInput.value = 'DELETE';
-      deleteForm.appendChild(hiddenMethodInput);
+  // Create the delete modal
+  const deleteModal = document.createElement('div');
+  deleteModal.classList.add('modal', 'fade');
+  deleteModal.id = `deleteMessageModal${data.id}`;
+  deleteModal.setAttribute('tabindex', '-1');
+  deleteModal.setAttribute('aria-labelledby', `deleteMessageModalLabel${data.id}`);
+  deleteModal.setAttribute('aria-hidden', 'true');
+  deleteModal.innerHTML = `
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger-light">
+          <h5 class="modal-title" id="deleteMessageModalLabel${data.id}">Supprimer Message</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/delete-message/${data.id}?_method=DELETE" method="POST">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="chatting" value="${userPseudo}">
+            <p>Êtes-vous sûr de vouloir supprimer ce message ?</p>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" class="btn btn-danger">Supprimer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
 
-      const deleteButton = document.createElement('button');
-      deleteButton.type = 'submit';
-      deleteButton.classList.add('btn', 'btn-danger', 'btn-sm');
-      deleteButton.innerHTML = '<i class="bi bi-trash"></i>';
-      deleteForm.appendChild(deleteButton);
-
-      const pseudoParagraph = document.createElement('p');
-      pseudoParagraph.classList.add('fs-5', 'text-capitalize', 'text-info', 'm-2');
-      pseudoParagraph.textContent = `${data.pseudo} :`;
-      messageContentDiv.appendChild(pseudoParagraph);
-
-      const messageParagraph = document.createElement('p');
-      messageParagraph.classList.add('fw-light', 'text-dark', 'm-2');
-      messageParagraph.textContent = data.text;
-      messageContentDiv.appendChild(messageParagraph);
-    }
-
-    messageBox.prepend(messageWrapper);
-    console.log('Message appended to messageBox');
-  }); // socket.io --END--
-  
+  const modalsContainer = document.getElementById('modalsContainer');
+  modalsContainer.appendChild(editModal);
+  modalsContainer.appendChild(deleteModal);
 });
 
-  // // Socket.io setup : with inneHTML()
-  // const socket = io({
-  //   query: {
-  //     destinataire: document.querySelector('input[name="destinataire"]').value
-  //   }
-  // });
-
-  //   const textInput = document.getElementById('textInput');
-  //   const sendButton = document.getElementById('sendButton');
-  //   const messageBox = document.getElementById('messageBox');
-
-  //   console.log("Current user:", userPseudo); // Log current user for debugging
-
-  //   sendButton.addEventListener('click', (e) => {
-  //     e.preventDefault();
-  //     const text = textInput.value;
-  //     const destinataireElement = document.querySelector('input[name="destinataire"]');
-  //     const destinataire = destinataireElement.value.toLowerCase();
-  //     console.log('Sending message:', { text, destinataire }); // Log the message being sent
-  //     socket.emit('sendText', { text, destinataire });
-  //     textInput.value = '';
-  //   });
-
-  //   socket.on('receiveText', (data) => {
-  //     console.log('Received message:', data);  // Log the received message
-  //     const messageDiv = document.createElement('div');
-  //     const isCurrentUser = data.pseudo.toLowerCase() === userPseudo;
-  //     const isCurrentDestinataire = data.destinataire.toLowerCase() === userPseudo;
-
-  //     console.log('isCurrentUser:', 
-  //       isCurrentUser, 'isCurrentDestinataire:', 
-  //       isCurrentDestinataire);  // Log comparison results
-  //     console.log('check data.id :', data.id); // 
-
-  //     if (!data.id) {
-  //       console.error('Message ID is missing:', data); // Log if _id is missing
-  //       return; // Don't proceed if the ID is missing
-  //     }
-
-  //     if (isCurrentUser || isCurrentDestinataire) {
-  //       if (isCurrentUser) {
-  //         messageDiv.innerHTML = `
-  //           <div class="d-flex justify-content-end align-items-center fs-5 bg-success-light pe-2 gap-2">
-  //             <div class="d-flex flex-row gap-2 align-items-center">
-  //               <p class="text-capitalize text-success m-2">${data.pseudo} :</p>
-  //               <p class="fw-light text-dark m-2">${data.text}</p>
-  //             </div>
-  //             <div class="cible hidden">
-  //               <div class="d-flex justify-content-center">
-  //                 <div>
-  //                   <a href="/edit-message/${data.id}" class="btn btn-success btn-sm">
-  //                     <i class="bi bi-pencil-square"></i>
-  //                   </a>
-  //                 </div>
-  //                 <form action="/delete-message/${data.id}?_method=DELETE" method="POST">
-  //                   <input type="hidden" name="pseudo" value="${userPseudo}">
-  //                   <input type="hidden" name="_method" value="DELETE">
-  //                   <button type="submit" class="btn btn-danger ms-2 btn-sm">
-  //                     <i class='bi bi-trash'></i>
-  //                   </button>
-  //                 </form>
-  //               </div>
-  //             </div>
-  //           </div>
-  //         `;
-  //       } else {
-  //         messageDiv.innerHTML = `
-  //           <div class="d-flex fs-5 bg-info-light align-items-center ps-2 gap-2">
-  //             <div class="d-flex justify-content-start align-items-center">
-  //               <div class="cible hidden">
-  //                 <form action="/delete-message/${data.id}?_method=DELETE" method="POST" class="d-flex align-items-center">
-  //                   <input type="hidden" name="pseudo" value="${userPseudo}">
-  //                   <input type="hidden" name="_method" value="DELETE">
-  //                   <button type="submit" class="btn btn-danger btn-sm">
-  //                     <i class='bi bi-trash'></i>
-  //                   </button>
-  //                 </form>
-  //               </div>
-  //               <div class="d-flex flex-row gap-2 align-items-center">
-  //                 <p class="fs-5 text-capitalize text-info m-2">${data.pseudo} :</p>
-  //                 <p class="fw-light text-dark m-2">${data.text}</p>
-  //               </div>
-  //             </div>
-  //           </div>
-  //         `;
-  //       }
-  //       const dateSpan = document.createElement('span');
-  //       dateSpan.classList.add('fs-6', 'text-muted', 'fw-light');
-  //       dateSpan.textContent = data.datetime;
-
-  //       const messageWrapper = document.createElement('div');
-  //       messageWrapper.classList.add('text-center', 'fw-bold', 'fst-italic');
-  //       messageWrapper.appendChild(dateSpan);
-  //       messageWrapper.appendChild(messageDiv);
-
-  //       messageBox.prepend(messageWrapper);
-  //       console.log('Message appended to messageBox');
-  //     }
-  //   }); // socket.io --END--
-  // });
+});
