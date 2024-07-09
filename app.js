@@ -1,65 +1,78 @@
-// express & express-session
 const express = require('express');
 const session = require('express-session');
-const app = express();
 const http = require('http');
 const socketIo = require('socket.io');
 const sharedSession = require('express-socket.io-session');
-const server = http.createServer(app);
-const io = socketIo(server);
-
-
-// bcrypt
-const bcrypt = require('bcrypt');
-
-// MongoDB Mongoose et dotenv
-require('dotenv').config();
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
 const mongoose = require('mongoose');
+const moment = require('moment');
+const bcrypt = require('bcrypt');
+require('dotenv').config();
+
 const Message = require('./models/Message');
 const User = require('./models/User');
 const Friend = require('./models/Friend');
-const { log } = require('console');
-const url = process.env.DATABASE_URL;
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => { console.log("MongoDB connected"); })
-  .catch(err => { console.log(err); });
 
-// EJS :
-app.set('view engine', 'ejs');
-
-// BodyParser
-const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: false }));
-
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 const sessionMiddleware = session({
   secret: 'your-secret-key',
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false }
 });
-app.use(sessionMiddleware);
 
-// Method-override :
-const methodOverride = require('method-override');
+mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => { console.log("MongoDB connected"); })
+  .catch(err => { console.log(err); });
+
+app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
-
-// get datetime
-const moment = require('moment');
-
+app.use(sessionMiddleware);
 app.use('/public', express.static('public'));
+io.use(sharedSession(sessionMiddleware, { autoSave: true }));
 
-// Partager la session entre Express et Socket.IO
-io.use(sharedSession(sessionMiddleware, {
-  autoSave: true
-}));
+// Socket.IO: Écouter connexions
+io.on('connection', (socket) => {
+  const user = socket.handshake.session.user;
+  const chattingWith = socket.handshake.session.chatting;
 
-// SESSION CHATTING
-app.use((req, res, next) => {
-  if (req.params && req.params.chatting) {
-    req.session.chatting = req.params.chatting;
+  if (user) {
+    console.log(`${user.pseudo} est connecté à ${chattingWith}`);
+    socket.join(`${user.pseudo}-${chattingWith}`);
+    socket.join(`${chattingWith}-${user.pseudo}`);
+
+    // Écouter messages
+    socket.on('sendText', ({ text, destinataire }) => {
+      const heure = moment().format('h:mm:ss');
+      const newMessage = new Message({
+        expediteur: user.pseudo,
+        destinataire: destinataire,
+        message: text,
+        datetime: heure
+      });
+
+      newMessage.save()
+        .then((savedMessage) => {
+          console.log(`Send : ${text} from ${user.pseudo} to ${destinataire}`);  // Log pour debug
+          io.to(`${user.pseudo}-${destinataire}`).to(`${destinataire}-${user.pseudo}`).emit('receiveText', {
+            id: savedMessage._id,
+            pseudo: user.pseudo,
+            text: text,
+            destinataire: destinataire,
+            datetime: heure
+          });
+        })
+        .catch(err => console.log(err));
+    });
+
+    socket.on('disconnect', () => {
+      console.log(`${user.pseudo} s'est déconnecté`);
+    });
   }
-  res.locals.chatting = req.session.chatting;
-  next();
 });
 
 // Confirm message
@@ -70,7 +83,6 @@ app.use((req, res, next) => {
   delete req.session.alertType;
   next();
 });
-
 
 // Make available for all
 const makeAvailable = async (req, res, next) => {
@@ -439,38 +451,38 @@ app.delete('/delete-message/:messageId', (req, res) => {
 });
 
 // Socket.IO: Écouter connexions 
-io.on('connection', (socket) => {
-  const user = socket.handshake.session.user;
-  if (user) {
-    console.log(user.pseudo + ' est connecté');
-    // Écouter messages
-    socket.on('sendText', ({ text, destinataire }) => {
-      const heure = moment().format('h:mm:ss');
-      const newMessage = new Message({
-        expediteur: user.pseudo,
-        destinataire: destinataire,
-        message: text,
-        datetime: heure
-      });
-      newMessage.save()
-        .then((savedMessage) => {  // Accéder au message 
+// io.on('connection', (socket) => {
+//   const user = socket.handshake.session.user;
+//   if (user) {
+//     console.log(user.pseudo + ' est connecté');
+//     // Écouter messages
+//     socket.on('sendText', ({ text, destinataire }) => {
+//       const heure = moment().format('h:mm:ss');
+//       const newMessage = new Message({
+//         expediteur: user.pseudo,
+//         destinataire: destinataire,
+//         message: text,
+//         datetime: heure
+//       });
+//       newMessage.save()
+//         .then((savedMessage) => {  // Accéder au message 
         
-          console.log(`Send : ${text} from ${user.pseudo} to ${destinataire}`);  // Log pour debug
-          io.emit('receiveText', { 
-            id: savedMessage._id,  
-            pseudo: user.pseudo, 
-            text: text, 
-            destinataire: destinataire, 
-            datetime: heure 
-          });
-        })
-        .catch(err => console.log(err));
-    });
-    socket.on('disconnect', () => {
-      console.log('Un utilisateur s\'est déconnecté');
-    });
-  }
-});
+//           console.log(`Send : ${text} from ${user.pseudo} to ${destinataire}`);  // Log pour debug
+//           io.emit('receiveText', { 
+//             id: savedMessage._id,  
+//             pseudo: user.pseudo, 
+//             text: text, 
+//             destinataire: destinataire, 
+//             datetime: heure 
+//           });
+//         })
+//         .catch(err => console.log(err));
+//     });
+//     socket.on('disconnect', () => {
+//       console.log('Un utilisateur s\'est déconnecté');
+//     });
+//   }
+// });
 
 const PORT = 5001;
 server.listen(PORT, () => {

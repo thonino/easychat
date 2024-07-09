@@ -13,10 +13,7 @@
     <div class="bg-dark-less text-center p-0 sidebar d-none d-md-block">
       <%- include('./partials/contact'); %>
       <div class="link">
-        <a 
-          href="/addfriend" 
-          class="btn btn-success btn-sm d-flex align-items-center fw-bold p-0 gap-2 px-1"
-        >
+        <a href="/addfriend" class="btn btn-success btn-sm d-flex align-items-center fw-bold p-0 gap-2 px-1">
           <i class="bi bi-person-fill-add fs-4"></i>
           Ajouter
         </a>
@@ -39,11 +36,7 @@
                 <%= chatting && friends.includes(chatting) ? chatting : 'Destinataire' %>
               </span>
             </span>
-            <button 
-              class="btn btn-light btn-sm d-md-none text-secondary text-capitalize fw-bold" 
-              type="button" 
-              data-bs-toggle="offcanvas" 
-              data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+            <button class="btn btn-light btn-sm d-md-none text-secondary text-capitalize fw-bold" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
               Chat
               <i class="bi bi-chat-square-text-fill"></i>
             </button>
@@ -76,22 +69,12 @@
                   <div class="cible hidden">
                     <div class="d-flex justify-content-center">
                       <div>
-                        <button 
-                          type="button" 
-                          class="btn btn-success btn-sm" 
-                          data-bs-toggle="modal" 
-                          data-bs-target="#editMessageModal<%= message._id %>"
-                        >
+                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#editMessageModal<%= message._id %>">
                           <i class="bi bi-pencil-square"></i>
                         </button>
                       </div>
                       <div>
-                        <button 
-                          type="button" 
-                          class="btn btn-danger btn-sm ms-2" 
-                          data-bs-toggle="modal" 
-                          data-bs-target="#deleteMessageModal<%= message._id %>"
-                        >
+                        <button type="button" class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#deleteMessageModal<%= message._id %>">
                           <i class='bi bi-trash'></i>
                         </button>
                       </div>
@@ -102,12 +85,7 @@
                 <div class="d-flex fs-5 bg-info-light align-items-center ps-2 gap-2">
                   <div class="d-flex justify-content-start align-items-center "> 
                     <div class="cible hidden">
-                      <button 
-                        type="button" 
-                        class="btn btn-danger btn-sm ms-2" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#deleteMessageModal<%= message._id %>"
-                      >
+                      <button type="button" class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#deleteMessageModal<%= message._id %>">
                         <i class='bi bi-trash'></i>
                       </button>
                     </div>
@@ -140,7 +118,7 @@
     <div id="modalsContainer"></div>
     <%- include('./partials/modalMessage'); %>
     <%- include('./partials/offcanvas'); %>
-    <script> var userPseudo = "<%=  user.pseudo.toLowerCase() %>"; </script>
+    <script> var userPseudo = "<%= user.pseudo.toLowerCase() %>"; </script>
     <script src="/public/js/dialogue.js"></script>
     <script src="/socket.io/socket.io.js"></script>
   </body>
