@@ -36,14 +36,32 @@ app.use('/public', express.static('public'));
 io.use(sharedSession(sessionMiddleware, { autoSave: true }));
 
 // Socket.IO: Écouter connexions
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   const user = socket.handshake.session.user;
   const chattingWith = socket.handshake.session.chatting;
 
   if (user) {
-    console.log(`${user.pseudo} in message-box with ${chattingWith}`);
+    console.log(`${user.pseudo} a ouvert le chat pour : ${chattingWith}`);
     socket.join(`${user.pseudo}-${chattingWith}`);
     socket.join(`${chattingWith}-${user.pseudo}`);
+
+    // Afficher message archivés par destinataire
+    try {
+      const friend = await Friend.findOne({
+        $or: [
+          { adder: user.pseudo, asked: chattingWith },
+          { adder: chattingWith, asked: user.pseudo }
+        ]
+      });
+      if (friend) {
+        if (friend.chat.length === 1) {
+          friend.chat.push(chattingWith); 
+          await friend.save();
+        }
+      }
+    } catch (err) {
+      console.error('Error finding or updating friend:', err);
+    }
 
     // Écouter messages
     socket.on('sendText', ({ text, destinataire }) => {
@@ -75,7 +93,7 @@ io.on('connection', (socket) => {
   }
 });
 
-// Confirm message
+// Message d'alerte
 app.use((req, res, next) => {
   res.locals.confirm = req.session.confirm;
   res.locals.alertType = req.session.alertType;
@@ -84,7 +102,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Make available for all
+// Rendre disponible pour tous
 const makeAvailable = async (req, res, next) => {
   try {
     const user = req.session.user;
@@ -98,27 +116,27 @@ const makeAvailable = async (req, res, next) => {
       userPublicList = await User.find();
       const allFriends = await Friend.find();
 
-      // Filter and push for confirmed friends
+      // Filtre tous les utilisateurs amis
       friends = allFriends.filter(friend => {
         return friend.confirm === true &&
               (friend.adder === user.pseudo || friend.asked === user.pseudo);
       });
 
-      // Filter user who is chatting
+      // Filtrer utilisateur qui chattent avec user.pseudo
       chats = friends.filter(friend => friend.chat && friend.chat.includes(user.pseudo));
-
-      // Map the friends to get only the pseudo values
+      
+      // Garde "adder/asker" different de user.pseudo => crée liste amis
       friends = friends.map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
 
-      // Map the chats to get only the pseudo values
+      // Garde "adder/asker" different de user.pseudo => crée liste amis
       chats = chats.map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
 
-      // Filter demandes reçues
+      // Filtre demandes reçues
       friendsReceived = allFriends
         .filter(friend => friend.confirm === false && friend.asked === user.pseudo)
         .map(friend => friend.adder);
 
-      // Filter demandes envoyées
+      // Filtre demandes envoyées
       friendsSend = allFriends
         .filter(friend => friend.confirm === false && friend.adder === user.pseudo)
         .map(friend => friend.asked);
@@ -140,30 +158,29 @@ const makeAvailable = async (req, res, next) => {
 
     next();
   } catch (err) {
-    console.error("Erreur lors de la récupération des thèmes et de l'utilisateur :", err);
-    res.render("error", { message: "Erreur lors de la récupération des thèmes et de l'utilisateur" });
+    console.error("Erreur => makeAvaible :", err);
+    res.render("error", { message: "Erreur => makeAvaible" });
   }
 };
 
 app.use(makeAvailable);
 
-
 //---------------------------------------ROOTS---------------------------------------//
 
-// GET HOME
+// Index
 app.get('/', (req, res) => {
   const user = req.session.user;
   const heure = moment().format('DD-MM-YYYY, h:mm:ss');
-  res.render('home', { user: user, heure: heure, userPublic: res.locals.userPublic, });
+  res.render('home', { user: user, heure: heure });
 });
 
-// GET REGISTER
+// Get register
 app.get('/register', (req, res) => {
   const user = req.session.user;
   res.render('RegisterForm', { user: user });
 });
 
-// POST REGISTER
+// Post register
 app.post('/register', function (req, res) {
   const userData = new User({
     pseudo: req.body.pseudo,
@@ -176,13 +193,13 @@ app.post('/register', function (req, res) {
     .catch((err) => { console.log(err); });
 });
 
-// GET LOGIN
+// Get login
 app.get('/login', (req, res) => {
   const user = req.session.user;
   res.render('LoginForm', { user: user });
 });
 
-// POST LOGIN
+// Post login
 app.post('/login', (req, res) => {
   User.findOne({ pseudo: req.body.pseudo }).then(user => {
     if (!user) { res.send('Pseudo invalide'); }
@@ -195,7 +212,7 @@ app.post('/login', (req, res) => {
     .catch(err => console.log(err));
 });
 
-// GET LOGOUT
+// Get logout
 app.get('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) { console.log(err); }
@@ -203,20 +220,16 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// GET USER PAGE
+// Get userpage
 app.get('/userpage', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
-  // Utilisation de la variable res.locals.chats
   const user = req.session.user;
   const friends = res.locals.friends;
   const friendsReceived = res.locals.friendsReceived;
   const friendsSend = res.locals.friendsSend;
   const chats = res.locals.chats; 
-
-  console.log(chats); 
-
   res.render('userpage', {
     user: res.locals.user,
     contacts: res.locals.contacts,
@@ -235,74 +248,46 @@ app.post('/chat', async (req, res) => {
   try {
     const user = req.session.user;
     const destinataire = req.body.destinataire;
-
-    // Trouver une relation d'amitié entre les deux utilisateurs
-    const friend = await Friend.findOne({
+    // Cibler friend
+    const friend = await Friend.findOne({ 
       $or: [
         { adder: user.pseudo, asked: destinataire },
         { adder: destinataire, asked: user.pseudo }
       ]
     });
-
-    // Si une relation existe, mettre à jour la propriété 'chat' du document
-    if (friend) {
-      if (!friend.chat.includes(user.pseudo)) {
-        friend.chat.push(user.pseudo);
-      }
-      if (!friend.chat.includes(destinataire)) {
-        friend.chat.push(destinataire);
-      }
-      await friend.save();
-    } else {
-      // Si aucune relation n'existe, créer une nouvelle relation d'amitié avec le chat initialisé
-      await Friend.create({
-        adder: user.pseudo,
-        asked: destinataire,
-        confirm: true, // Vous pouvez ajuster cette valeur selon vos besoins
-        chat: [user.pseudo, destinataire]
-      });
-    }
-
+    // Si friend.chat ne contient pas les 2 pseudos
+    if (!friend.chat || friend.chat.length < 2 ){
+      await Friend.updateOne(
+        { _id: friend._id },
+        { chat: [user.pseudo,destinataire]}
+    )}
     res.redirect(`/dialogue/${destinataire}`);
-  } catch (err) {
-    console.log(err);
-    res.redirect('/error');
-  }
+  } 
+  catch (err) { console.log(err); res.redirect('/error');}
 });
 
-// Archive
+// Archiver discussion 
 app.post('/archive', async (req, res) => {
   try {
     const user = req.session.user;
     const destinataire = req.body.destinataire;
-    console.log(destinataire+"'s messages archived by "+user.pseudo);
-
-    // Trouver une relation d'amitié entre les deux utilisateurs
+    console.log(`${user.pseudo} a archivé son chat avec : ${destinataire}`);
+    // Cibler friend
     const friend = await Friend.findOne({
       $or: [
         { adder: user.pseudo, asked: destinataire },
         { adder: destinataire, asked: user.pseudo }
       ]
     });
-
-    // Vérifier si la relation d'amitié existe
-    if (!friend) { return res.status(404).send('Friend 404'); }
-
-    // Retirer l'utilisateur du tableau chat
+    // Retirer user.pseudo du tableau
     friend.chat = friend.chat.filter(data => data !== user.pseudo);
-
-    // Sauvegarder les modifications
-    await friend.save();
-
-    res.redirect(`/dialogue/${destinataire}`);
-  } catch (err) {
-    console.log(err);
-    res.redirect('/error');
-  }
+    await friend.save(); 
+    res.redirect(`/userpage`);
+  } 
+  catch (err) { console.log(err); res.redirect('/error'); }
 });
 
-
-// ADD FRIEND PAGE
+// get addfriend
 app.get('/addfriend', (req, res) => {
   if (!req.session.user){ return res.redirect('/login'); }
   res.render('AddFriend', {
@@ -315,7 +300,7 @@ app.get('/addfriend', (req, res) => {
   });
 });
 
-// SEND FRIEND REQUEST
+// Post sendrequest
 app.post('/sendrequest', (req, res) => {
   if (!req.session.user){ return res.redirect('/login'); }
   const adder = req.body.adder;
@@ -323,34 +308,31 @@ app.post('/sendrequest', (req, res) => {
   if (adder && asked) {
     const addFriend = new Friend({adder: adder, asked: asked});
     addFriend.save()
-      .then(() => {
-        req.session.confirm = `Demande d'ami envoyée à ${asked}`;
-        req.session.alertType = 'success';
-        res.redirect('/addfriend');
-      })
-      .catch((err) => { console.log(err); });
+    .then(() => {
+      req.session.confirm = `Demande d'ami envoyée à ${asked}`;
+      req.session.alertType = 'success';
+      res.redirect('/addfriend');
+    })
+    .catch((err) => { console.log(err); });
   }
 });
 
-// AGREE
+// Post agree
 app.post('/agree', (req, res) => {
   if (!req.session.user){ return res.redirect('/login'); }
   const user = req.session.user;
   const adder = req.body.adder;
   const asked = user.pseudo;
   Friend.findOneAndUpdate({ adder, asked, confirm: false }, { confirm: true })
-    .then(() => {
-      req.session.confirm = `Vous avez accepté : ${adder}`;
-      req.session.alertType = 'success';
-      res.redirect('/addfriend');
-    })
-    .catch(err => {
-      console.log(err);
-      res.redirect('/error');
-    });
+  .then(() => {
+    req.session.confirm = `Vous avez accepté : ${adder}`;
+    req.session.alertType = 'success';
+    res.redirect('/addfriend');
+  })
+  .catch(err => { console.log(err); res.redirect('/error'); });
 });
 
-// DISAGREE DELETED
+// Post remove or decline
 app.post('/remove/:element', (req, res) => {
   if (!req.session.user){ return res.redirect('/login'); }
   const element = req.params.element;
@@ -360,89 +342,50 @@ app.post('/remove/:element', (req, res) => {
   const user = req.session.user;
   const adder = req.body.adder;
   const asked = user.pseudo;
-
   Friend.findOneAndRemove({
     $or: [
       { adder, asked },
       { adder: asked, asked: adder }
     ]
   })
-    .then(() => {
-      req.session.confirm = `Vous avez ${action} ${adder}`;
-      req.session.alertType = 'danger';
-      res.redirect(`/addfriend`);
-    })
-    .catch(err => {
-      console.log(err);
-      res.redirect('/error');
-    });
+  .then(() => {
+    req.session.confirm = `Vous avez ${action} ${adder}`;
+    req.session.alertType = 'danger';
+    res.redirect(`/addfriend`);
+  })
+  .catch(err => { console.log(err); res.redirect('/error');});
 });
 
-// GET DIALOGUE
-app.get('/dialogue/:chatting', (req, res) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
+// Get dialogue
+app.get('/dialogue/:chatting', async (req, res) => {
+  if (!req.session.user){ return res.redirect('/login'); }
   const user = req.session.user;
   const chatting = req.params.chatting;
   const friends = res.locals.friends;
   const friendsAsk = res.locals.friendsAsk;
   const chats = res.locals.chats;
-
   // Mettre à jour la session chatting
   req.session.chatting = chatting;
   res.locals.chatting = chatting;
-
-  Message.find({
-    $or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
-  }).then(messages => {
+  try {
+    // Traitement des messages
+    const messages = await Message.find({
+      $or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
+    });
     const heure = moment().format('h:mm:ss');
-    const messagesFilter = messages.filter(
-      message => (message.expediteur === user.pseudo && message.destinataire === chatting) ||
-        (message.destinataire === user.pseudo && message.expediteur === chatting)
+    const messagesFilter = messages.filter( message => 
+      (message.expediteur === user.pseudo && message.destinataire === chatting) ||
+      (message.destinataire === user.pseudo && message.expediteur === chatting)
     );
     res.render('Dialogue', {
-      messagesFilter: messagesFilter,
-      heure: heure,
-      user: user,
-      chatting,
-      friends,
-      friendsAsk,
-      chats,
+      messagesFilter: messagesFilter, heure: heure, 
+      user: user, chatting, friends, friendsAsk, chats,
     });
-  }).catch(err => {
-    console.log(err);
-  });
+  } 
+  catch (err) { console.log(err); res.redirect('/error');}
 });
 
-// GET NEW MESSAGE
-app.get('/message/new', (req, res) => {
-  if (!req.session.user) { return res.redirect('/login'); }
-  const user = req.session.user;
-  const heure = moment().format('h:mm:ss');
-  res.render('messageForm', { user: user, heure: heure });
-});
-
-// POST NEW MESSAGE
-app.post('/message', (req, res) => {
-  if (!req.session.user) { return res.redirect('/login'); }
-  const user = req.session.user;
-  const heure = moment().format('h:mm:ss');
-  const messageData = new Message({
-    expediteur: user.pseudo,
-    destinataire: req.body.destinataire,
-    message: req.body.message,
-    datetime: heure
-  });
-  messageData.save()
-    .then(() => res.redirect(`/dialogue/${req.body.destinataire}`))
-    .catch(err => {
-      console.log(err);
-    });
-});
-
-// GET EDIT PAGE
+// Put message
 app.put('/edit-message/:id', (req, res) => {
   const heure = moment().format('h:mm:ss');
   const messageData = {
@@ -451,11 +394,11 @@ app.put('/edit-message/:id', (req, res) => {
     datetime: heure
   };
   Message.findByIdAndUpdate(req.params.id, messageData)
-    .then(() => { res.redirect(`/dialogue/${req.body.destinataire}`); })
-    .catch(err => { console.log(err); });
+  .then(() => { res.redirect(`/dialogue/${req.body.destinataire}`); })
+  .catch(err => { console.log(err); });
 });
 
-// DELETE MESSAGE
+// Delete message
 app.delete('/delete-message/:messageId', (req, res) => {
   const messageId = req.params.messageId;
   Message.findById(messageId)
@@ -467,18 +410,10 @@ app.delete('/delete-message/:messageId', (req, res) => {
     if (destinataire === user.pseudo){ redirection = expediteur;}
     else { redirection = destinataire;};
     Message.findByIdAndRemove(messageId)
-    .then(() => {
-      res.redirect(`/dialogue/${redirection}`);
-    })
-    .catch(err => {
-      console.log(err);
-      // Ou rediriger 404
-      res.redirect('/'); 
-    });
+    .then(() => {res.redirect(`/dialogue/${redirection}`);})
+    .catch(err => { console.log(err); res.redirect('/'); });
   })
-  .catch(error => {
-    console.error('Erreur lors de la récupération du destinataire :', error);
-  });
+  .catch(error => { console.error('Erreur destinataire :', error); });
 });
 
 const PORT = 5001;
