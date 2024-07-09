@@ -2,11 +2,19 @@
   Chats :
 </p>
 <% chats.forEach(friend => { %>
-  <a 
-    href="/dialogue/<%= friend %>" 
-    class="text-decoration-none text-capitalize fw-bold fs-5 m-0 p-0
-    <%= chatting === friend ? 'text-info' : 'text-secondary' %>"
-  >
-    <%= friend %><br>
-  </a>
+  <div class="d-flex justify-content-center align-items-center gap-2">
+    <a 
+      href="/dialogue/<%= friend %>" 
+      class="text-decoration-none text-capitalize fw-bold fs-5 m-0 p-0
+      <%= chatting === friend ? 'text-info' : 'text-secondary' %>"
+    >
+      <%= friend %><br>
+    </a>
+    <form action="/archive" method="POST" class="m-0 p-0">
+      <input type="hidden" name="destinataire" value="<%= friend %>"/>
+      <button type="submit" class="btn btn-link p-0 m-0">
+        <i class="bi bi-eye-slash-fill text-white-50"></i>
+      </button>
+    </form>    
+  </div>
 <% }); %>

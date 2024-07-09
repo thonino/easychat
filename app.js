@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
   const chattingWith = socket.handshake.session.chatting;
 
   if (user) {
-    console.log(`${user.pseudo} est connecté à ${chattingWith}`);
+    console.log(`${user.pseudo} in message-box with ${chattingWith}`);
     socket.join(`${user.pseudo}-${chattingWith}`);
     socket.join(`${chattingWith}-${user.pseudo}`);
 
@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-      console.log(`${user.pseudo} s'est déconnecté`);
+      console.log(`${user.pseudo} : logout`);
     });
   }
 });
@@ -270,6 +270,37 @@ app.post('/chat', async (req, res) => {
   }
 });
 
+// Archive
+app.post('/archive', async (req, res) => {
+  try {
+    const user = req.session.user;
+    const destinataire = req.body.destinataire;
+    console.log(destinataire+"'s messages archived by "+user.pseudo);
+
+    // Trouver une relation d'amitié entre les deux utilisateurs
+    const friend = await Friend.findOne({
+      $or: [
+        { adder: user.pseudo, asked: destinataire },
+        { adder: destinataire, asked: user.pseudo }
+      ]
+    });
+
+    // Vérifier si la relation d'amitié existe
+    if (!friend) { return res.status(404).send('Friend 404'); }
+
+    // Retirer l'utilisateur du tableau chat
+    friend.chat = friend.chat.filter(data => data !== user.pseudo);
+
+    // Sauvegarder les modifications
+    await friend.save();
+
+    res.redirect(`/dialogue/${destinataire}`);
+  } catch (err) {
+    console.log(err);
+    res.redirect('/error');
+  }
+});
+
 
 // ADD FRIEND PAGE
 app.get('/addfriend', (req, res) => {
@@ -449,40 +480,6 @@ app.delete('/delete-message/:messageId', (req, res) => {
     console.error('Erreur lors de la récupération du destinataire :', error);
   });
 });
-
-// Socket.IO: Écouter connexions 
-// io.on('connection', (socket) => {
-//   const user = socket.handshake.session.user;
-//   if (user) {
-//     console.log(user.pseudo + ' est connecté');
-//     // Écouter messages
-//     socket.on('sendText', ({ text, destinataire }) => {
-//       const heure = moment().format('h:mm:ss');
-//       const newMessage = new Message({
-//         expediteur: user.pseudo,
-//         destinataire: destinataire,
-//         message: text,
-//         datetime: heure
-//       });
-//       newMessage.save()
-//         .then((savedMessage) => {  // Accéder au message 
-        
-//           console.log(`Send : ${text} from ${user.pseudo} to ${destinataire}`);  // Log pour debug
-//           io.emit('receiveText', { 
-//             id: savedMessage._id,  
-//             pseudo: user.pseudo, 
-//             text: text, 
-//             destinataire: destinataire, 
-//             datetime: heure 
-//           });
-//         })
-//         .catch(err => console.log(err));
-//     });
-//     socket.on('disconnect', () => {
-//       console.log('Un utilisateur s\'est déconnecté');
-//     });
-//   }
-// });
 
 const PORT = 5001;
 server.listen(PORT, () => {
