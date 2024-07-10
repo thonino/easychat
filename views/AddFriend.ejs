@@ -56,27 +56,31 @@
         <h1 class="text-center text-secondary my-2 fw-bold">Ajouter des amis !</h1>
         <!-- Gestion statut -->
         <div class="d-flex justify-content-center mt-2">
-          <div class="dropdown w-50">
+          <div class="dropdown ">
             <button 
               class="btn btn-light dropdown-toggle fw-bold text-secondary w-100" 
               type="button" 
               data-bs-toggle="dropdown" 
               aria-expanded="false"
             >
-              Mon Statut <span class="text-success"> ( visible )</span>
+              Mon Statut <span class="<%= color %>"> ( <%= state %> )</span>
             </button>
-            <ul class="dropdown-menu w-100 text-center">
-              <li><a class="dropdown-item text-success" href="#">Public</a></li>
-              <li><a class="dropdown-item text-danger" href="#">Privé</a></li>
-            </ul>
+            <div class="dropdown-menu w-100 text-center">
+              <form action="/status" method="POST">
+                <input type="hidden" name="status" value="true"/>
+                <button class="dropdown-item text-success fw-bold" type="submit" > Visible</button></form>
+              <form action="/status" method="POST">
+                <input type="hidden" name="status" value="false"/>
+                <button class="dropdown-item text-danger fw-bold" type="submit" > Invisible</button></form>
+            </div>
           </div>
         </div>
         <!-- Demandes reçues -->
         <div>
           <p class="text-center fw-bold text-warning-dark mt-4 fs-4">Demandes reçues :</p>
           <% friendsReceived.forEach(data => { %>
-            <div class="container d-flex justify-content-between bg-warning-light py-1 mt-1">
-              <div class="d-flex fw-bold text-secondary fs-5 gap-2 align-items-center">
+            <div class="d-flex justify-content-center bg-warning-light py-1 mt-1">
+              <div class="fw-bold text-secondary fs-5 gap-2" style="width: 200px;">
                 <span class="cursor-default">
                   <i class="bi bi-person-fill text-light btn bg-warning-dark btn-sm cursor-default px-1 py-1"></i>
                 </span>
@@ -103,8 +107,8 @@
         <div>
           <p class="text-center fw-bold text-secondary mt-4 fs-4">Demandes envoyées :</p>
           <% friendsSend.forEach(data => { %>
-            <div class="container d-flex justify-content-between bg-primary-light py-1 mt-1">
-              <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2">
+            <div class="d-flex justify-content-center bg-primary-light py-1 mt-1">
+              <div class="fw-bold text-secondary fs-5 gap-2" >
                 <span class="cursor-default">
                   <i class="bi bi-person-fill text-light btn bg-primary btn-sm cursor-default px-1 py-1"></i>
                 </span>
@@ -117,8 +121,8 @@
         <div>
           <p class="text-center fw-bold text-success mt-4 fs-4">Utilisateurs disponibles :</p>
           <% userPublicList.forEach(data => { %>
-            <div class="container d-flex justify-content-between bg-success-light py-1 mt-1">
-              <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2">
+            <div class="d-flex justify-content-center bg-success-light py-1 mt-1">
+              <div class="fw-bold text-secondary fs-5 gap-2" style="width: 200px;">
                 <span class="cursor-default">
                   <i class="bi bi-person-fill text-light btn bg-success btn-sm cursor-default px-1 py-1"></i>
                 </span>

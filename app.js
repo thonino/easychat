@@ -118,6 +118,7 @@ const makeAvailable = async (req, res, next) => {
 
     if (user) {
       userPublicList = await User.find();
+      
       const allFriends = await Friend.find();
 
       // Filtre tous les utilisateurs amis
@@ -145,8 +146,8 @@ const makeAvailable = async (req, res, next) => {
         .filter(friend => friend.confirm === false && friend.adder === user.pseudo)
         .map(friend => friend.asked);
 
-      // Trier les utilisateurs disponibles par pseudo
-      userPublicList = userPublicList.sort((a, b) => a.pseudo.localeCompare(b.pseudo));
+      // Filtrer les utilisateurs disponibles par pseudo
+      userPublicList = userPublicList.filter(data => data.status === true);
       userPublicList = userPublicList.filter(data => !friends.includes(data.pseudo));
       userPublicList = userPublicList.filter(data => !friendsReceived.includes(data.pseudo));
       userPublicList = userPublicList.filter(data => !friendsSend.includes(data.pseudo));
@@ -303,11 +304,17 @@ app.post('/archive', async (req, res) => {
   catch (err) { console.log(err); res.redirect('/error'); }
 });
 
-// get addfriend
+// Get addfriend
 app.get('/addfriend', (req, res) => {
-  if (!req.session.user){ return res.redirect('/login'); }
+  if (!req.session.user) { return res.redirect('/login'); }
+  const user = req.session.user;
+  const status = user.status; 
+  let state; let color;
+  // Déterminer l'état en fonction du statut
+  if (status === true) { state = "visible";  color = "text-success" } 
+  else { state = "invisible";  color = "text-danger" }
   res.render('AddFriend', {
-    user: res.locals.user,
+    user, status, state, color,
     userPublicList: res.locals.userPublicList,
     chatting: res.locals.chatting,
     friends: res.locals.friends,
@@ -315,6 +322,33 @@ app.get('/addfriend', (req, res) => {
     chats: res.locals.chats,
   });
 });
+
+// Post status
+app.post('/status', (req, res) => {
+  if (!req.session.user) { return res.redirect('/login'); }
+  const user = req.session.user;
+  const status = req.body.status;
+  let state;
+  // Convertir le statut en booléen
+  if (status === "true") { state = true; } 
+  else if (status === "false") { state = false; }
+  User.findOneAndUpdate(
+    { _id: user._id }, // Cibler user
+    { status: state }, // Mettre à jour status
+    { new: true } // Retourner le document
+  )
+  .then((updatedUser) => {
+    console.log("Le statut de ",user.pseudo, ' devient: ',state);
+    // Mettre à jour la session user
+    req.session.user = updatedUser;
+    res.redirect('/addfriend');
+  })
+  .catch((err) => {
+    console.error('Erreur de mise à jour:', err);
+    res.redirect('/error');
+  });
+});
+
 
 // Post sendrequest
 app.post('/sendrequest', (req, res) => {
