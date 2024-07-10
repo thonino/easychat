@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand navbar-dark bg-info fixed-top px-2 m-0 p-0">
-  <a class="navbar-brand fw-bold" href="/userpage">EasyChat</a>
+  <a class="navbar-brand fw-bold text-dark-75" href="/userpage">EasyChat</a>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ms-auto gap-2">
       <% if (!user) { %>
@@ -10,9 +10,16 @@
           <a class="text-black-50 fw-bold underline" href="/login">Connexion</a>
         </li>
       <% } else { %>
+
+        <li class="nav-item">
+          <span class="text-dark-75 fw-bold text-capitalize">
+            <i class="bi bi-person-circle"><%= user.pseudo  %></i>
+            
+          </span>
+        </li>
         <li class="nav-item">
           <a class="text-black-50 fw-bold underline" href="/logout">
-            Logout
+            Déconnexion
           </a>
         </li>
       <% } %>
