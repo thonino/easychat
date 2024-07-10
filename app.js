@@ -40,47 +40,51 @@ io.on('connection', async (socket) => {
   const user = socket.handshake.session.user;
   const chattingWith = socket.handshake.session.chatting;
 
+
   if (user) {
     console.log(`${user.pseudo} a ouvert le chat pour : ${chattingWith}`);
-    socket.join(`${user.pseudo}-${chattingWith}`);
-    socket.join(`${chattingWith}-${user.pseudo}`);
 
-    // Afficher message archivés par destinataire
-    try {
-      const friend = await Friend.findOne({
-        $or: [
-          { adder: user.pseudo, asked: chattingWith },
-          { adder: chattingWith, asked: user.pseudo }
-        ]
-      });
-      if (friend) {
-        if (friend.chat.length === 1) {
-          friend.chat.push(chattingWith); 
-          await friend.save();
-        }
-      }
-    } catch (err) {
-      console.error('Error finding or updating friend:', err);
-    }
+    // Joindre les salles de chat avec les noms d'utilisateur en minuscules
+    const room1 = `${user.pseudo.toLowerCase()}-${chattingWith.toLowerCase()}`;
+    const room2 = `${chattingWith.toLowerCase()}-${user.pseudo.toLowerCase()}`;
+    socket.join(room1);
+    socket.join(room2);
+
+    // Afficher message dans le chat du destinataire
+    // try {
+    //   const friend = await Friend.findOne({
+    //     $or: [
+    //       { adder: user.pseudo, asked: chattingWith },
+    //       { adder: chattingWith, asked: user.pseudo }
+    //     ]
+    //   });
+    //   if (friend) {
+    //     if (friend.chat.length === 1) {
+    //       friend.chat.push(chattingWith);
+    //       await friend.save();
+    //     }
+    //   }
+    // } catch (err) {
+    //   console.error('Error finding or updating friend:', err);
+    // }
 
     // Écouter messages
     socket.on('sendText', ({ text, destinataire }) => {
       const heure = moment().format('h:mm:ss');
       const newMessage = new Message({
-        expediteur: user.pseudo,
-        destinataire: destinataire,
+        expediteur: user.pseudo.toLowerCase(),
+        destinataire: chattingWith.toLowerCase(),
         message: text,
         datetime: heure
       });
-
       newMessage.save()
         .then((savedMessage) => {
-          console.log(`Send : ${text} from ${user.pseudo} to ${destinataire}`);  // Log pour debug
-          io.to(`${user.pseudo}-${destinataire}`).to(`${destinataire}-${user.pseudo}`).emit('receiveText', {
+          console.log(`Send : ${newMessage.text} from ${newMessage.expediteur} to ${newMessage.destinataire}`);  // Log pour debug
+          io.to(`${newMessage.expediteur}-${newMessage.destinataire}`).to(`${newMessage.destinataire}-${newMessage.expediteur}`).emit('receiveText', {
             id: savedMessage._id,
-            pseudo: user.pseudo,
+            pseudo: newMessage.expediteur,
             text: text,
-            destinataire: destinataire,
+            destinataire: newMessage.destinataire,
             datetime: heure
           });
         })
@@ -92,6 +96,7 @@ io.on('connection', async (socket) => {
     });
   }
 });
+
 
 // Message d'alerte
 app.use((req, res, next) => {
@@ -248,23 +253,35 @@ app.post('/chat', async (req, res) => {
   try {
     const user = req.session.user;
     const destinataire = req.body.destinataire;
+
     // Cibler friend
-    const friend = await Friend.findOne({ 
+    const friend = await Friend.findOne({
       $or: [
         { adder: user.pseudo, asked: destinataire },
         { adder: destinataire, asked: user.pseudo }
       ]
     });
-    // Si friend.chat ne contient pas les 2 pseudos
-    if (!friend.chat || friend.chat.length < 2 ){
-      await Friend.updateOne(
-        { _id: friend._id },
-        { chat: [user.pseudo,destinataire]}
-    )}
+
+    // Initialiser le tableau chat s'il n'existe pas
+    if (!friend.chat) {
+      friend.chat = [];
+    }
+
+    // Ajouter user.pseudo si nécessaire
+    if (!friend.chat.includes(user.pseudo) && friend.chat.length < 2) {
+      friend.chat.push(user.pseudo);
+    }
+
+    // Sauvegarder les modifications
+    await friend.save();
+
     res.redirect(`/dialogue/${destinataire}`);
-  } 
-  catch (err) { console.log(err); res.redirect('/error');}
+  } catch (err) {
+    console.log(err);
+    res.redirect('/error');
+  }
 });
+
 
 // Archiver discussion 
 app.post('/archive', async (req, res) => {
