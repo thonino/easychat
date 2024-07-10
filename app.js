@@ -97,6 +97,16 @@ io.on('connection', (socket) => {
   }
 });
 
+
+// SESSION CHATTING
+app.use((req, res, next) => {
+  if (req.params && req.params.chatting) {
+    req.session.chatting = req.params.chatting;
+  }
+  res.locals.chatting = req.session.chatting;
+  next();
+});
+
 // Message d'alerte
 app.use((req, res, next) => {
   res.locals.confirm = req.session.confirm;
