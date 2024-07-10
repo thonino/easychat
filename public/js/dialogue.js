@@ -7,8 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
       setting.classList.toggle("hidden");
     })
   });
+  // 
 
-  // Socket.io setup : with appendChild() and createElement()
+// Socket.io setup 
 const socket = io({
   query: {
     destinataire: document.querySelector('input[name="destinataire"]').value
@@ -19,14 +20,20 @@ const textInput = document.getElementById('textInput');
 const sendButton = document.getElementById('sendButton');
 const messageBox = document.getElementById('messageBox');
 
-console.log("Current user:", userPseudo); // Log current user for debugging
+console.log("Utilisateur actuel: ", userPseudo); 
 
 sendButton.addEventListener('click', (e) => {
   e.preventDefault();
-  const text = textInput.value;
   const destinataireElement = document.querySelector('input[name="destinataire"]');
   const destinataire = destinataireElement.value.toLowerCase();
-  console.log('Sending message:', { text, destinataire }); // Log the message being sent
+  const text = textInput.value; 
+  const texTrim = text.trim(); 
+
+  // Vérification côté client
+  if (texTrim === '') { alert('Le champ ne peut pas être vide'); return; 
+  }
+
+  console.log('Envoie du message: ', { text, destinataire }); 
   socket.emit('sendText', { text, destinataire });
   textInput.value = '';
 });
@@ -37,20 +44,19 @@ socket.on('receiveText', (data) => {
   const isCurrentDestinataire = data.destinataire.toLowerCase() === userPseudo;
   const isChattingWith = document.querySelector('input[name="destinataire"]').value.toLowerCase() === data.pseudo.toLowerCase();
 
-  console.log('isCurrentUser:', isCurrentUser, 'isCurrentDestinataire:', isCurrentDestinataire, 'isChattingWith:', isChattingWith);  // Log comparison results
+  console.log(
+    'isCurrentUser: ', isCurrentUser, 
+    'isCurrentDestinataire: ', isCurrentDestinataire, 
+    'isChattingWith: ', isChattingWith
+  );  
 
   if (!data.id) {
     console.error('Message ID is missing:', data); // Log if _id is missing
     return; // Don't proceed if the ID is missing
   }
 
-  // Afficher uniquement si les conditions sont remplies
-  if (!isCurrentUser && !isCurrentDestinataire && !isChattingWith) {
-    return; // Ne pas afficher le message si l'utilisateur n'est pas dans la bonne boîte de dialogue
-  }
-
-
-
+  // Uniquement user a ouvert l chat
+  if (!isCurrentUser && !isCurrentDestinataire && !isChattingWith) {  return;   }
 
     const messageWrapper = document.createElement('div');
     messageWrapper.classList.add('text-center', 'fw-bold', 'fst-italic');

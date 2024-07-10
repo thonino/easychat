@@ -24,7 +24,9 @@ const sessionMiddleware = session({
   cookie: { secure: false }
 });
 
-mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(
+  process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true }
+)
   .then(() => { console.log("MongoDB connected"); })
   .catch(err => { console.log(err); });
 
@@ -36,40 +38,18 @@ app.use('/public', express.static('public'));
 io.use(sharedSession(sessionMiddleware, { autoSave: true }));
 
 // Socket.IO: Écouter connexions
-io.on('connection', async (socket) => {
+io.on('connection', (socket) => {
   const user = socket.handshake.session.user;
   const chattingWith = socket.handshake.session.chatting;
-
-
   if (user) {
     console.log(`${user.pseudo} a ouvert le chat pour : ${chattingWith}`);
-
     // Joindre les salles de chat avec les noms d'utilisateur en minuscules
     const room1 = `${user.pseudo.toLowerCase()}-${chattingWith.toLowerCase()}`;
     const room2 = `${chattingWith.toLowerCase()}-${user.pseudo.toLowerCase()}`;
     socket.join(room1);
     socket.join(room2);
-
-    // Afficher message dans le chat du destinataire
-    // try {
-    //   const friend = await Friend.findOne({
-    //     $or: [
-    //       { adder: user.pseudo, asked: chattingWith },
-    //       { adder: chattingWith, asked: user.pseudo }
-    //     ]
-    //   });
-    //   if (friend) {
-    //     if (friend.chat.length === 1) {
-    //       friend.chat.push(chattingWith);
-    //       await friend.save();
-    //     }
-    //   }
-    // } catch (err) {
-    //   console.error('Error finding or updating friend:', err);
-    // }
-
     // Écouter messages
-    socket.on('sendText', ({ text, destinataire }) => {
+    socket.on('sendText', async ({ text }) => {
       const heure = moment().format('h:mm:ss');
       const newMessage = new Message({
         expediteur: user.pseudo.toLowerCase(),
@@ -77,26 +57,45 @@ io.on('connection', async (socket) => {
         message: text,
         datetime: heure
       });
-      newMessage.save()
-        .then((savedMessage) => {
-          console.log(`Send : ${newMessage.text} from ${newMessage.expediteur} to ${newMessage.destinataire}`);  // Log pour debug
-          io.to(`${newMessage.expediteur}-${newMessage.destinataire}`).to(`${newMessage.destinataire}-${newMessage.expediteur}`).emit('receiveText', {
+      try {
+        const savedMessage = await newMessage.save();
+        console.log(`
+          Texte: ${newMessage.message} 
+          De: ${newMessage.expediteur} 
+          A: ${newMessage.destinataire}`
+        );
+        // Afficher message dans le chat du destinataire
+        const friend = await Friend.findOne({
+          $or: [
+            { adder: user.pseudo, asked: chattingWith },
+            { adder: chattingWith, asked: user.pseudo }
+          ]
+        });
+        if (friend) {
+          if (friend.chat.length === 1) {
+            friend.chat.push(chattingWith);
+            await friend.save();
+          }
+        }
+        io.to(`${newMessage.expediteur}-${newMessage.destinataire}`)
+          .to(`${newMessage.destinataire}-${newMessage.expediteur}`)
+          .emit('receiveText', {
             id: savedMessage._id,
             pseudo: newMessage.expediteur,
             text: text,
             destinataire: newMessage.destinataire,
             datetime: heure
           });
-        })
-        .catch(err => console.log(err));
+      } catch (err) {
+        console.log(err);
+        console.error("Erreur messaage ou de MAJ friend:", err);
+      }
     });
-
     socket.on('disconnect', () => {
       console.log(`${user.pseudo} : logout`);
     });
   }
 });
-
 
 // Message d'alerte
 app.use((req, res, next) => {
@@ -122,7 +121,7 @@ const makeAvailable = async (req, res, next) => {
       const allFriends = await Friend.find();
 
       // Filtre tous les utilisateurs amis
-      friends = allFriends.filter(friend => {
+      friends = allFriends.filter(friend => { 
         return friend.confirm === true &&
               (friend.adder === user.pseudo || friend.asked === user.pseudo);
       });
