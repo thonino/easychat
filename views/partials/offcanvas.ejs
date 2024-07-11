@@ -7,10 +7,10 @@
   <div class="offcanvas-body">
     <% friends.forEach(friend => { %>
       <a 
-        href="/dialogue/<%= friend %>" 
+        href="/dialogue/<%= friend.pseudo %>" 
         class="text-decoration-none text-capitalize fw-bold fs-5 m-0 p-0
-        <%= chatting === friend ? 'text-info' : 'text-secondary' %>">
-        <%= friend %><br>
+        <%= chatting === friend.pseudo ? 'text-info' : 'text-secondary' %>">
+        <%= friend.pseudo %><br>
       </a>
     <% }); %>
     <div class="link">

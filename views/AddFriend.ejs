@@ -25,15 +25,9 @@
     </div>
     <div class="flex-column align-items-center m-0 p-0">
       <div class="text-center bg-dark-less gap-2 p-1 px-2">
-        <div class="d-flex justify-content-center align-items-center py-2">
+        <div class="d-flex justify-content-between  py-1">
           <!-- Offcanvas toggle -->
-          <div class="d-flex justify-content-between align-items-center text-light">
-            <span class="me-2 fst-italic text-info-light text-capitalize">
-              A : 
-              <span class="text-info fw-bold">
-                <%= chatting && friends.includes(chatting) ? chatting : 'Destinataire' %>
-              </span>
-            </span>
+          <div class="d-flex justify-content-sm-between justify-content-md-center text-light">
             <button 
               class="btn btn-light btn-sm d-md-none text-secondary text-capitalize fw-bold" 
               type="button" 
@@ -43,6 +37,10 @@
               <i class="bi bi-chat-square-text-fill"></i>
             </button>
           </div>
+          <span class="text-secondary btn btn-light btn-sm ">
+            <i class="bi bi-search"></i>
+          </span>
+          <div class="d-none d-md-block"></div>
         </div>
       </div>
       <div class="flex flex-column">
@@ -68,10 +66,10 @@
             <div class="dropdown-menu w-100 text-center">
               <form action="/status" method="POST">
                 <input type="hidden" name="status" value="true"/>
-                <button class="dropdown-item text-success fw-bold" type="submit" > Visible</button></form>
+                <button class="dropdown-item text-success fw-bold" type="submit"> Visible</button></form>
               <form action="/status" method="POST">
                 <input type="hidden" name="status" value="false"/>
-                <button class="dropdown-item text-danger fw-bold" type="submit" > Invisible</button></form>
+                <button class="dropdown-item text-danger fw-bold" type="submit"> Invisible</button></form>
             </div>
           </div>
         </div>
@@ -81,20 +79,22 @@
           <% friendsReceived.forEach(data => { %>
             <div class="d-flex justify-content-center bg-warning-light py-1 mt-1">
               <div class="fw-bold text-secondary fs-5 gap-2" style="width: 200px;">
-                <span class="cursor-default">
-                  <i class="bi bi-person-fill text-light btn bg-warning-dark btn-sm cursor-default px-1 py-1"></i>
-                </span>
-                <span class="text-capitalize"><%= data %></span>
+                  <img 
+                    src="./uploads/<%= data.photo %>" 
+                    class="card-img-top round wh-25" 
+                    alt="photo de profil ami"
+                  >
+                <span class="text-capitalize"><%= data.pseudo %></span>
               </div>
               <div class="d-flex gap-2">
                 <form action="/agree" method="POST">
-                  <input type="hidden" name="adder" value="<%= data %>"/>
+                  <input type="hidden" name="adder" value="<%= data.pseudo %>"/>
                   <button type="submit" class="btn bg-warning-light fst-italic fw-bold px-2 py-1 p-0 m-0">
                     <i class='bi bi-check-circle-fill text-success'> Accepter</i>
                   </button>
                 </form>
                 <form action="/remove/disagree" method="POST">
-                  <input type="hidden" name="adder" value="<%= data %>"/>
+                  <input type="hidden" name="adder" value="<%= data.pseudo %>"/>
                   <button type="submit" class="btn bg-warning-light fst-italic fw-bold px-2 py-1 p-0 m-0">
                     <i class="bi bi-x-circle-fill text-danger"> Refuser</i>
                   </button>
@@ -108,12 +108,21 @@
           <p class="text-center fw-bold text-secondary mt-4 fs-4">Demandes envoyées :</p>
           <% friendsSend.forEach(data => { %>
             <div class="d-flex justify-content-center bg-primary-light py-1 mt-1">
-              <div class="fw-bold text-secondary fs-5 gap-2" >
-                <span class="cursor-default">
-                  <i class="bi bi-person-fill text-light btn bg-primary btn-sm cursor-default px-1 py-1"></i>
-                </span>
-                <span class="text-capitalize"><%= data %></span>
+              <div class="fw-bold text-secondary fs-5 gap-2" style="width: 200px;">
+                  <img 
+                    src="./uploads/<%= data.photo %>" 
+                    class="card-img-top round wh-25" 
+                    alt="photo de profil ami"
+                  >
+                <span class="text-capitalize"><%= data.pseudo %></span>
               </div>
+              <form action="/cancelrequest" method="POST" >
+                <input type="hidden" name="adder" value="<%= user.pseudo %>"/>
+                <input type="hidden" name="asked" value="<%= data.pseudo %>"/>
+                <button class="btn px-2 fst-italic" type="submit">
+                  <i class="bi bi-plus-circle-fill text-secondary fw-bold"> Annuler</i>
+                </button>
+              </form>
             </div>
           <% }); %> 
         </div>   
@@ -123,9 +132,11 @@
           <% userPublicList.forEach(data => { %>
             <div class="d-flex justify-content-center bg-success-light py-1 mt-1">
               <div class="fw-bold text-secondary fs-5 gap-2" style="width: 200px;">
-                <span class="cursor-default">
-                  <i class="bi bi-person-fill text-light btn bg-success btn-sm cursor-default px-1 py-1"></i>
-                </span>
+                  <img 
+                    src="./uploads/<%= data.photo %>" 
+                    class="card-img-top round wh-25" 
+                    alt="photo de profil ami"
+                  >
                 <span class="text-capitalize"><%= data.pseudo %></span>
               </div>
               <form action="/sendrequest" method="POST" >
