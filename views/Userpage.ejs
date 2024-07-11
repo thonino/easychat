@@ -24,50 +24,82 @@
       </div>
       <div class="flex-column align-items-center">
         <div class="bg-dark-less px-2">
-          <div class="d-flex justify-content-between align-items-center py-2">
-            <!-- Add friend -->
-            <div>
-              <a href="/addfriend" class="btn btn-success btn-sm d-md-none">
-                <i class="bi bi-plus-lg"></i>
-              </a>
-            </div>
+          <div class="d-flex justify-content-between py-2">
             <!-- Offcanvas toggle button for smaller screens -->
-            <div class="d-flex justify-content-between align-items-center text-light">
-              <span class="me-2 fst-italic text-info-light text-capitalize">
-                A : 
-                <span class="text-info fw-bold">
-                  <%= chatting && friends.includes(chatting) ? chatting : 'Destinataire' %>
-                </span>
-              </span>
+            <div class="align-items-center text-light">
               <button 
-                class="btn btn-light btn-sm d-md-none text-secondary text-capitalize fw-bold" 
+                class="btn btn-light btn-sm text-secondary text-capitalize fw-bold d-md-none" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
-                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
+              >
                 Boite
                 <i class="bi bi-chat-square-text-fill"></i>
               </button>
             </div>
-            <!-- Account -->
+            <span class="text-secondary btn btn-light btn-sm ">
+              <i class="bi bi-search"></i>
+            </span>
+            <!-- Add friend -->
             <div>
-              <a href="/account" class="btn btn-light btn-sm text-secondary">
-                <i class="bi bi-person-lines-fill"></i>
+              <a href="/addfriend" class="btn btn-success btn-sm d-md-none">
+                <i class="bi bi-plus-lg"> Ajouter</i>
               </a>
             </div>
           </div>
         </div>
-        <div class="flex flex-column">
-          <h1 class="text-center text-secondary my-2 fw-bold">Mes Amis :</h1>
+        <div class="d-flex flex-column align-items-center">
+          <h1 class="text-center text-secondary fw-bold mt-2">Profile</h1>
+          <div class="card text-center" style="width: 200px">
+            <button 
+              type="button" 
+              class="btn btn-success btn-sm m-0 p-0  rounded-bottom-0" 
+              data-bs-toggle="modal" 
+              data-bs-target="#uploadModal"
+            >
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <!-- Upload Modal -->
+            <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header bg-success-light">
+                    <h5 class="modal-title" id="uploadModalLabel">Mise à jour photo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form action="/upload" method="post" enctype="multipart/form-data">
+                      <input type="file" name="photo" class="form-control" />
+                      <button type="submit" class="btn btn-success mt-2">Télécharger</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- fin Modal -->
+            <img src="./uploads/<%= logoPhoto %>" class="card-img-top rounded-0" alt="photo de profil ami">
+            <div class="card-body">
+              <p class="card-text text-center text-success fw-bold text-capitalize fs-2">
+                <%= user.pseudo  %>
+              </p>
+            </div>
+            
+          </div>
+          <h3 class="text-center text-secondary my-2 fw-bold">Mes Amis :</h3>
           <% friends.forEach(data =>  { %>
             <div class="d-flex justify-content-center bg-info-light py-1 mt-1" >
               <div class="fw-bold text-secondary fs-5 gap-2" style="width: 250px;" >
                 <span class="cursor-default" type="submit">
-                  <i class="bi bi-person-check-fill text-light btn bg-info btn-sm cursor-default px-1 py-1"></i>
+                  <img 
+                    src="./uploads/<%= data.photo %>" 
+                    class="card-img-top round wh-25" 
+                    alt="photo de profil ami"
+                  >
                 </span>
-                <span class="text-capitalize"><%= data %></span>
+                <span class="text-capitalize"><%= data.pseudo %></span>
               </div>
               <form action="/chat" method="POST">
-                <input type="hidden" name="destinataire" value="<%= data %>"/>
+                <input type="hidden" name="destinataire" value="<%= data.pseudo %>"/>
                 <button class="btn px-2 fst-italic" type="submit" >
                   <i class="bi bi-chat-square-text-fill text-secondary fw-bold"> Ecrire..</i> 
                 </button>
@@ -77,7 +109,7 @@
                 type="button" 
                 class="btn btn-sm ms-2" 
                 data-bs-toggle="modal" 
-                data-bs-target="#deleteFriendModal<%= data %>"
+                data-bs-target="#deleteFriendModal<%= data.pseudo %>"
               >
                 <i class="bi bi-dash-circle-fill text-danger"></i>
               </button>
@@ -85,8 +117,8 @@
             <!-- Delete Modal -->
             <div 
             class="modal fade" 
-            id="deleteFriendModal<%= data %>" tabindex="-1" 
-            aria-labelledby="deleteFriendModalLabel<%= data %>" 
+            id="deleteFriendModal<%= data.pseudo %>" tabindex="-1" 
+            aria-labelledby="deleteFriendModalLabel<%= data.pseudo %>" 
             aria-hidden="true"
             >
             <div class="modal-dialog">
@@ -95,7 +127,7 @@
                 <div class="modal-header bg-danger-light">
                   <h5 
                     class="modal-title fw-bold" 
-                    id="deleteFriendModalLabel<%= data %>"
+                    id="deleteFriendModalLabel<%= data.pseudo %>"
                   >
                     Confirmer la suppression
                   </h5>
@@ -103,7 +135,7 @@
                   <button 
                     type="button" 
                     class="btn-close" 
-                    data-bs-dismiss="modal" 
+                    data.-bs-dismiss="modal" 
                     aria-label="Close">
                   </button>
                 </div>
@@ -112,7 +144,7 @@
                   <p>
                     Supprimer 
                     <span class="text-secondary fst-italic text-capitalize fw-bold"> 
-                      "<%= data %>"
+                      "<%= data.pseudo %>"
                     </span> 
                     de vos amis ?
                   </p>
@@ -121,8 +153,8 @@
                 <!--Footer modal -->
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                  <form id="deleteFriend<%= data %>" action="/remove/deleted" method="POST">
-                    <input type="hidden" name="adder" value="<%= data %>"/>
+                  <form id="deleteFriend<%= data.pseudo %>" action="/remove/deleted" method="POST">
+                    <input type="hidden" name="adder" value="<%= data.pseudo %>"/>
                     <button type="submit" class="btn btn-danger">Supprimer</button>
                   </button>
                   </form>

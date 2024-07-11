@@ -2,8 +2,8 @@
 <html>
 <head>
   <%- include('./partials/link') %>
-  <link rel="stylesheet" href="/public/css/styles.css">
   <title>Chat</title>
+  <link rel="stylesheet" href="/public/css/styles.css">
 </head>
 <body>
   <div class="grid-container bg-white">
@@ -22,22 +22,10 @@
     <div class="d-flex flex-column main-content"> 
       <div class="bg-dark-less px-2">
         <div class="d-flex justify-content-between align-items-center py-2">
-          <!-- Add friend -->
-          <div>
-            <a href="/addfriend" class="btn btn-success btn-sm d-md-none">
-              <i class="bi bi-plus-lg"></i>
-            </a>
-          </div>
-          <!-- Offcanvas toggle button for smaller screens -->
-          <div class="d-flex justify-content-between align-items-center text-light">
-            <span class="me-2 fst-italic text-info-light text-capitalize">
-              A : 
-              <span class="text-info fw-bold">
-                <%= chatting && friends.includes(chatting) ? chatting : 'Destinataire' %>
-              </span>
-            </span>
+          <div class="d-flex gap-2 d-md-none d-block">
+            <!-- Offcanvas toggle button for smaller screens -->
             <button 
-              class="btn btn-light btn-sm d-md-none text-secondary text-capitalize fw-bold" 
+              class="btn btn-light btn-sm  text-secondary text-capitalize fw-bold" 
               type="button" 
               data-bs-toggle="offcanvas" 
               data-bs-target="#offcanvasNavbar" 
@@ -46,13 +34,35 @@
               Boite
               <i class="bi bi-chat-square-text-fill"></i>
             </button>
+            <!-- Chatting -->
+            <div class="d-flex justify-content-between align-items-center text-light ">
+              <span class="me-2 fst-italic text-info-light text-capitalize">
+                <% if (chattingUser){ %>
+                <img src="/uploads/<%= chattingUser.photo %>" class="card-img-top round wh-25" alt="...">
+                <% } %>
+                <span class="text-info fw-bold">
+                  <%= chatting ? chatting : 'Destinataire' %>
+                </span>
+              </span>
+            </div>
           </div>
-          <!-- Options -->
-          <div>
-            <button id="toggle" class="btn btn-light btn-sm text-secondary">
-              <i class="bi bi-gear-fill"></i>
-            </button>
-          </div>
+            <!-- Search -->
+            <span class="text-secondary btn btn-light btn-sm ">
+              <i class="bi bi-search"></i>
+            </span>
+            <!-- Options -->
+            <div>
+              <button id="toggle" class="btn btn-light btn-sm text-secondary">
+                <i class="bi bi-gear-fill"></i>
+              </button>
+            </div>
+          
+            <!-- Add friend -->
+            <div class="d-md-none">
+              <a href="/addfriend" class="btn btn-success btn-sm ">
+                <i class="bi bi-plus-lg"> Ajouter</i>
+              </a>
+            </div>
         </div>
       </div>        
       <div class="d-flex flex-column overflow-hidden">
@@ -112,7 +122,7 @@
         <div class="below-content bg-dark-75 p-3">
           <form class="d-flex justify-content-center align-items-center" method="POST" action="/message">
             <textarea id="textInput" class="form-control txt-area" name="message" rows="3" required></textarea>
-            <input type="hidden" name="destinataire" value="<%= chatting %>">
+            <input type="hidden" name="destinataire" value="<%= chatting.pseudo %>">
             <input type="hidden" name="expediteur" value="<%= user.pseudo %>">
             <input type="hidden" name="datetime" value="<%= heure %>">
             <button id="sendButton" type="submit" class="btn btn-success ms-2">
