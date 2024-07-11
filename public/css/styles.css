@@ -52,7 +52,6 @@ body, html {
   flex-direction: column-reverse;
 }
 
-.rouded-b-0 { border-radius: ;}
 .round { border-radius: 50%;}
 .wh-35{ width: 35px; height: 35px;}
 .wh-25{ width: 25px; height: 25px;}
