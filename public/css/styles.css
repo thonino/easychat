@@ -52,10 +52,12 @@ body, html {
   flex-direction: column-reverse;
 }
 
+.mw-85 { max-width: 85%;}
+.round-msg { border-radius:  30px; }
 .round { border-radius: 50%;}
 .wh-35{ width: 35px; height: 35px;}
 .wh-25{ width: 25px; height: 25px;}
-.wh-15{ width: 25px; height: 25px;}
+.wh-15{ width: 15px; height: 15px;}
 
 .hidden { display: none; }
 .cursor-default { cursor: default; }
@@ -64,13 +66,13 @@ body, html {
 
 .text-dark-75 { color: #404040; }
 .text-warning-dark { color: #dca602; }
-.text-info-light { color: #f0fcfd; }
+.text-info-light { color: #d0f3f6; }
 .text-info-dark { color: #086c80; }
 .bg-warning-dark { background-color: #dca602; }
 .bg-dark-75 { background-color: #404040; }
 .bg-dark-less { background-color: #343a40; }
-.bg-info-light { background-color: #f0fcfd; }
-.bg-success-light { background-color: #e9fff5; }
+.bg-info-light { background-color: #d0f3f6; }
+.bg-success-light { background-color: #b2e5c9; }
 .bg-danger-light { background-color: #fdecea; }
 .bg-warning-light { background-color: #fff9e6; }
 .bg-primary-light { background-color: #e7f0ff; }

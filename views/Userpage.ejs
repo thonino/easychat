@@ -22,7 +22,8 @@
           </a>
         </div>
       </div>
-      <div class="flex-column align-items-center">
+      <div>
+        <!--Nav-right -->
         <div class="bg-dark-less px-2">
           <div class="d-flex justify-content-between py-2">
             <!-- Offcanvas toggle button for smaller screens -->
@@ -48,124 +49,118 @@
             </div>
           </div>
         </div>
-        <div class="d-flex flex-column align-items-center">
-          <h1 class="text-center text-secondary fw-bold mt-2">Profile</h1>
-          <div class="card text-center" style="width: 200px">
-            <button 
-              type="button" 
-              class="btn btn-success btn-sm m-0 p-0  rounded-bottom-0" 
-              data-bs-toggle="modal" 
-              data-bs-target="#uploadModal"
-            >
-              <i class="bi bi-pencil-square"></i>
-            </button>
-            <!-- Upload Modal -->
-            <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header bg-success-light">
-                    <h5 class="modal-title" id="uploadModalLabel">Mise à jour photo</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <form action="/upload" method="post" enctype="multipart/form-data">
-                      <input type="file" name="photo" class="form-control" />
-                      <button type="submit" class="btn btn-success mt-2">Télécharger</button>
-                    </form>
-                  </div>
-                </div>
+        <div class="">
+          <h1 class="text-secondary fw-bold mt-2 text-center">Profile</h1>
+          <div class="d-flex flex-column align-items-center">
+            <div class="card" style="width: 200px;">
+              <!-- Upload btn Modal -->
+              <button 
+                type="button" 
+                class="btn btn-info btn-sm rounded-bottom-0" 
+                data-bs-toggle="modal" 
+                data-bs-target="#uploadModal"
+              >
+                <i class="bi bi-pencil-square"></i>
+              </button>
+              <img 
+                src="./uploads/<%= logoPhoto %>" 
+                class="card-img-top rounded-0" 
+                alt="photo de profil ami" 
+              >
+              <div class="card-body">
+                <p class="card-text text-center text-secondary fw-bold text-capitalize fs-2">
+                  <%= user.pseudo  %>
+                </p>
               </div>
             </div>
-            <!-- fin Modal -->
-            <img src="./uploads/<%= logoPhoto %>" class="card-img-top rounded-0" alt="photo de profil ami">
-            <div class="card-body">
-              <p class="card-text text-center text-success fw-bold text-capitalize fs-2">
-                <%= user.pseudo  %>
-              </p>
-            </div>
-            
           </div>
-          <h3 class="text-center text-secondary my-2 fw-bold">Mes Amis :</h3>
-          <% friends.forEach(data =>  { %>
-            <div class="d-flex justify-content-center bg-info-light py-1 mt-1" >
-              <div class="fw-bold text-secondary fs-5 gap-2" style="width: 250px;" >
-                <span class="cursor-default" type="submit">
+          <h3 class="text-center text-secondary my-3 fw-bold">Mes Amis :</h3>
+          <div>
+            <% friends.forEach(data =>  { %>
+              <div class="d-flex justify-content-center bg-info-light mt-1" >
+                <!-- info friend -->
+                <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2 mx-2" style="width: 170px;">
                   <img 
                     src="./uploads/<%= data.photo %>" 
                     class="card-img-top round wh-25" 
                     alt="photo de profil ami"
                   >
-                </span>
-                <span class="text-capitalize"><%= data.pseudo %></span>
-              </div>
-              <form action="/chat" method="POST">
-                <input type="hidden" name="destinataire" value="<%= data.pseudo %>"/>
-                <button class="btn px-2 fst-italic" type="submit" >
-                  <i class="bi bi-chat-square-text-fill text-secondary fw-bold"> Ecrire..</i> 
+                  <span class="text-capitalize"><%= data.pseudo %></span>
+                </div>
+                <!-- Ecrire message -->
+                <form action="/chat" method="POST">
+                  <input type="hidden" name="destinataire" value="<%= data.pseudo %>"/>
+                  <button class="btn px-0 fst-italic" type="submit" >
+                    <i class="bi bi-chat-square-text-fill text-info-dark fw-bold"> Chat.. </i> 
+                  </button>
+                </form>
+                <!-- btn modal : supprimer-->
+                <button 
+                  type="button" 
+                  class="btn text-info-dark fw-bold fst-italic ms-2" 
+                  data-bs-toggle="modal" 
+                  data-bs-target="#deleteFriendModal<%= data.pseudo %>"
+                >
+                  <i class="bi bi-dash-circle-fill text-danger "> </i> Retirer
                 </button>
-              </form>
-              <!-- delete friend -->
-              <button 
-                type="button" 
-                class="btn btn-sm ms-2" 
-                data-bs-toggle="modal" 
-                data-bs-target="#deleteFriendModal<%= data.pseudo %>"
-              >
-                <i class="bi bi-dash-circle-fill text-danger"></i>
-              </button>
-            </div>
-            <!-- Delete Modal -->
-            <div 
-            class="modal fade" 
-            id="deleteFriendModal<%= data.pseudo %>" tabindex="-1" 
-            aria-labelledby="deleteFriendModalLabel<%= data.pseudo %>" 
-            aria-hidden="true"
-            >
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <!--Title modal -->
-                <div class="modal-header bg-danger-light">
-                  <h5 
-                    class="modal-title fw-bold" 
-                    id="deleteFriendModalLabel<%= data.pseudo %>"
-                  >
-                    Confirmer la suppression
-                  </h5>
-                  <!--Close btn -->
-                  <button 
-                    type="button" 
-                    class="btn-close" 
-                    data.-bs-dismiss="modal" 
-                    aria-label="Close">
-                  </button>
+                <!-- Modal : supprimer -->
+                <div 
+                class="modal fade" 
+                id="deleteFriendModal<%= data.pseudo %>" tabindex="-1" 
+                aria-labelledby="deleteFriendModalLabel<%= data.pseudo %>" 
+                aria-hidden="true"
+                >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <!--Title modal -->
+                      <div class="modal-header bg-danger-light">
+                        <h5 
+                          class="modal-title fw-bold" 
+                          id="deleteFriendModalLabel<%= data.pseudo %>"
+                        >
+                          Confirmer la suppression
+                        </h5>
+                        <!--Close btn -->
+                        <button 
+                          type="button" 
+                          class="btn-close" 
+                          data.-bs-dismiss="modal" 
+                          aria-label="Close">
+                        </button>
+                      </div>
+                      <!--Body modal -->
+                      <div class="modal-body text-center">
+                        <p>
+                          Supprimer 
+                          <span class="text-secondary fst-italic text-capitalize fw-bold"> 
+                            "<%= data.pseudo %>"
+                          </span> 
+                          de vos amis ?
+                        </p>
+                        
+                      </div>
+                      <!--Footer modal -->
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                          Annuler
+                        </button>
+                        <form id="deleteFriend<%= data.pseudo %>" action="/remove/deleted" method="POST">
+                          <input type="hidden" name="adder" value="<%= data.pseudo %>"/>
+                          <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <!--Body modal -->
-                <div class="modal-body text-center">
-                  <p>
-                    Supprimer 
-                    <span class="text-secondary fst-italic text-capitalize fw-bold"> 
-                      "<%= data.pseudo %>"
-                    </span> 
-                    de vos amis ?
-                  </p>
-                  
-                </div>
-                <!--Footer modal -->
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                  <form id="deleteFriend<%= data.pseudo %>" action="/remove/deleted" method="POST">
-                    <input type="hidden" name="adder" value="<%= data.pseudo %>"/>
-                    <button type="submit" class="btn btn-danger">Supprimer</button>
-                  </button>
-                  </form>
-                </div>
+                <!-- fin Modal -->
               </div>
-            </div>
-            </div>
-          <% }); %> 
+            <% }); %> 
+          </div>
         </div> 
       </div>
     </div>
+    <%- include('./partials/uploadModal'); %>
     <%- include('./partials/offcanvas'); %>
   </body>
 </html>

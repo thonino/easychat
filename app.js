@@ -73,19 +73,17 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
-// Socket.IO: Écouter connexions
 io.on('connection', (socket) => {
   const user = socket.handshake.session.user;
   const chattingWith = socket.handshake.session.chatting;
-  console.log('chattingWith : ',chattingWith);
+  console.log('chattingWith : ', chattingWith);
   if (user) {
     console.log(`${user.pseudo} a ouvert le chat pour : ${chattingWith}`);
-    // Joindre les salles de chat avec les noms d'utilisateur en minuscules
     const room1 = `${user.pseudo.toLowerCase()}-${chattingWith.toLowerCase()}`;
     const room2 = `${chattingWith.toLowerCase()}-${user.pseudo.toLowerCase()}`;
     socket.join(room1);
     socket.join(room2);
-    // Écouter messages
+
     socket.on('sendText', async ({ text }) => {
       const heure = moment().format('h:mm:ss');
       const newMessage = new Message({
@@ -101,38 +99,33 @@ io.on('connection', (socket) => {
           De: ${newMessage.expediteur} 
           A: ${newMessage.destinataire}`
         );
-        // Afficher message dans le chat du destinataire
-        const friend = await Friend.findOne({
-          $or: [
-            { adder: user.pseudo, asked: chattingWith },
-            { adder: chattingWith, asked: user.pseudo }
-          ]
-        });
-        if (friend) {
-          if (friend.chat.length === 1) {
-            friend.chat.push(chattingWith);
-            await friend.save();
-          }
-        }
+
+        const expediteurData = await User.findOne({ pseudo: newMessage.expediteur });
+        const destinataireData = await User.findOne({ pseudo: newMessage.destinataire });
+
         io.to(`${newMessage.expediteur}-${newMessage.destinataire}`)
           .to(`${newMessage.destinataire}-${newMessage.expediteur}`)
           .emit('receiveText', {
             id: savedMessage._id,
-            pseudo: newMessage.expediteur,
+            pseudo: expediteurData.pseudo,
             text: text,
-            destinataire: newMessage.destinataire,
-            datetime: heure
+            destinataire: destinataireData.pseudo,
+            datetime: heure,
+            expediteurPhoto: expediteurData.photo,
+            destinatairePhoto: destinataireData.photo
           });
       } catch (err) {
         console.log(err);
-        console.error("Erreur messaage ou de MAJ friend:", err);
+        console.error("Erreur message ou de MAJ friend:", err);
       }
     });
+
     socket.on('disconnect', () => {
       console.log(`${user.pseudo} : logout`);
     });
   }
 });
+
 
 // Session  chatting
 app.use((req, res, next) => {
@@ -473,7 +466,6 @@ app.post('/sendrequest', (req, res) => {
   }
 });
 
-
 // Post agree
 app.post('/agree', (req, res) => {
   if (!req.session.user){ return res.redirect('/login'); }
@@ -552,7 +544,6 @@ app.get('/dialogue/:chatting', async (req, res) => {
     res.redirect('/error');
   }
 });
-
 
 // Put message
 app.put('/edit-message/:id', (req, res) => {

@@ -22,10 +22,10 @@
     <div class="d-flex flex-column main-content"> 
       <div class="bg-dark-less px-2">
         <div class="d-flex justify-content-between align-items-center py-2">
-          <div class="d-flex gap-2 d-md-none d-block">
+          <div class="d-flex gap-2 d-md-none">
             <!-- Offcanvas toggle button for smaller screens -->
             <button 
-              class="btn btn-light btn-sm  text-secondary text-capitalize fw-bold" 
+              class="btn btn-light btn-sm text-secondary text-capitalize fw-bold" 
               type="button" 
               data-bs-toggle="offcanvas" 
               data-bs-target="#offcanvasNavbar" 
@@ -34,84 +34,91 @@
               Boite
               <i class="bi bi-chat-square-text-fill"></i>
             </button>
-            <!-- Chatting -->
-            <div class="d-flex justify-content-between align-items-center text-light ">
-              <span class="me-2 fst-italic text-info-light text-capitalize">
-                <% if (chattingUser){ %>
-                <img src="/uploads/<%= chattingUser.photo %>" class="card-img-top round wh-25" alt="...">
-                <% } %>
-                <span class="text-info fw-bold">
-                  <%= chatting ? chatting : 'Destinataire' %>
-                </span>
-              </span>
-            </div>
           </div>
-            <!-- Search -->
-            <span class="text-secondary btn btn-light btn-sm ">
-              <i class="bi bi-search"></i>
-            </span>
-            <!-- Options -->
-            <div>
-              <button id="toggle" class="btn btn-light btn-sm text-secondary">
-                <i class="bi bi-gear-fill"></i>
-              </button>
-            </div>
-          
-            <!-- Add friend -->
-            <div class="d-md-none">
-              <a href="/addfriend" class="btn btn-success btn-sm ">
-                <i class="bi bi-plus-lg"> Ajouter</i>
-              </a>
-            </div>
+          <!-- Search -->
+          <span class="text-secondary btn btn-light btn-sm">
+            <i class="bi bi-search"></i>
+          </span>
+          <!-- Options -->
+          <div>
+            <button id="toggle" class="btn btn-light btn-sm text-secondary">
+              <i class="bi bi-gear-fill"></i>
+            </button>
+          </div>
+          <!-- Add friend -->
+          <div class="d-md-none">
+            <a href="/addfriend" class="btn btn-success btn-sm">
+              <i class="bi bi-plus-lg"> Ajouter</i>
+            </a>
+          </div>
         </div>
       </div>        
       <div class="d-flex flex-column overflow-hidden">
         <div id="messageBox" class="d-flex reverseMessage overflow-y-auto mb-3">
           <% messagesFilter.reverse().forEach(message => { %>
-            <div class="text-center fw-bold fst-italic">
-              <span class="fs-6 text-muted fw-light">
+            <div class="text-center fw-bold fst-italic mt-3">
+              <span class="fs-6 text-muted fw-light cible hidden">
                 <%= message.datetime %>
               </span>
               <% if (message.expediteur === user.pseudo) { %>
-                <div class="d-flex justify-content-end align-items-center fs-5 bg-success-light pe-2 gap-2 ">
-                  <div class="d-flex flex-row gap-2 align-items-center">
-                    <p class="text-capitalize text-success m-2">
-                      <%= message.expediteur %> :
-                    </p>
-                    <p class="fw-light text-dark m-2">
-                      <%= message.message %>
-                    </p>
-                  </div>
-                  <div class="cible hidden">
-                    <div class="d-flex justify-content-center">
-                      <div>
-                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#editMessageModal<%= message._id %>">
+                <div class="d-flex justify-content-end">
+                  <div class="d-flex justify-content-end align-items-center fs-5 bg-success-light gap-2 mw-85 round-msg me-2 px-2">
+                    <div class="d-flex justify-content-center align-items-center gap-2 m-2">
+                      <p class="fw-light text-center text-dark m-0 p-0">
+                        <%= message.message %>
+                      </p>
+                      <p class="d-flex fs-5 text-capitalize text-success m-0 p-0">
+                        <img src="/uploads/<%= user.photo %>" class="card-img-top round wh-25" alt="img profile">
+                        <%= // message.expediteur %> 
+                      </p>
+                    </div>
+                    <div class="cible hidden">
+                      <div class="d-flex justify-content-center align-items-center pe-2">
+                        <button 
+                          type="button" 
+                          class="btn btn-success btn-sm" 
+                          data-bs-toggle="modal" 
+                          data-bs-target="#editMessageModal<%= message._id %>"
+                        >
                           <i class="bi bi-pencil-square"></i>
                         </button>
-                      </div>
-                      <div>
-                        <button type="button" class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#deleteMessageModal<%= message._id %>">
-                          <i class='bi bi-trash'></i>
-                        </button>
+                        <div>
+                          <button 
+                            type="button" 
+                            class="btn btn-danger btn-sm ms-2" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteMessageModal<%= message._id %>"
+                          >
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               <% } else { %>
-                <div class="d-flex fs-5 bg-info-light align-items-center ps-2 gap-2">
-                  <div class="d-flex justify-content-start align-items-center "> 
-                    <div class="cible hidden">
-                      <button type="button" class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#deleteMessageModal<%= message._id %>">
-                        <i class='bi bi-trash'></i>
-                      </button>
-                    </div>
-                    <div class="d-flex flex-row gap-2 align-items-center">
-                      <p class="fs-5 text-capitalize text-info m-2">
-                        <%= message.expediteur %> :
-                      </p>
-                      <p class="fw-light text-dark m-2">
-                        <%= message.message %>
-                      </p>
+                <div class="d-flex justify-content-start">
+                  <div class="d-flex justify-content-start align-items-center fs-5 bg-info-light gap-2 mw-85 round-msg ms-2 px-2">
+                    <div class="d-flex justify-content-start align-items-center gap-2 m-2">
+                      <div class="cible hidden align-items-center">
+                        <button 
+                          type="button" 
+                          class="btn btn-danger btn-sm" 
+                          data-bs-toggle="modal" 
+                          data-bs-target="#deleteMessageModal<%= message._id %>"
+                        >
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                      <div class="d-flex justify-content-start align-items-center gap-2">
+                        <p class="d-flex fs-5 text-capitalize text-info-dark m-0 p-0 gap-1">
+                          <img src="/uploads/<%= chattingUser.photo %>" class="card-img-top round wh-25" alt="img profile">
+                          <%= // message.expediteur %> 
+                        </p>
+                        <p class="fw-light text-center text-dark m-0 p-0">
+                          <%= message.message %>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
