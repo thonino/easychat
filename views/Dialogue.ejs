@@ -12,48 +12,44 @@
     </div>
     <div class="bg-dark-less text-center p-0 sidebar d-none d-md-block">
       <%- include('./partials/contact'); %>
-      <div class="link">
-        <a href="/addfriend" class="btn btn-success btn-sm d-flex align-items-center fw-bold p-0 gap-2 px-2">
-          <i class="bi bi-person-fill-add fs-4"></i>
-          Ajouter
-        </a>
-      </div>
     </div>
     <div class="d-flex flex-column main-content"> 
       <div class="bg-dark-less px-2">
         <div class="d-flex justify-content-between align-items-center py-2">
-          <div class="d-flex gap-2 d-md-none">
-            <!-- Offcanvas toggle button for smaller screens -->
+          <!-- Bouton Offcanvas toggle -->
+          <div class="text-light d-md-none">
             <button 
-              class="btn btn-light btn-sm text-secondary text-capitalize fw-bold" 
+              class="btn bg-info btn-sm text-light text-capitalize fw-bold" 
               type="button" 
               data-bs-toggle="offcanvas" 
-              data-bs-target="#offcanvasNavbar" 
-              aria-controls="offcanvasNavbar"
-            >
-              Boite
+              data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                Chat
               <i class="bi bi-chat-square-text-fill"></i>
             </button>
           </div>
-          <!-- Search -->
-          <span class="text-secondary btn btn-light btn-sm">
-            <i class="bi bi-search"></i>
-          </span>
-          <!-- Options -->
+          <!-- Bouton Profile -->
+          <a 
+            href="/userpage" 
+            class="btn bg-info-dark btn-sm text-light fw-bold"
+          >
+            <i class="bi bi-person-square "></i>
+            Profile
+          </a>
+          <!-- Account -->
           <div>
-            <button id="toggle" class="btn btn-light btn-sm text-secondary">
-              <i class="bi bi-gear-fill"></i>
-            </button>
-          </div>
-          <!-- Add friend -->
-          <div class="d-md-none">
-            <a href="/addfriend" class="btn btn-success btn-sm">
-              <i class="bi bi-plus-lg"> Ajouter</i>
-            </a>
+            <span class="text-light btn bg-warning-dark btn-sm fw-bold">
+              <i class="bi bi-person-vcard-fill"> Compte</i>
+            </span>
           </div>
         </div>
       </div>        
       <div class="d-flex flex-column overflow-hidden">
+        <!-- Bouton Options -->
+        <div class="d-flex justify-content-center mt-2">
+          <button id="toggle" class="btn btn-secondary btn-sm text-light">
+            <i class="bi bi-gear-fill"></i>
+          </button>
+        </div>
         <div id="messageBox" class="d-flex reverseMessage overflow-y-auto mb-3">
           <% messagesFilter.reverse().forEach(message => { %>
             <div class="text-center fw-bold fst-italic mt-3">

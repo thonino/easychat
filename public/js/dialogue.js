@@ -157,7 +157,7 @@ if (isCurrentUser) {
   cibleDiv.appendChild(deleteButton);
 
   const profileImg = document.createElement('img');
-  profileImg.src = `/uploads/${data.destinatairePhoto}`;
+  profileImg.src = `/uploads/${data.expediteurPhoto}`;
   profileImg.classList.add('card-img-top', 'round', 'wh-25');
   profileImg.alt = 'img profile';
   contentDivDestinataire.appendChild(profileImg);
@@ -204,7 +204,7 @@ console.log('Message appended to messageBox');
           </div>
         </div>
       </div>
-    `;
+    `
 
     // Create the delete modal
     const deleteModal = document.createElement('div');

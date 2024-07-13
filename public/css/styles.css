@@ -57,6 +57,7 @@ body, html {
 .round { border-radius: 50%;}
 .wh-35{ width: 35px; height: 35px;}
 .wh-25{ width: 25px; height: 25px;}
+.wh-25-21{ width: 25px; height: 21px;}
 .wh-15{ width: 15px; height: 15px;}
 
 .hidden { display: none; }
@@ -72,10 +73,11 @@ body, html {
 .bg-dark-75 { background-color: #404040; }
 .bg-dark-less { background-color: #343a40; }
 .bg-info-light { background-color: #d0f3f6; }
+.bg-info-dark { background-color: #086c80; }
 .bg-success-light { background-color: #b2e5c9; }
 .bg-danger-light { background-color: #fdecea; }
-.bg-warning-light { background-color: #fff9e6; }
-.bg-primary-light { background-color: #e7f0ff; }
+.bg-warning-light { background-color: #FFE8A3 }
+.bg-primary-light { background-color: #A6C9FE; }
 .bg-secondary-light { background-color: #e8e8e8; }
 
 

@@ -12,7 +12,8 @@
       </div>
       <div class="sidebar bg-dark-less text-center d-none d-md-block">
         <%- include('./partials/contact'); %>
-        <div class="link">
+        <!-- Old design -->
+        <!-- <div class="link">
           <a 
             href="/addfriend" 
             class="btn btn-success btn-sm d-flex align-items-center fw-bold p-0 gap-2 px-2"
@@ -20,39 +21,36 @@
             <i class="bi bi-person-fill-add fs-4"></i>
             Ajouter
           </a>
-        </div>
+        </div> -->
       </div>
       <div>
         <!--Nav-right -->
         <div class="bg-dark-less px-2">
           <div class="d-flex justify-content-between py-2">
-            <!-- Offcanvas toggle button for smaller screens -->
-            <div class="align-items-center text-light">
+            <!-- Bouton Offcanvas toggle -->
+            <div class="text-light">
               <button 
-                class="btn btn-light btn-sm text-secondary text-capitalize fw-bold d-md-none" 
+                class="btn bg-info btn-sm d-md-none text-light text-capitalize fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
-                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
-              >
-                Boite
+                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                  Chat
                 <i class="bi bi-chat-square-text-fill"></i>
               </button>
             </div>
-            <span class="text-secondary btn btn-light btn-sm ">
-              <i class="bi bi-search"></i>
-            </span>
-            <!-- Add friend -->
+            <!-- Account -->
             <div>
-              <a href="/addfriend" class="btn btn-success btn-sm d-md-none">
-                <i class="bi bi-plus-lg"> Ajouter</i>
-              </a>
+              <span class="text-light btn bg-warning-dark btn-sm fw-bold">
+                <i class="bi bi-person-vcard-fill"> Compte</i>
+              </span>
             </div>
           </div>
         </div>
-        <div class="">
+        <!-- container -->
+        <div class="container">
           <h1 class="text-secondary fw-bold mt-2 text-center">Profile</h1>
           <div class="d-flex flex-column align-items-center">
-            <div class="card" style="width: 200px;">
+            <div class="card shadow" style="width: 200px;">
               <!-- Upload btn Modal -->
               <button 
                 type="button" 
@@ -74,12 +72,19 @@
               </div>
             </div>
           </div>
-          <h3 class="text-center text-secondary my-3 fw-bold">Mes Amis :</h3>
-          <div>
+          <!-- Add friend -->
+          <div class="text-center mt-4">
+            <a href="/addfriend" class="btn btn-success btn-lg shadow">
+              <i class="bi bi-person-fill-add"> Amis</i>
+            </a>
+          </div>
+          <!-- Mes amis -->
+          <div class="bg-info-light shadow mt-4">
+            <h3 class="text-center text-light bg-info fw-bold ">Mes Amis :</h3>
             <% friends.forEach(data =>  { %>
-              <div class="d-flex justify-content-center bg-info-light mt-1" >
+              <div class="d-flex justify-content-center mt-2">
                 <!-- info friend -->
-                <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2 mx-2" style="width: 170px;">
+                <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2 mx-2" style="width: 200px;">
                   <img 
                     src="./uploads/<%= data.photo %>" 
                     class="card-img-top round wh-25" 
@@ -91,69 +96,9 @@
                 <form action="/chat" method="POST">
                   <input type="hidden" name="destinataire" value="<%= data.pseudo %>"/>
                   <button class="btn px-0 fst-italic" type="submit" >
-                    <i class="bi bi-chat-square-text-fill text-info-dark fw-bold"> Chat.. </i> 
+                    <i class="bi bi-chat-square-text-fill text-info-dark fw-bold"> Ecrire.. </i> 
                   </button>
                 </form>
-                <!-- btn modal : supprimer-->
-                <button 
-                  type="button" 
-                  class="btn text-info-dark fw-bold fst-italic ms-2" 
-                  data-bs-toggle="modal" 
-                  data-bs-target="#deleteFriendModal<%= data.pseudo %>"
-                >
-                  <i class="bi bi-dash-circle-fill text-danger "> </i> Retirer
-                </button>
-                <!-- Modal : supprimer -->
-                <div 
-                class="modal fade" 
-                id="deleteFriendModal<%= data.pseudo %>" tabindex="-1" 
-                aria-labelledby="deleteFriendModalLabel<%= data.pseudo %>" 
-                aria-hidden="true"
-                >
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <!--Title modal -->
-                      <div class="modal-header bg-danger-light">
-                        <h5 
-                          class="modal-title fw-bold" 
-                          id="deleteFriendModalLabel<%= data.pseudo %>"
-                        >
-                          Confirmer la suppression
-                        </h5>
-                        <!--Close btn -->
-                        <button 
-                          type="button" 
-                          class="btn-close" 
-                          data.-bs-dismiss="modal" 
-                          aria-label="Close">
-                        </button>
-                      </div>
-                      <!--Body modal -->
-                      <div class="modal-body text-center">
-                        <p>
-                          Supprimer 
-                          <span class="text-secondary fst-italic text-capitalize fw-bold"> 
-                            "<%= data.pseudo %>"
-                          </span> 
-                          de vos amis ?
-                        </p>
-                        
-                      </div>
-                      <!--Footer modal -->
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                          Annuler
-                        </button>
-                        <form id="deleteFriend<%= data.pseudo %>" action="/remove/deleted" method="POST">
-                          <input type="hidden" name="adder" value="<%= data.pseudo %>"/>
-                          <button type="submit" class="btn btn-danger">Supprimer</button>
-                        </button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- fin Modal -->
               </div>
             <% }); %> 
           </div>

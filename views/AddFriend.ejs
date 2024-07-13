@@ -13,37 +13,38 @@
     </div>
     <div class="bg-dark-less text-center pb-3 sidebar  d-none d-md-block">
       <%- include('./partials/contact'); %>
-      <div class="link">
-        <a 
-          href="/userpage" 
-          class="btn btn-info btn-sm align-items-center d-flex text-dark-75 fw-bold p-0 gap-2 px-2"
-        >
-          <i class="bi bi-person-square fs-4"></i>
-          Profile
-        </a>
-      </div>
     </div>
     <div class="flex-column align-items-center m-0 p-0">
-      <div class="text-center bg-dark-less gap-2 p-1 px-2">
-        <div class="d-flex justify-content-between py-1">
-          <!-- Offcanvas toggle -->
-          <div class="d-flex justify-content-sm-between justify-content-md-center text-light">
+      <div class="bg-dark-less px-2">
+        <div class="d-flex justify-content-between align-items-center py-2">
+          <!-- Bouton Offcanvas toggle -->
+          <div class="text-light d-md-none">
             <button 
-              class="btn btn-light btn-sm d-md-none text-secondary text-capitalize fw-bold" 
+              class="btn bg-info btn-sm  text-light text-capitalize fw-bold" 
               type="button" 
               data-bs-toggle="offcanvas" 
               data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-              Chat
+                Chat
               <i class="bi bi-chat-square-text-fill"></i>
             </button>
           </div>
-          <span class="text-secondary btn btn-light btn-sm ">
-            <i class="bi bi-search"></i>
-          </span>
-          <div class="d-none d-md-block"></div>
+          <!-- Bouton Profile -->
+          <a 
+            href="/userpage" 
+            class="btn bg-info-dark btn-sm text-light fw-bold"
+          >
+            <i class="bi bi-person-square "></i>
+            Profile
+          </a>
+          <!-- Account -->
+          <div>
+            <span class="text-light btn bg-warning-dark btn-sm fw-bold">
+              <i class="bi bi-person-vcard-fill"> Compte</i>
+            </span>
+          </div>
         </div>
-      </div>
-      <div class="flex flex-column">
+      </div>        
+      <div class="flex flex-column container">
         <% if (confirm) { %>
           <div id="alert" class="alert alert-<%= alertType %> text-center m-2" role="alert">
             <span class="fw-bold text-<%= alertType %> text-capitalize">
@@ -51,12 +52,12 @@
             </span>
           </div> 
         <% } %>   
-        <h1 class="text-center text-secondary my-2 fw-bold">Ajouter des amis !</h1>
+        <h1 class="text-center text-secondary my-2 fw-bold">Gérer amis !</h1>
         <!-- Gestion statut -->
         <div class="d-flex justify-content-center mt-2">
-          <div class="dropdown ">
+          <div class="dropdown border border-secondary border-2 rounded-2">
             <button 
-              class="btn btn-light dropdown-toggle fw-bold text-secondary w-100" 
+              class="btn bg-secondary-light dropdown-toggle fw-bold text-secondary w-100" 
               type="button" 
               data-bs-toggle="dropdown" 
               aria-expanded="false"
@@ -74,11 +75,11 @@
           </div>
         </div>
         <!-- Demandes reçues -->
-        <div>
-          <p class="text-center fw-bold text-warning-dark mt-4 fs-4">Demandes reçues :</p>
+        <div class="bg-warning-light shadow pb-3">
+          <p class="text-center fw-bold text-light bg-warning fs-4 mt-4 m-0">Demandes reçues :</p>
           <% friendsReceived.forEach(data => { %>
-            <div class="d-flex justify-content-center bg-warning-light">
-              <div class="d-flex align-items-center  fw-bold text-secondary fs-5 gap-2" style="width: 210px;">
+            <div class="d-flex justify-content-center mt-2">
+              <div class="d-flex align-items-center  fw-bold text-black-50 fs-5 gap-2" style="width: 180px;">
                   <img 
                     src="./uploads/<%= data.photo %>" 
                     class="card-img-top round wh-25" 
@@ -89,13 +90,13 @@
               <div class="d-flex gap-2">
                 <form action="/agree" method="POST">
                   <input type="hidden" name="adder" value="<%= data.pseudo %>"/>
-                  <button type="submit" class="btn bg-warning-light fst-italic fw-bold px-2 py-1 p-0 m-0">
+                  <button type="submit" class="btn fst-italic fw-bold px-2 py-1 m-0">
                     <i class='bi bi-check-circle-fill text-success'> Oui</i>
                   </button>
                 </form>
                 <form action="/remove/disagree" method="POST">
                   <input type="hidden" name="adder" value="<%= data.pseudo %>"/>
-                  <button type="submit" class="btn bg-warning-light fst-italic fw-bold px-2 py-1 p-0 m-0">
+                  <button type="submit" class="btn fst-italic fw-bold px-2 py-1 m-0">
                     <i class="bi bi-x-circle-fill text-danger"> Non</i>
                   </button>
                 </form>
@@ -104,11 +105,11 @@
           <% }); %> 
         </div> 
         <!-- Demandes envoyées -->
-        <div>
-          <p class="text-center fw-bold text-secondary mt-4 fs-4">Demandes envoyées :</p>
+        <div class="bg-primary-light shadow">
+          <p class="text-center fw-bold text-light bg-primary fs-4 s mt-4 m-0">Demandes envoyées :</p>
           <% friendsSend.forEach(data => { %>
-            <div class="d-flex justify-content-center bg-info-light">
-              <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2" style="width: 250px;">
+            <div class="d-flex justify-content-center mt-2">
+              <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
                   <img 
                     src="./uploads/<%= data.photo %>" 
                     class="card-img-top round wh-25" 
@@ -120,18 +121,18 @@
                 <input type="hidden" name="adder" value="<%= user.pseudo %>"/>
                 <input type="hidden" name="asked" value="<%= data.pseudo %>"/>
                 <button class="btn px-2 fst-italic text-info-dark fw-bold" type="submit">
-                  <i class="bi bi-dash-circle-fill text-danger "> </i> Annuler
+                  <i class="bi bi-dash-circle-fill text-danger"> </i> Annuler
                 </button>
               </form>
             </div>
           <% }); %> 
         </div>   
         <!-- Utilisateurs disponibles -->
-        <div>
-          <p class="text-center fw-bold text-success mt-4 fs-4">Utilisateurs disponibles :</p>
+        <div class="bg-success-light shadow">
+          <p class="text-center fw-bold text-light bg-success fs-4 s mt-4 m-0">Utilisateurs disponibles :</p>
           <% userPublicList.forEach(data => { %>
-            <div class="d-flex justify-content-center bg-success-light mt-1">
-              <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2" style="width: 250px;">
+            <div class="d-flex justify-content-center mt-2">
+              <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
                   <img 
                     src="./uploads/<%= data.photo %>" 
                     class="card-img-top round wh-25" 
@@ -143,13 +144,84 @@
                 <input type="hidden" name="adder" value="<%= user.pseudo %>"/>
                 <input type="hidden" name="asked" value="<%= data.pseudo %>"/>
                 <button class="btn px-2 fst-italic text-success fw-bold" type="submit">
-                  <i class="bi bi-plus-circle-fill"> Ajouter</i> 
-                  
+                  <i class="bi bi-person-fill-add"> Ajouter</i>
                 </button>
               </form>
             </div>
           <% }); %> 
-        </div>     
+        </div>   
+        <!-- Mes amis -->
+        <div class="bg-info-light shadow">
+          <h3 class="text-center text-light bg-info fw-bold s mt-4 m-0">Mes Amis :</h3>
+          <% friends.forEach(data =>  { %>
+            <div class="d-flex justify-content-center mt-2">
+              <!-- info friend -->
+              <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
+                <img 
+                src="./uploads/<%= data.photo %>" 
+                class="card-img-top round wh-25" 
+                alt="photo de profil ami"
+                >
+                <span class="text-capitalize"><%= data.pseudo %></span>
+              </div>
+              <!-- btn modal : supprimer-->
+              <button 
+                type="button" 
+                class="btn px-2 fst-italic text-info-dark  fw-bold" 
+                data-bs-toggle="modal" 
+                data-bs-target="#deleteFriendModal<%= data.pseudo %>"
+              >
+                <i class="bi bi-person-x-fill text-danger "> </i> Retirer
+              </button>
+              <!-- Modal : supprimer -->
+              <div 
+              class="modal fade" 
+              id="deleteFriendModal<%= data.pseudo %>" tabindex="-1" 
+              aria-labelledby="deleteFriendModalLabel<%= data.pseudo %>" 
+              aria-hidden="true"
+              >
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <!--Title modal -->
+                    <div class="modal-header bg-danger-light">
+                      <h5 
+                        class="modal-title fw-bold" 
+                        id="deleteFriendModalLabel<%= data.pseudo %>"
+                      >
+                        Confirmer la suppression
+                      </h5>
+                      <!--Close btn -->
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <!--Body modal -->
+                    <div class="modal-body text-center">
+                      <p>
+                        Supprimer 
+                        <span class="text-secondary fst-italic text-capitalize fw-bold"> 
+                          "<%= data.pseudo %>"
+                        </span> 
+                        de vos amis ?
+                      </p>
+                      
+                    </div>
+                    <!--Footer modal -->
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Annuler
+                      </button>
+                      <form id="deleteFriend<%= data.pseudo %>" action="/remove/deleted" method="POST">
+                        <input type="hidden" name="adder" value="<%= data.pseudo %>"/>
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                      </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- fin Modal -->
+            </div>
+          <% }); %> 
+        </div>  
       </div>
     </div>
   </div>
