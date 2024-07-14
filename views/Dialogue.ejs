@@ -58,9 +58,9 @@
               </span>
               <% if (message.expediteur === user.pseudo) { %>
                 <div class="d-flex justify-content-end">
-                  <div class="d-flex justify-content-end align-items-center fs-5 bg-success-light gap-2 mw-85 round-msg me-2 px-2">
+                  <div class="d-flex justify-content-end align-items-center fs-5 bg-success gap-2 mw-85 round-msg me-2 px-2">
                     <div class="d-flex justify-content-center align-items-center gap-2 m-2">
-                      <p class="fw-light text-center text-dark m-0 p-0">
+                      <p class="fw-light text-center text-light m-0 p-0">
                         <%= message.message %>
                       </p>
                       <p class="d-flex fs-5 text-capitalize text-success m-0 p-0">
@@ -94,7 +94,7 @@
                 </div>
               <% } else { %>
                 <div class="d-flex justify-content-start">
-                  <div class="d-flex justify-content-start align-items-center fs-5 bg-info-light gap-2 mw-85 round-msg ms-2 px-2">
+                  <div class="d-flex justify-content-start align-items-center fs-5 bg-info gap-2 mw-85 round-msg ms-2 px-2">
                     <div class="d-flex justify-content-start align-items-center gap-2 m-2">
                       <div class="cible hidden align-items-center">
                         <button 
@@ -111,7 +111,7 @@
                           <img src="/uploads/<%= chattingUser.photo %>" class="card-img-top round wh-25" alt="img profile">
                           <%= // message.expediteur %> 
                         </p>
-                        <p class="fw-light text-center text-dark m-0 p-0">
+                        <p class="fw-light text-center text-light m-0 p-0">
                           <%= message.message %>
                         </p>
                       </div>

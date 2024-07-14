@@ -1,58 +1,42 @@
-<nav class="navbar navbar-expand navbar-dark bg-secondary-light fixed-top px-2 m-0 p-0">
-  <a class="navbar-brand fw-bold text-dark-75" href="/userpage">
-    <img 
-      src="/uploads/logoEasychat.png" 
-      class="card-img-top wh-25-21"
-      >
-      <span class="d-none d-sm-inline text-dark-75 "> EasyChat</span>
-  </a>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ms-auto justify-content-between gap-2">
-      <% if (!user) { %>
-        <li class="nav-item">
-          <a class="text-black-50 fw-bold underline" href="/register">Inscription</a>
-        </li>
-        <li class="nav-item">
-          <a class="text-black-50 fw-bold underline" href="/login">Connexion</a>
-        </li>
-      <% } else { %>
+<nav class="navbar navbar-expand navbar-dark bg-secondary-light fixed-top m-0 p-0">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <a class="navbar-brand fw-bold text-dark-75 d-flex align-items-center" href="/userpage">
+      <img src="/uploads/logoEasychat.png" class="card-img-top wh-25-21" alt="Logo">
+      <span class="d-none d-sm-inline text-dark-75 ms-2">EasyChat</span>
+    </a>
+    <div class="d-flex flex-grow-1 justify-content-center">
+      <% if (user) { %>
         <!-- Search -->
-        <li class="nav-item col-4 col-sm-6 d-flex">
-          <form action="" >
-            <div class="d-flex flex ">
-              <input  
-                type="text"  
-                class="form-control text-center fst-italic rounded-end-0 rounded-start-4 m-0 p-0 px-2" 
-                placeholder="check.."
-              >
-              <button 
-                type="submit" 
-                class="btn btn-secondary btn-sm rounded-end-4 rounded-start-0 m-0 p-0 ps-1 pe-2"
-              >
-                <i class="bi bi-search text-light "></i>
-              </button>
-            </div>
-          </form>
-        </li>
-        <li class="nav-item d-flex align-items-center m-0 p-0 gap-1">
-          <% if (user.photo){ %>
-            <img src="/uploads/<%= user.photo %>" class="card-img-top round wh-25">
-            <span class="text-info-dark fw-bold text-capitalize">
-              <%= user.pseudo  %>
-            </span>
-          <% } else { %>
-          <span class="text-dark-75 fw-bold text-capitalize">
-            <i class="bi bi-person-circle"><%= user.pseudo  %></i>
-            <% } %>
-          </span>
-        </li>
-        <li class="nav-item d-flex align-items-center">
-          <a class="btn bg-secondary-light text-black-50 fw-bold text-decoration-none m-0 p-0" href="/logout">
-            <span class="d-none d-sm-inline">Quitter</span> 
-            <i class="bi bi-box-arrow-right"></i> 
-          </a>
-        </li>
+        <form action="" class="d-flex">
+          <input type="text" 
+            class="form-control text-center fst-italic rounded-end-0 rounded-start-4 m-0 p-0 px-2" 
+            placeholder="recherche..."
+          >
+          <button type="submit" class="btn btn-secondary btn-sm rounded-end-4 rounded-start-0 m-0 p-0 ps-1 pe-2">
+            <i class="bi bi-search text-light"></i>
+          </button>
+        </form>
       <% } %>
-    </ul>
+    </div>
+    <div>
+      <% if (user) { %>
+        <a 
+          class="btn bg-secondary-light text-black-50 fw-bold text-decoration-none m-0 p-0 d-flex align-items-center" 
+          href="/logout"
+        >
+          <span class="d-none d-sm-inline">Quitter</span>
+          <i class="bi bi-box-arrow-right ms-2"></i>
+        </a>
+      <% } else { %>
+        <ul class="navbar-nav ms-auto justify-content-center gap-2">
+          <li class="nav-item">
+            <a class="text-black-50 fw-bold underline" href="/register">Inscription</a>
+          </li>
+          <li class="nav-item">
+            <a class="text-black-50 fw-bold underline" href="/login">Connexion</a>
+          </li>
+        </ul>
+      <% } %>
+    </div>
   </div>
 </nav>

@@ -73,7 +73,7 @@ if (isCurrentUser) {
   const messageContentDiv = document.createElement('div');
   messageContentDiv.classList.add(
     'd-flex', 'justify-content-end', 'align-items-center', 'fs-5',
-    'bg-success-light', 'gap-2', 'mw-85', 'round-msg', 'me-2', 'px-2'
+    'bg-success', 'gap-2', 'mw-85', 'round-msg', 'me-2', 'px-2'
   );
   messageContentDiv2.appendChild(messageContentDiv);
 
@@ -82,7 +82,7 @@ if (isCurrentUser) {
   messageContentDiv.appendChild(contentDivExpediteur);
 
   const messageParagraph = document.createElement('p');
-  messageParagraph.classList.add('fw-light', 'text-center', 'text-dark', 'm-0', 'p-0');
+  messageParagraph.classList.add('fw-light', 'text-center', 'text-light', 'm-0', 'p-0');
   messageParagraph.textContent = data.text;
   contentDivExpediteur.appendChild(messageParagraph);
 
@@ -132,7 +132,7 @@ if (isCurrentUser) {
   const messageContentDiv = document.createElement('div');
   messageContentDiv.classList.add(
     'd-flex', 'justify-content-start', 'align-items-center', 'fs-5',
-    'bg-info-light', 'gap-2', 'mw-85', 'round-msg', 'ms-2', 'px-2'
+    'bg-info', 'gap-2', 'mw-85', 'round-msg', 'ms-2', 'px-2'
   );
   messageContentDiv2.appendChild(messageContentDiv);
 
@@ -163,7 +163,7 @@ if (isCurrentUser) {
   contentDivDestinataire.appendChild(profileImg);
 
   const messageParagraph = document.createElement('p');
-  messageParagraph.classList.add('fw-light', 'text-center', 'text-dark', 'm-0', 'p-0');
+  messageParagraph.classList.add('fw-light', 'text-center', 'text-light', 'm-0', 'p-0');
   messageParagraph.textContent = data.text;
   contentDivDestinataire.appendChild(messageParagraph);
 }
