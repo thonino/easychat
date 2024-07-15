@@ -75,8 +75,10 @@
           </div>
         </div>
         <!-- Demandes reçues -->
-        <div class="bg-warning-light shadow pb-3">
-          <p class="text-center fw-bold text-light bg-warning fs-4 mt-4 m-0">Demandes reçues :</p>
+        <div class="bg-warning-light shadow rounded-top pb-3">
+          <p class="text-center fw-bold text-light bg-warning fs-4 rounded-top mt-4 m-0">
+            Demandes reçues :
+          </p>
           <% friendsReceived.forEach(data => { %>
             <div class="d-flex justify-content-center mt-2">
               <div class="d-flex align-items-center  fw-bold text-black-50 fs-5 gap-2" style="width: 180px;">
@@ -105,11 +107,16 @@
           <% }); %> 
         </div> 
         <!-- Demandes envoyées -->
-        <div class="bg-primary-light shadow pb-3">
-          <p class="text-center fw-bold text-light bg-primary fs-4 s mt-4 m-0">Demandes envoyées :</p>
+        <div class="bg-primary-light shadow rounded-top pb-3">
+          <p class="text-center fw-bold text-light bg-primary fs-4 rounded-top mt-4 m-0">
+            Demandes envoyées :
+          </p>
           <% friendsSend.forEach(data => { %>
             <div class="d-flex justify-content-center mt-2">
-              <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
+              <div 
+                class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" 
+                style="width: 230px;"
+              >
                   <img 
                     src="./uploads/<%= data.photo %>" 
                     class="card-img-top round wh-25" 
@@ -128,8 +135,10 @@
           <% }); %> 
         </div>   
         <!-- Utilisateurs disponibles -->
-        <div class="bg-success-light shadow pb-3">
-          <p class="text-center fw-bold text-light bg-success fs-4 s mt-4 m-0">Utilisateurs disponibles :</p>
+        <div class="bg-success-light shadow rounded-top pb-3">
+          <p class="text-center fw-bold text-light bg-success fs-4 rounded-top mt-4 m-0">
+            Utilisateurs disponibles :
+          </p>
           <% userPublicList.forEach(data => { %>
             <div class="d-flex justify-content-center mt-2">
               <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
@@ -151,8 +160,8 @@
           <% }); %> 
         </div>   
         <!-- Mes amis -->
-        <div class="bg-info-light shadow pb-3">
-          <h3 class="text-center text-light bg-info fw-bold s mt-4 m-0">Mes Amis :</h3>
+        <div class="bg-info-light shadow rounded-top pb-3">
+          <h3 class="text-center text-light bg-info fw-bold rounded-top mt-4 m-0">Mes Amis :</h3>
           <% friends.forEach(data =>  { %>
             <div class="d-flex justify-content-center mt-2">
               <!-- info friend -->

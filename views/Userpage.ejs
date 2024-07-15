@@ -48,7 +48,7 @@
         </div>
         <!-- container -->
         <div class="container">
-          <h1 class="text-secondary fw-bold mt-2 text-center">Profile</h1>
+          <h1 class="text-secondary fw-bold mt-2 text-center">Mon Profile</h1>
           <div class="d-flex flex-column align-items-center">
             <div class="card shadow" style="width: 200px;">
               <!-- Upload btn Modal -->
@@ -65,7 +65,7 @@
                 class="card-img-top rounded-0" 
                 alt="photo de profil ami" 
               >
-              <div class="card-body">
+              <div class="card-body m-0 p-0">
                 <p class="card-text text-center text-secondary fw-bold text-capitalize fs-2">
                   <%= user.pseudo  %>
                 </p>
@@ -80,7 +80,7 @@
           </div>
           <!-- Mes amis -->
           <div class="bg-info-light shadow mt-4 pb-2">
-            <h3 class="text-center text-light bg-info fw-bold ">Mes Amis :</h3>
+            <h3 class="text-center text-light bg-info fw-bold rounded-top">Mes Amis :</h3>
             <% friends.forEach(data =>  { %>
               <div class="d-flex justify-content-center mt-2">
                 <!-- info friend -->

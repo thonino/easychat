@@ -80,8 +80,10 @@ body, html {
 .bg-primary-light { background-color: #A6C9FE; }
 .bg-secondary-light { background-color: #e8e8e8; }
 
-
-
+.input-class , .input-class:hover{
+  outline: none;
+  box-shadow: none;
+}
 
 /* Styles pour screen sm */
 @media (max-width:  768px) {

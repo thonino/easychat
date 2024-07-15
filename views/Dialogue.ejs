@@ -43,13 +43,29 @@
           </div>
         </div>
       </div>        
-      <div class="d-flex flex-column overflow-hidden">
-        <!-- Bouton Options -->
-        <div class="d-flex justify-content-center mt-2">
-          <button id="toggle" class="btn btn-secondary btn-sm text-light">
-            <i class="bi bi-gear-fill"></i>
+      <div class="d-flex flex-column  overflow-hidden">
+        <!-- Top body -->
+        <div class="d-flex justify-content-center gap-2 mt-2">
+        <!-- Formulaire de recherche -->
+        <form id="searchForm" action="/dialogue/<%= chatting.pseudo %>" method="GET" class="d-flex">
+          <input 
+            type="text" 
+            class="form-control input-class text-center fst-italic rounded-end-0 rounded-start-4" 
+            name="search" 
+            placeholder="recherche..."
+          >
+          <button type="submit" class="btn btn-secondary rounded-end-4 rounded-start-0 ps-1 pe-2">
+            <i class="bi bi-search text-light"></i>
           </button>
+        </form>
+          <!-- Bouton Options -->
+          <div class="">
+            <button id="toggle" class="btn btn-secondary text-light">
+              <i class="bi bi-gear-fill"></i>
+            </button>
+          </div>
         </div>
+        <!-- Fin Top body-->
         <div id="messageBox" class="d-flex reverseMessage overflow-y-auto mb-3">
           <% messagesFilter.reverse().forEach(message => { %>
             <div class="text-center fw-bold fst-italic mt-3">
@@ -58,21 +74,20 @@
               </span>
               <% if (message.expediteur === user.pseudo) { %>
                 <div class="d-flex justify-content-end">
-                  <div class="d-flex justify-content-end align-items-center fs-5 bg-success gap-2 mw-85 round-msg me-2 px-2">
+                  <div class="d-flex justify-content-end align-items-center fs-5 bg-primary gap-2 mw-85 round-msg me-2 px-2">
                     <div class="d-flex justify-content-center align-items-center gap-2 m-2">
                       <p class="fw-light text-center text-light m-0 p-0">
                         <%= message.message %>
                       </p>
-                      <p class="d-flex fs-5 text-capitalize text-success m-0 p-0">
+                      <p class="d-flex fs-5 text-capitalize  m-0 p-0">
                         <img src="/uploads/<%= user.photo %>" class="card-img-top round wh-25" alt="img profile">
-                        <%= // message.expediteur %> 
                       </p>
                     </div>
                     <div class="cible hidden">
                       <div class="d-flex justify-content-center align-items-center pe-2">
                         <button 
                           type="button" 
-                          class="btn btn-success btn-sm" 
+                          class="btn btn-light btn-sm" 
                           data-bs-toggle="modal" 
                           data-bs-target="#editMessageModal<%= message._id %>"
                         >
@@ -108,8 +123,7 @@
                       </div>
                       <div class="d-flex justify-content-start align-items-center gap-2">
                         <p class="d-flex fs-5 text-capitalize text-info-dark m-0 p-0 gap-1">
-                          <img src="/uploads/<%= chattingUser.photo %>" class="card-img-top round wh-25" alt="img profile">
-                          <%= // message.expediteur %> 
+                          <img src="/uploads/<%= chatting.photo %>" class="card-img-top round wh-25" alt="img profile">
                         </p>
                         <p class="fw-light text-center text-light m-0 p-0">
                           <%= message.message %>

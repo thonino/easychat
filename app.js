@@ -67,17 +67,17 @@ app.use(cookieParser());
 // Créer un dossier 'uploads' si nécessaire
 const fs = require('fs');
 const path = require('path');
+const { log } = require('console');
 const uploadDir = path.join(__dirname, 'uploads');
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
-
 io.on('connection', (socket) => {
   const user = socket.handshake.session.user;
-  const chattingWith = socket.handshake.session.chatting;
-  console.log('chattingWith : ', chattingWith);
-  if (user) {
+  const chattingWith = socket.handshake.session.chatting?.pseudo;
+
+  if (user && user.pseudo && chattingWith) {
     console.log(`${user.pseudo} a ouvert le chat pour : ${chattingWith}`);
     const room1 = `${user.pseudo.toLowerCase()}-${chattingWith.toLowerCase()}`;
     const room2 = `${chattingWith.toLowerCase()}-${user.pseudo.toLowerCase()}`;
@@ -123,6 +123,8 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
       console.log(`${user.pseudo} : logout`);
     });
+  } else {
+    console.error('User or chattingWith is undefined or does not have a pseudo');
   }
 });
 
@@ -264,7 +266,8 @@ app.post('/register', function (req, res) {
 // Get login
 app.get('/login', (req, res) => {
   const user = req.session.user;
-  res.render('LoginForm', { user: user });
+  const messagesFilter = res.locals.messagesFilter;
+  res.render('LoginForm', { user: user, messagesFilter });
 });
 
 // Post login
@@ -301,18 +304,14 @@ app.get('/userpage', async (req, res) => {
   const chats = res.locals.chats; 
   const logoPhoto = user.photo ? user.photo : 'logo.jpg';
   const chatting = res.locals.chatting;
+  const messagesFilter = res.locals.messagesFilter;
 
   res.render('userpage', {
     user: res.locals.user,
     contacts: res.locals.contacts,
     userPublicList: res.locals.userPublicList,
-    chatting,
-    user,
-    friends,
-    friendsReceived,
-    friendsSend,
-    chats, 
-    logoPhoto,
+    chatting, user, friends, friendsReceived, friendsSend, 
+    chats,logoPhoto, messagesFilter
   });
 });
 
@@ -505,7 +504,48 @@ app.post('/remove/:element', (req, res) => {
   .catch(err => { console.log(err); res.redirect('/error');});
 });
 
-/// Get dialogue
+// Search 1 
+app.post('/search', async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  const user = req.session.user;
+  const search = req.body.search;
+  const chatting = res.locals.chatting;
+  
+  const heure = moment().format('h:mm:ss');
+// console.log("search chattingUser.photo : ",chatting.pseudo);
+  try {
+    let messagesFilter = [];
+    if (search) {
+      const messages = await Message.find({
+        $or: [
+          { expediteur: user.pseudo },
+          { destinataire: user.pseudo }
+        ]
+      });
+      messagesFilter = messages.filter(message => 
+        (message.expediteur === user.pseudo && message.destinataire === chatting.pseudo) ||
+        (message.destinataire === user.pseudo && message.expediteur === chatting.pseudo)
+      );
+      messagesFilter = messages.filter(message =>
+        message.message.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    res.render('search', {
+      user,
+      search,
+      messagesFilter,
+      heure,
+      chatting,
+    });
+  } catch (err) {
+    console.error(err);
+    res.redirect('/error');
+  }
+});
+
+// Get dialogue
 app.get('/dialogue/:chatting', async (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
@@ -515,26 +555,36 @@ app.get('/dialogue/:chatting', async (req, res) => {
   const friends = res.locals.friends;
   const friendsAsk = res.locals.friendsAsk;
   const chats = res.locals.chats;
+  const search = req.query.search; 
+
   try {
     // Trouver l'utilisateur avec le pseudo "chatting"
     const chattingUser = await User.findOne({ pseudo: chattingPseudo });
-    req.session.chatting = chattingPseudo;
-    res.locals.chatting = chattingPseudo;
+    req.session.chatting = chattingUser;
+    res.locals.chatting = chattingUser;
     // Traitement des messages
     const messages = await Message.find({
       $or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
     });
     const heure = moment().format('h:mm:ss');
-    const messagesFilter = messages.filter(message => 
+    let messagesFilter = messages.filter(message => 
       (message.expediteur === user.pseudo && message.destinataire === chattingPseudo) ||
       (message.destinataire === user.pseudo && message.expediteur === chattingPseudo)
     );
+    let messagesFilterSearcher = [];
+    if (search) {
+      messagesFilterSearcher = messagesFilter.filter(message =>
+        message.message.toLowerCase().includes(search.toLowerCase())
+      );
+      console.log('search: ', search);
+    }
     res.render('Dialogue', {
-      messagesFilter: messagesFilter,
-      heure: heure,
-      user: user,
-      chatting: chattingPseudo,
-      chattingUser, 
+      messagesFilter,
+      messagesFilterSearcher,
+      heure,
+      user,
+      chatting: chattingUser,
+      showModal: !!search,  
       friends,
       friendsAsk,
       chats
@@ -576,6 +626,10 @@ app.delete('/delete-message/:messageId', (req, res) => {
   .catch(error => { console.error('Erreur destinataire :', error); });
 });
 
+
+
+// cmd windows-> tape : ipconfig -> ipv4 : 192.168.1.237
+// for phone :  192.168.1.187:5000
 const PORT = 5001;
 server.listen(PORT, () => {
   console.log(`Serveur écoutant sur le port ${PORT}`);

@@ -1,11 +1,19 @@
 <!-- Modals for editing and deleting messages -->
 <% messagesFilter.forEach(message => { %>
   <!-- Edit Modal -->
-  <div class="modal fade" id="editMessageModal<%= message._id %>" tabindex="-1" aria-labelledby="editMessageModalLabel<%= message._id %>" aria-hidden="true">
+  <div 
+    class="modal fade" 
+    id="editMessageModal<%= message._id %>" 
+    tabindex="-1" 
+    aria-labelledby="editMessageModalLabel<%= message._id %>" 
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header bg-success-light">
-          <h5 class="modal-title" id="editMessageModalLabel<%= message._id %>">Modifier Message</h5>
+          <h5 class="modal-title" id="editMessageModalLabel<%= message._id %>">
+            Modifier Message
+          </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -16,11 +24,20 @@
               <label for="message" class="text-capitalize fst-italic fw-bold mb-2 ">à : 
                 <span class=" text-info"><%= message.destinataire %> </span>
               </label>
-              <textarea class="form-control bg-info-light" name="message" rows="4" required><%= message.message %></textarea>
+              <textarea 
+                class="form-control bg-info-light" 
+                name="message" 
+                rows="4" 
+                required
+              >
+                <%= message.message %>
+              </textarea>
             </div>
             <input type="hidden" name="datetime" value="<%= heure %>">
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Annuler
+              </button>
               <button type="submit" class="btn btn-success">Enregistrer</button>
             </div>
           </form>
@@ -29,11 +46,19 @@
     </div>
   </div>
   <!-- Delete Modal -->
-  <div class="modal fade" id="deleteMessageModal<%= message._id %>" tabindex="-1" aria-labelledby="deleteMessageModalLabel<%= message._id %>" aria-hidden="true">
+  <div 
+    class="modal fade" 
+    id="deleteMessageModal<%= message._id %>" 
+    tabindex="-1" 
+    aria-labelledby="deleteMessageModalLabel<%= message._id %>" 
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header bg-danger-light">
-          <h5 class="modal-title fw-bold" id="deleteMessageModalLabel<%= message._id %>">Confirmer la suppression</h5>
+          <h5 class="modal-title fw-bold" id="deleteMessageModalLabel<%= message._id %>">
+            Confirmer la suppression
+          </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-center">
@@ -52,3 +77,71 @@
     </div>
   </div>
 <% }) %>
+
+<!-- Search Modal -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-top">
+    <div class="modal-content">
+      <!-- Head -->
+      <div class="modal-header bg-info-light">
+        <h5 class="modal-title" id="searchModalLabel">Résultats de la recherche</h5>
+        <button 
+          class="btn-close me-2" 
+          type="button" 
+          data-bs-dismiss="modal" 
+          aria-label="Close">
+        </button>
+      </div>
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="searchResults" class="d-flex flex-column">
+          <% if (messagesFilterSearcher && messagesFilterSearcher.length > 0) { %>
+            <% messagesFilterSearcher.forEach(message => { %>
+              <div class="d-flex justify-content-center mt-2">
+                <% if (message.expediteur === user.pseudo) { %>
+                  <div class="d-flex fs-5 bg-success mw-85 round-msg gap-2 p-2">
+                    <span class="fs-6 text-muted fw-light">
+                      <%= message.datetime %>
+                    </span>
+                    <p class="d-flex fs-5 text-capitalize text-white m-0">
+                      <img src="/uploads/<%= user.photo %>" class="card-img-top round wh-25" alt="Profile image">
+                    </p>
+                    <p class="fw-light text-center text-light m-0">
+                      <%= message.message %>
+                    </p>
+                  </div>
+                <% } else { %>
+                  <div class="d-flex fs-5 bg-info mw-85 round-msg gap-2 p-2">
+                    <span class="fs-6 text-muted fw-light">
+                      <%= message.datetime %>
+                    </span>
+                    <p class="d-flex fs-5 text-capitalize text-info-dark m-0 gap-1">
+                      <img src="/uploads/<%= chatting.photo %>" class="card-img-top round wh-25" alt="Profile image">
+                    </p>
+                    <p class="fw-light text-center text-light m-0">
+                      <%= message.message %>
+                    </p>
+                  </div>
+                <% } %>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <p class="text-center">Aucun message trouvé.</p>
+          <% } %>
+        </div>
+      </div>
+      <!-- Foot -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if (showModal) { %>
+  <script>
+    // Afficher le modal après le chargement de la page
+    var searchModal = new bootstrap.Modal(document.getElementById('searchModal'));
+    searchModal.show();
+  </script>
+<% } %>

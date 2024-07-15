@@ -1,12 +1,12 @@
-  <p class="fw-bold text-light bg-info fs-3 mb-2 pt-1 m-0" style="height: 47px">
-    Chats  <i class="bi bi-chat-square-text-fill"></i>
-  </p>
+<p class="fw-bold text-light bg-info fs-3 mb-2 pt-1 m-0" style="height: 47px">
+  Chats <i class="bi bi-chat-square-text-fill"></i>
+</p>
 <% chats.forEach(data => { %>
   <div class="d-flex justify-content-between align-items-center mx-3 mt-1">
     <a 
       href="/dialogue/<%= data.pseudo %>" 
       class="text-decoration-none text-capitalize fw-bold fs-5 m-0 p-0
-      <%= chatting === data.pseudo ? 'text-info' : 'text-secondary' %>"
+        <%= chatting && chatting.pseudo === data.pseudo ? 'text-info' : 'text-secondary' %>"
     >
     <img src="/uploads/<%= data.photo %>" class="card-img-top round wh-25" alt="...">
       <%= data.pseudo %><br>
