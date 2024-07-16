@@ -19,7 +19,7 @@
         <a 
           href="/dialogue/<%= data.pseudo %>" 
           class="text-decoration-none text-capitalize fw-bold fs-5 m-0 p-0
-          <%= chatting.pseudo === data.pseudo ? 'text-info' : 'text-secondary' %>">
+          <%= chatting && chatting.pseudo === data.pseudo ?  'text-info' : 'text-secondary' %>">
           <%= data.pseudo %><br>
         </a>
         <form action="/archive" method="POST" class="m-0 p-0">

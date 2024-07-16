@@ -76,14 +76,12 @@ if (!fs.existsSync(uploadDir)) {
 io.on('connection', (socket) => {
   const user = socket.handshake.session.user;
   const chattingWith = socket.handshake.session.chatting?.pseudo;
-
   if (user && user.pseudo && chattingWith) {
     console.log(`${user.pseudo} a ouvert le chat pour : ${chattingWith}`);
     const room1 = `${user.pseudo.toLowerCase()}-${chattingWith.toLowerCase()}`;
     const room2 = `${chattingWith.toLowerCase()}-${user.pseudo.toLowerCase()}`;
     socket.join(room1);
     socket.join(room2);
-
     socket.on('sendText', async ({ text }) => {
       const heure = moment().format('h:mm:ss');
       const newMessage = new Message({
@@ -99,10 +97,8 @@ io.on('connection', (socket) => {
           De: ${newMessage.expediteur} 
           A: ${newMessage.destinataire}`
         );
-
         const expediteurData = await User.findOne({ pseudo: newMessage.expediteur });
         const destinataireData = await User.findOne({ pseudo: newMessage.destinataire });
-
         io.to(`${newMessage.expediteur}-${newMessage.destinataire}`)
           .to(`${newMessage.destinataire}-${newMessage.expediteur}`)
           .emit('receiveText', {
@@ -119,7 +115,6 @@ io.on('connection', (socket) => {
         console.error("Erreur message ou de MAJ friend:", err);
       }
     });
-
     socket.on('disconnect', () => {
       console.log(`${user.pseudo} : logout`);
     });
@@ -127,7 +122,6 @@ io.on('connection', (socket) => {
     console.error('User or chattingWith is undefined or does not have a pseudo');
   }
 });
-
 
 // Session  chatting
 app.use((req, res, next) => {
@@ -137,7 +131,6 @@ app.use((req, res, next) => {
   res.locals.chatting = req.session.chatting;
   next();
 });
-
 // Message d'alerte
 app.use((req, res, next) => {
   res.locals.confirm = req.session.confirm;
@@ -146,7 +139,6 @@ app.use((req, res, next) => {
   delete req.session.alertType;
   next();
 });
-
 const makeAvailable = async (req, res, next) => {
   try {
     const user = req.session.user;
@@ -155,42 +147,33 @@ const makeAvailable = async (req, res, next) => {
     let chats = [];
     let friendsReceived = [];
     let friendsSend = [];
-
     if (user) {
       userPublicList = await User.find();
       const allFriends = await Friend.find();
-
       // Filtre tous les utilisateurs amis
       const confirmedFriends = allFriends.filter(friend => { 
         return friend.confirm === true &&
               (friend.adder === user.pseudo || friend.asked === user.pseudo);
       });
-
       // Filtrer utilisateur qui chattent avec user.pseudo
       const chattingFriends = confirmedFriends.filter(friend => friend.chat && friend.chat.includes(user.pseudo));
-
       // Garde "adder/asker" different de user.pseudo => crée liste amis
       const friendsPseudos = confirmedFriends.map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
-
       // Garde "adder/asker" different de user.pseudo => crée liste amis
       const chatsPseudos = chattingFriends.map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
-
       // Filtre demandes reçues
       const friendsReceivedPseudos = allFriends
         .filter(friend => friend.confirm === false && friend.asked === user.pseudo)
         .map(friend => friend.adder);
-
       // Filtre demandes envoyées
       const friendsSendPseudos = allFriends
         .filter(friend => friend.confirm === false && friend.adder === user.pseudo)
         .map(friend => friend.asked);
-
       // Récupérer les objets utilisateur complets pour chaque liste
       friends = await User.find({ pseudo: { $in: friendsPseudos } });
       chats = await User.find({ pseudo: { $in: chatsPseudos } });
       friendsReceived = await User.find({ pseudo: { $in: friendsReceivedPseudos } });
       friendsSend = await User.find({ pseudo: { $in: friendsSendPseudos } });
-
       // Filtrer les utilisateurs disponibles par pseudo
       userPublicList = userPublicList.filter(data => data.status === true);
       userPublicList = userPublicList.filter(data => !friendsPseudos.includes(data.pseudo));
@@ -198,21 +181,18 @@ const makeAvailable = async (req, res, next) => {
       userPublicList = userPublicList.filter(data => !friendsSendPseudos.includes(data.pseudo));
       userPublicList = userPublicList.filter(data => data.pseudo !== user.pseudo);
     }
-
     res.locals.user = user;
     res.locals.userPublicList = userPublicList;
     res.locals.friends = friends;
     res.locals.friendsReceived = friendsReceived;
     res.locals.friendsSend = friendsSend;
     res.locals.chats = chats;
-
     next();
   } catch (err) {
     console.error("Erreur => makeAvailable :", err);
     res.render("error", { message: "Erreur => makeAvailable" });
   }
 };
-
 app.use(makeAvailable);
 
 //---------------------------------------ROOTS---------------------------------------//
@@ -224,15 +204,15 @@ app.get('/', (req, res) => {
   res.render('home', { user: user, heure: heure });
 });
 
-// Route upload photo
+// Upload photo
 app.post('/upload', upload.single('photo'), (req, res) => {
   const user = req.session.user;
   if (!user) {return res.redirect('/login'); }
   const fileName = req.file.filename; 
   User.findOneAndUpdate(
-    { _id: user._id }, // Cibler user
+    { _id: user._id },   // Cibler user
     { photo: fileName }, // Mettre à jour photo
-    { new: true } // Retourner le document mis à jour
+    { new: true }        // Retourner le document mis à jour
   )
   .then((updatedUser) => {
     req.session.user = updatedUser;
@@ -244,6 +224,40 @@ app.post('/upload', upload.single('photo'), (req, res) => {
   });
 });
 
+// Edit datas
+app.post('/updateData', async (req, res) => {
+  if (!req.session.user) {return res.redirect('/login');}
+  const userId = req.session.user._id;
+  const { editPseudo, editEmail, editPassword, checkPassword } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {return res.status(404).send("Utilisateur non trouvé");}
+    if (!bcrypt.compareSync(checkPassword, user.password)) {
+      return res.status(400).send("Mot de passe invalide");
+    }
+    if (editPseudo) { user.pseudo = editPseudo; }
+    if (editEmail) { user.email = editEmail; }
+    if (editPassword) { user.password = bcrypt.hashSync(editPassword, 10); }
+    await user.save();
+    req.session.user = user; 
+    res.redirect(`/account/${user.pseudo}?confirm`);
+  } 
+  catch (error) {
+    console.error(error);
+    res.status(500).send("La mise à jour a échouée");
+  }
+});
+
+
+
+app.get('/account/:pseudo', (req, res) => {
+  if (!req.session.user) {return res.redirect('/login');}
+  const user = req.session.user;
+  const logoPhoto = user && user.photo ? user.photo : 'logo.jpg';
+  res.render('account', { user, logoPhoto });
+});
+
 // Get register
 app.get('/register', (req, res) => {
   const user = req.session.user;
@@ -251,7 +265,7 @@ app.get('/register', (req, res) => {
 });
 
 // Post register
-app.post('/register', function (req, res) {
+app.post('/register', (req, res) =>{
   const userData = new User({
     pseudo: req.body.pseudo,
     email: req.body.email,
@@ -274,7 +288,7 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   User.findOne({ pseudo: req.body.pseudo }).then(user => {
     if (!user) { res.send('Pseudo invalide'); }
-    if (!bcrypt.compareSync(req.body.password, user.password)) {
+    if (!bcrypt.compareSync(req.body.password, user.password)){
       res.send('Mot de passe invalide');
     }
     req.session.user = user;
@@ -293,10 +307,7 @@ app.get('/logout', (req, res) => {
 
 // Get userpage
 app.get('/userpage', async (req, res) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
+  if (!req.session.user) { return res.redirect('/login');}
   const user = req.session.user;
   const friends = res.locals.friends;
   const friendsReceived = res.locals.friendsReceived;
@@ -305,7 +316,6 @@ app.get('/userpage', async (req, res) => {
   const logoPhoto = user.photo ? user.photo : 'logo.jpg';
   const chatting = res.locals.chatting;
   const messagesFilter = res.locals.messagesFilter;
-
   res.render('userpage', {
     user: res.locals.user,
     contacts: res.locals.contacts,
@@ -315,41 +325,26 @@ app.get('/userpage', async (req, res) => {
   });
 });
 
-
 // Create new chat
 app.post('/chat', async (req, res) => {
   try {
     const user = req.session.user;
     const destinataire = req.body.destinataire;
-
-    // Cibler friend
     const friend = await Friend.findOne({
       $or: [
         { adder: user.pseudo, asked: destinataire },
         { adder: destinataire, asked: user.pseudo }
       ]
     });
-
-    // Initialiser le tableau chat s'il n'existe pas
-    if (!friend.chat) {
-      friend.chat = [];
-    }
-
-    // Ajouter user.pseudo si nécessaire
+    if (!friend.chat) { friend.chat = []; }
     if (!friend.chat.includes(user.pseudo) && friend.chat.length < 2) {
       friend.chat.push(user.pseudo);
     }
-
-    // Sauvegarder les modifications
     await friend.save();
-
     res.redirect(`/dialogue/${destinataire}`);
-  } catch (err) {
-    console.log(err);
-    res.redirect('/error');
-  }
+  } 
+  catch (err) { console.log(err); res.redirect('/error');}
 });
-
 
 // Archiver discussion 
 app.post('/archive', async (req, res) => {
@@ -357,7 +352,6 @@ app.post('/archive', async (req, res) => {
     const user = req.session.user;
     const destinataire = req.body.destinataire;
     console.log(`${user.pseudo} a archivé son chat avec : ${destinataire}`);
-    // Cibler friend
     const friend = await Friend.findOne({
       $or: [
         { adder: user.pseudo, asked: destinataire },
@@ -369,38 +363,28 @@ app.post('/archive', async (req, res) => {
     await friend.save(); 
     res.redirect(`/userpage`);
   } 
-  catch (err) { console.log(err); res.redirect('/error'); }
+  catch (err) { console.log(err); res.redirect('/error');}
 });
 
 // Get addfriend
 app.get('/addfriend', async (req, res) => {
   if (!req.session.user) { return res.redirect('/login'); }
-
   const user = req.session.user;
   const status = user.status;
   const logoPhoto = user.photo ? user.photo : 'logo.jpg';
   const chatting = res.locals.chatting;
-
   let state, color;
   // Déterminer l'état en fonction du statut
-  if (status === true) {
-    state = "visible";
-    color = "text-success";
-  } else {
-    state = "invisible";
-    color = "text-danger";
-  }
-
+  if (status === true) {state = "visible";color = "text-success";} 
+  else {state = "invisible"; color = "text-danger";}
   res.render('AddFriend', {
-    user, status, state, color, logoPhoto, 
+    user, status, state, color, logoPhoto, chatting,
     userPublicList: res.locals.userPublicList,
-    chatting,
     friends: res.locals.friends,
     friendsAsk: res.locals.friendsAsk,
     chats: res.locals.chats,
   });
 });
-
 
 // Post status
 app.post('/status', (req, res) => {
@@ -414,10 +398,10 @@ app.post('/status', (req, res) => {
   User.findOneAndUpdate(
     { _id: user._id }, // Cibler user
     { status: state }, // Mettre à jour status
-    { new: true } // Retourner le document
+    { new: true }      // Retourner le document
   )
   .then((updatedUser) => {
-    console.log("Le statut de ",user.pseudo, ' devient: ',state);
+    console.log("Le statut de ", user.pseudo, ' devient: ',state);
     // Mettre à jour la session user
     req.session.user = updatedUser;
     res.redirect('/addfriend');
@@ -434,10 +418,7 @@ app.post('/cancelrequest', (req, res) => {
   const asked = req.body.asked;
   if (adder && asked) {
     Friend.findOneAndRemove({
-      $or: [
-        { adder, asked },
-        { adder: asked, asked: adder }
-      ]
+      $or: [ { adder, asked }, { adder: asked, asked: adder } ]
     })
     .then(() => {
       req.session.confirm = `Anulation demande faite à : ${asked}`;
@@ -491,10 +472,7 @@ app.post('/remove/:element', (req, res) => {
   const adder = req.body.adder;
   const asked = user.pseudo;
   Friend.findOneAndRemove({
-    $or: [
-      { adder, asked },
-      { adder: asked, asked: adder }
-    ]
+    $or: [ { adder, asked },  { adder: asked, asked: adder } ]
   })
   .then(() => {
     req.session.confirm = `Vous avez ${action} ${adder}`;
@@ -506,23 +484,16 @@ app.post('/remove/:element', (req, res) => {
 
 // Search 1 
 app.post('/search', async (req, res) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
+  if (!req.session.user){ return res.redirect('/login');}
   const user = req.session.user;
   const search = req.body.search;
   const chatting = res.locals.chatting;
-  
   const heure = moment().format('h:mm:ss');
-// console.log("search chattingUser.photo : ",chatting.pseudo);
   try {
     let messagesFilter = [];
     if (search) {
       const messages = await Message.find({
-        $or: [
-          { expediteur: user.pseudo },
-          { destinataire: user.pseudo }
-        ]
+        $or: [{ expediteur: user.pseudo },{ destinataire: user.pseudo }]
       });
       messagesFilter = messages.filter(message => 
         (message.expediteur === user.pseudo && message.destinataire === chatting.pseudo) ||
@@ -532,67 +503,45 @@ app.post('/search', async (req, res) => {
         message.message.toLowerCase().includes(search.toLowerCase())
       );
     }
-    res.render('search', {
-      user,
-      search,
-      messagesFilter,
-      heure,
-      chatting,
-    });
-  } catch (err) {
-    console.error(err);
-    res.redirect('/error');
-  }
+    res.render('search', { user, search, messagesFilter, heure, chatting });
+  } 
+  catch (err) { console.error(err); res.redirect('/error');}
 });
 
-// Get dialogue
+// Get dialogue and handle search
 app.get('/dialogue/:chatting', async (req, res) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
+  if (!req.session.user) { return res.redirect('/login');}
   const user = req.session.user;
-  const chattingPseudo = req.params.chatting; 
+  const chattingPseudo = req.params.chatting;
   const friends = res.locals.friends;
   const friendsAsk = res.locals.friendsAsk;
   const chats = res.locals.chats;
-  const search = req.query.search; 
-
+  const search = req.query.search;
   try {
-    // Trouver l'utilisateur avec le pseudo "chatting"
     const chattingUser = await User.findOne({ pseudo: chattingPseudo });
     req.session.chatting = chattingUser;
     res.locals.chatting = chattingUser;
-    // Traitement des messages
     const messages = await Message.find({
       $or: [{ expediteur: user.pseudo }, { destinataire: user.pseudo }]
     });
     const heure = moment().format('h:mm:ss');
-    let messagesFilter = messages.filter(message => 
+    let messagesFilter = messages.filter(message =>
       (message.expediteur === user.pseudo && message.destinataire === chattingPseudo) ||
       (message.destinataire === user.pseudo && message.expediteur === chattingPseudo)
     );
     let messagesFilterSearcher = [];
     if (search) {
-      messagesFilterSearcher = messagesFilter.filter(message =>
+        messagesFilterSearcher = messagesFilter.filter(message =>
         message.message.toLowerCase().includes(search.toLowerCase())
       );
       console.log('search: ', search);
     }
-    res.render('Dialogue', {
-      messagesFilter,
-      messagesFilterSearcher,
-      heure,
-      user,
-      chatting: chattingUser,
-      showModal: !!search,  
-      friends,
-      friendsAsk,
-      chats
+    res.render('dialogue', {
+      messagesFilter, messagesFilterSearcher, heure, chats,
+      user, chatting: chattingUser, friends, friendsAsk, showModal: !!search,
     });
-  } catch (err) {
-    console.log(err);
-    res.redirect('/error');
-  }
+  } 
+  catch (err) {console.log(err); res.redirect('/error');}
 });
 
 // Put message
@@ -625,8 +574,6 @@ app.delete('/delete-message/:messageId', (req, res) => {
   })
   .catch(error => { console.error('Erreur destinataire :', error); });
 });
-
-
 
 // cmd windows-> tape : ipconfig -> ipv4 : 192.168.1.237
 // for phone :  192.168.1.187:5000

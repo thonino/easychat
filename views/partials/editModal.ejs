@@ -1,0 +1,144 @@
+
+<!-- Upload Modal -->
+<div 
+  class="modal fade" 
+  id="uploadModal" 
+  tabindex="-1" 
+  aria-labelledby="uploadModalLabel" 
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success-light">
+        <h5 class="modal-title" id="uploadModalLabel">Mise à jour photo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+          <label for="pseudo" class="fst-italic ">Sélectionner photo</label>
+          <input type="file" name="photo" class="form-control mt-2"/>
+          <button type="submit" class="btn btn-success mt-2">Télécharger</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- fin upload -->
+
+<!-- Pseudo Modal -->
+<div 
+  class="modal fade" 
+  id="editPseudoModal" 
+  tabindex="-1" 
+  aria-labelledby="editPseudoModalLabel" 
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success-light">
+        <h5 class="modal-title" id="editPseudoModalLabel">Mettre à jour Pseudo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/updateData" method="POST">
+          <label for="pseudo" class="fst-italic">Pseudo</label>
+          <input 
+            type="text" 
+            name="editPseudo" 
+            class="form-control fst-italic mt-2" 
+            placeholder="<%= user.pseudo %>"
+            />
+          <label for="checkPassword" class="fst-italic mt-2">Password</label>
+          <input 
+            type="password" 
+            name="checkPassword" 
+            class="form-control fst-italic mt-2" 
+            placeholder="verification"
+            />
+          <button type="submit" class="btn btn-success mt-2">Enregistrer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Fin Pseudo -->
+
+<!-- edit Email -->
+<div 
+  class="modal fade" 
+  id="editEmailModal" 
+  tabindex="-1" 
+  aria-labelledby="editEmailModalLabel" 
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success-light">
+        <h5 class="modal-title" id="editEmailModalLabel">Mettre à jour Email</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/updateData" method="POST">
+          <label for="email" class="fst-italic">Email</label>
+          <input 
+            type="text" 
+            name="editEmail" 
+            class="form-control fst-italic mt-2" 
+            placeholder="<%= user.email %>"
+          />
+          <label for="checkPassword" class="fst-italic mt-2">Password</label>
+          <input 
+            type="text" 
+            name="checkPassword" 
+            class="form-control fst-italic mt-2" 
+            placeholder="verification"
+          />
+          <button type="submit" class="btn btn-success mt-2">Enregistrer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Fin Email -->
+
+<!-- edit Password -->
+<div 
+  class="modal fade" 
+  id="editPasswordModal" 
+  tabindex="-1" 
+  aria-labelledby="editPasswordModalLabel" 
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success-light">
+        <h5 class="modal-title" id="editPasswordModalLabel">
+          Mettre à jour mot de passe
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/updateData" method="POST">
+          <label for="checkPassword" class="fst-italic">Ancien mot de passe</label>
+          <input 
+            type="password" 
+            name="checkPassword" 
+            class="form-control fst-italic mt-2" 
+            placeholder="verification"
+          />
+          <label for="password" class="fst-italic mt-2">Nouveau mot de passe</label>
+          <input 
+            type="password" 
+            name="editPassword" 
+            class="form-control fst-italic mt-2" 
+            placeholder="nouveau"
+          />
+          <button type="submit" class="btn btn-success mt-2">Enregistrer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Fin Password -->

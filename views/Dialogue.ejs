@@ -36,28 +36,32 @@
             Profile
           </a>
           <!-- Account -->
-          <div>
-            <span class="text-light btn bg-warning-dark btn-sm fw-bold">
-              <i class="bi bi-person-vcard-fill"> Compte</i>
-            </span>
-          </div>
+          <a 
+          href="/account/<%= user.pseudo %>" 
+          class="text-light btn bg-warning-dark btn-sm fw-bold"
+          >
+            <i class="bi bi-person-vcard-fill"> Compte</i>
+          </a>
         </div>
       </div>        
       <div class="d-flex flex-column  overflow-hidden">
         <!-- Top body -->
         <div class="d-flex justify-content-center gap-2 mt-2">
-        <!-- Formulaire de recherche -->
-        <form id="searchForm" action="/dialogue/<%= chatting.pseudo %>" method="GET" class="d-flex">
-          <input 
-            type="text" 
-            class="form-control input-class text-center fst-italic rounded-end-0 rounded-start-4" 
-            name="search" 
-            placeholder="recherche..."
-          >
-          <button type="submit" class="btn btn-secondary rounded-end-4 rounded-start-0 ps-1 pe-2">
-            <i class="bi bi-search text-light"></i>
-          </button>
-        </form>
+          <div>
+            <form id="searchForm" action="/dialogue/<%= chatting.pseudo %>" method="GET" class="d-flex">
+              <div class="input-group">
+                <input 
+                  type="text" 
+                  class="form-control rounded-start fst-italic" 
+                  name="search" 
+                  placeholder="recherche..."
+                >
+                <button type="submit" class="btn btn-secondary rounded-end">
+                  <i class="bi bi-search text-light"></i>
+                </button>
+              </div>
+            </form>                    
+          </div>
           <!-- Bouton Options -->
           <div class="">
             <button id="toggle" class="btn btn-secondary text-light">

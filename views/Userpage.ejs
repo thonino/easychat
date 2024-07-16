@@ -39,11 +39,12 @@
               </button>
             </div>
             <!-- Account -->
-            <div>
-              <span class="text-light btn bg-warning-dark btn-sm fw-bold">
-                <i class="bi bi-person-vcard-fill"> Compte</i>
-              </span>
-            </div>
+            <a 
+            href="/account/<%= user.pseudo %>" 
+            class="text-light btn bg-warning-dark btn-sm fw-bold"
+            >
+              <i class="bi bi-person-vcard-fill"> Compte</i>
+            </a>
           </div>
         </div>
         <!-- container -->
@@ -51,15 +52,6 @@
           <h1 class="text-secondary fw-bold mt-2 text-center">Mon Profile</h1>
           <div class="d-flex flex-column align-items-center">
             <div class="card shadow" style="width: 200px;">
-              <!-- Upload btn Modal -->
-              <button 
-                type="button" 
-                class="btn btn-info btn-sm rounded-bottom-0" 
-                data-bs-toggle="modal" 
-                data-bs-target="#uploadModal"
-              >
-                <i class="bi bi-pencil-square"></i>
-              </button>
               <img 
                 src="./uploads/<%= logoPhoto %>" 
                 class="card-img-top rounded-0" 
@@ -105,7 +97,6 @@
         </div> 
       </div>
     </div>
-    <%- include('./partials/uploadModal'); %>
     <%- include('./partials/offcanvas'); %>
   </body>
 </html>

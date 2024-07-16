@@ -79,69 +79,59 @@
 <% }) %>
 
 <!-- Search Modal -->
-<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-dialog-top">
-    <div class="modal-content">
-      <!-- Head -->
-      <div class="modal-header bg-info-light">
-        <h5 class="modal-title" id="searchModalLabel">Résultats de la recherche</h5>
-        <button 
-          class="btn-close me-2" 
-          type="button" 
-          data-bs-dismiss="modal" 
-          aria-label="Close">
-        </button>
-      </div>
-      <!-- Body -->
-      <div class="modal-body">
-        <div id="searchResults" class="d-flex flex-column">
-          <% if (messagesFilterSearcher && messagesFilterSearcher.length > 0) { %>
-            <% messagesFilterSearcher.forEach(message => { %>
-              <div class="d-flex justify-content-center mt-2">
-                <% if (message.expediteur === user.pseudo) { %>
-                  <div class="d-flex fs-5 bg-success mw-85 round-msg gap-2 p-2">
-                    <span class="fs-6 text-muted fw-light">
-                      <%= message.datetime %>
-                    </span>
-                    <p class="d-flex fs-5 text-capitalize text-white m-0">
-                      <img src="/uploads/<%= user.photo %>" class="card-img-top round wh-25" alt="Profile image">
-                    </p>
-                    <p class="fw-light text-center text-light m-0">
-                      <%= message.message %>
-                    </p>
-                  </div>
-                <% } else { %>
-                  <div class="d-flex fs-5 bg-info mw-85 round-msg gap-2 p-2">
-                    <span class="fs-6 text-muted fw-light">
-                      <%= message.datetime %>
-                    </span>
-                    <p class="d-flex fs-5 text-capitalize text-info-dark m-0 gap-1">
-                      <img src="/uploads/<%= chatting.photo %>" class="card-img-top round wh-25" alt="Profile image">
-                    </p>
-                    <p class="fw-light text-center text-light m-0">
-                      <%= message.message %>
-                    </p>
-                  </div>
-                <% } %>
-              </div>
-            <% }) %>
-          <% } else { %>
-            <p class="text-center">Aucun message trouvé.</p>
-          <% } %>
+<% if (showModal) { %>
+  <div class="modal fade show" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true" style="display: block;">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-top">
+      <div class="modal-content">
+        <!-- Head -->
+        <div class="modal-header bg-danger-light">
+          <h5 class="modal-title" id="searchModalLabel">Résultats de la recherche</h5>
+          <a href="/dialogue/<%= chatting.pseudo %>" class="btn-close" aria-label="Close"></a>
         </div>
-      </div>
-      <!-- Foot -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+        <!-- Body -->
+        <div class="modal-body">
+          <div id="searchResults" class="d-flex flex-column">
+            <% if (messagesFilterSearcher && messagesFilterSearcher.length > 0) { %>
+              <% messagesFilterSearcher.forEach(message => { %>
+                <div class="d-flex justify-content-center mt-2">
+                  <% if (message.expediteur === user.pseudo) { %>
+                    <div class="d-flex fs-5 bg-success mw-85 round-msg gap-2 p-2">
+                      <span class="fs-6 text-muted fw-light">
+                        <%= message.datetime %>
+                      </span>
+                      <p class="d-flex fs-5 text-capitalize text-white m-0">
+                        <img src="/uploads/<%= user.photo %>" class="card-img-top round wh-25" alt="Profile image">
+                      </p>
+                      <p class="fw-light text-center text-light m-0">
+                        <%= message.message %>
+                      </p>
+                    </div>
+                  <% } else { %>
+                    <div class="d-flex fs-5 bg-info mw-85 round-msg gap-2 p-2">
+                      <span class="fs-6 text-muted fw-light">
+                        <%= message.datetime %>
+                      </span>
+                      <p class="d-flex fs-5 text-capitalize text-info-dark m-0 gap-1">
+                        <img src="/uploads/<%= chatting.photo %>" class="card-img-top round wh-25" alt="Profile image">
+                      </p>
+                      <p class="fw-light text-center text-light m-0">
+                        <%= message.message %>
+                      </p>
+                    </div>
+                  <% } %>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <p class="text-center">Aucun message trouvé.</p>
+            <% } %>
+          </div>
+        </div>
+        <!-- Foot -->
+        <div class="modal-footer">
+          <a href="/dialogue/<%= chatting.pseudo %>" class="btn btn-secondary">Retour</a>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-<% if (showModal) { %>
-  <script>
-    // Afficher le modal après le chargement de la page
-    var searchModal = new bootstrap.Modal(document.getElementById('searchModal'));
-    searchModal.show();
-  </script>
-<% } %>
+  <% } %>
+  

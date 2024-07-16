@@ -9,6 +9,7 @@ body, html {
   grid-template-rows: auto 1fr;
   grid-template-columns: 250px 4fr; 
   height: 100vh;
+  /* margin-bottom: 60px; */
 }
 
 .topbar {

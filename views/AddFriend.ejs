@@ -37,11 +37,12 @@
             Profile
           </a>
           <!-- Account -->
-          <div>
-            <span class="text-light btn bg-warning-dark btn-sm fw-bold">
-              <i class="bi bi-person-vcard-fill"> Compte</i>
-            </span>
-          </div>
+          <a 
+          href="/account/<%= user.pseudo %>" 
+          class="text-light btn bg-warning-dark btn-sm fw-bold"
+          >
+            <i class="bi bi-person-vcard-fill"> Compte</i>
+          </a>
         </div>
       </div>        
       <div class="flex flex-column container">
