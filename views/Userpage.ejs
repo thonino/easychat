@@ -1,31 +1,21 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Page utilisateur</title>
-    <%- include('./partials/link') %>
-  </head>
-  <body>
-    <div class="grid-container bg-white">
-      <div class="topbar">
-        <%- include('./partials/nav'); %>
-      </div>
-      <div class="sidebar bg-dark-less text-center d-none d-md-block">
+<head>
+  <title>Page utilisateur</title>
+  <%- include('./partials/link') %>
+</head>
+<body>
+  <%- include('./partials/nav'); %>
+  <div class="container-fluid bg-white p-0 vh-100 pt-5">
+    <div class="row g-0 h-100 ">
+      <!-- Left md-3 -->
+      <div class="col-md-3 bg-dark-less text-center d-none d-md-block  h-100">
         <%- include('./partials/contact'); %>
-        <!-- Old design -->
-        <!-- <div class="link">
-          <a 
-            href="/addfriend" 
-            class="btn btn-success btn-sm d-flex align-items-center fw-bold p-0 gap-2 px-2"
-          >
-            <i class="bi bi-person-fill-add fs-4"></i>
-            Ajouter
-          </a>
-        </div> -->
       </div>
-      <div>
-        <!--Nav-right -->
-        <div class="bg-dark-less px-2">
-          <div class="d-flex justify-content-between py-2">
+      <!-- Right md-9 -->
+      <div class="col-md-9 p-0 h-100 d-flex flex-column">
+        <div class="bg-dark-less">
+          <div class="d-flex justify-content-between p-2">
             <!-- Bouton Offcanvas toggle -->
             <div class="text-light">
               <button 
@@ -39,26 +29,24 @@
             </div>
             <!-- Account -->
             <a 
-            href="/account/<%= user.pseudo %>" 
-            class="text-light btn bg-success btn-sm fw-bold"
-            >
+              href="/account/<%= user.pseudo %>" 
+              class="text-light btn bg-success btn-sm fw-bold">
               <i class="bi bi-person-vcard-fill"> Compte</i>
             </a>
           </div>
         </div>
-        <!-- container -->
-        <div class="container">
-          <h1 class="text-secondary fw-bold mt-2 text-center">Mon Profile</h1>
+        <div class="container my-3 flex-grow-1">
+          <h1 class="text-secondary fw-bold text-center">Mon Profile</h1>
           <div class="d-flex flex-column align-items-center">
             <div class="card shadow" style="width: 200px;">
               <img 
                 src="./uploads/<%= logoPhoto %>" 
                 class="card-img-top rounded-0" 
                 alt="photo de profil ami" 
-              >
-              <div class="card-body m-0 p-0">
+              />
+              <div class="card-body p-0">
                 <p class="card-text text-center text-secondary fw-bold text-capitalize fs-2">
-                  <%= user.pseudo  %>
+                  <%= user.pseudo %>
                 </p>
               </div>
             </div>
@@ -70,9 +58,9 @@
             </a>
           </div>
           <!-- Mes amis -->
-          <div class="bg-info-light shadow mt-4 pb-2">
+          <div class="d-flex flex-column bg-info-light shadow mt-4 pb-2 rounded-top">
             <h3 class="text-center text-light bg-info fw-bold rounded-top">Mes Amis :</h3>
-            <% friends.forEach(data =>  { %>
+            <% friends.forEach(data => { %>
               <div class="d-flex justify-content-center mt-2">
                 <!-- info friend -->
                 <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2 mx-2" style="width: 200px;">
@@ -80,22 +68,23 @@
                     src="./uploads/<%= data.photo %>" 
                     class="card-img-top round wh-25" 
                     alt="photo de profil ami"
-                  >
+                  />
                   <span class="text-capitalize"><%= data.pseudo %></span>
                 </div>
                 <!-- Ecrire message -->
                 <form action="/chat" method="POST">
                   <input type="hidden" name="destinataire" value="<%= data.pseudo %>"/>
-                  <button class="btn px-0 fst-italic" type="submit" >
+                  <button class="btn px-0 fst-italic" type="submit">
                     <i class="bi bi-chat-square-text-fill text-info-dark fw-bold"> Ecrire.. </i> 
                   </button>
                 </form>
               </div>
-            <% }); %> 
+            <% }); %>
           </div>
-        </div> 
+        </div>
       </div>
     </div>
-    <%- include('./partials/offcanvas'); %>
-  </body>
+  </div>
+  <%- include('./partials/offcanvas'); %>
+</body>
 </html>

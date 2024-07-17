@@ -6,140 +6,103 @@
   <link rel="stylesheet" href="/public/css/styles.css">
 </head>
 <body>
-  <div class="grid-container bg-white">
-    <div class="topbar">
-      <%- include('./partials/nav'); %>
-    </div>
-    <div class="bg-dark-less text-center p-0 sidebar d-none d-md-block">
-      <%- include('./partials/contact'); %>
-    </div>
-    <div class="d-flex flex-column main-content"> 
-      <div class="bg-dark-less px-2">
-        <div class="d-flex justify-content-between align-items-center py-2">
-          <!-- Bouton Offcanvas toggle -->
-          <div class="d-md-none">
-            <button 
-              class="btn bg-info btn-sm text-dark-75 text-capitalize fw-bold" 
-              type="button" 
-              data-bs-toggle="offcanvas" 
-              data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-                Chat
-              <i class="bi bi-chat-square-text-fill"></i>
-            </button>
+  <%- include('./partials/nav'); %>
+  <div class="container-fluid bg-white p-0 vh-100 pt-5">
+    <div class="row g-0 h-100">
+      <!-- Sidebar md-3 -->
+      <div class="col-md-3 bg-dark-less text-center d-none d-md-block p-0 h-100">
+        <%- include('./partials/contact'); %>
+      </div>
+      <!-- Main Content md-9 -->
+      <div class="col-md-9 p-0 h-100 d-flex flex-column">
+        <div class="bg-dark-less">
+          <div class="d-flex justify-content-between p-2 align-items-center">
+            <!-- Bouton Offcanvas toggle -->
+            <div class="d-md-none text-light">
+              <button 
+                class="btn bg-info btn-sm text-dark-75 text-capitalize fw-bold" 
+                type="button" 
+                data-bs-toggle="offcanvas" 
+                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                  Chat
+                <i class="bi bi-chat-square-text-fill"></i>
+              </button>
+            </div>
+            <!-- Bouton Profile -->
+            <a href="/userpage" class="btn bg-warning btn-sm text-dark-75 fw-bold">
+              <i class="bi bi-person-square"></i> Profile
+            </a>
+            <!-- Account -->
+            <a href="/account/<%= user.pseudo %>" class="btn bg-success btn-sm text-light fw-bold">
+              <i class="bi bi-person-vcard-fill"></i> Compte
+            </a>
           </div>
-          <!-- Bouton Profile -->
-          <a 
-            href="/userpage" 
-            class="btn bg-warning btn-sm text-dark-75 fw-bold"
-          >
-            <i class="bi bi-person-square "></i>
-            Profile
-          </a>
-          <!-- Account -->
-          <a 
-          href="/account/<%= user.pseudo %>" 
-          class="text-light btn bg-success btn-sm fw-bold"
-          >
-            <i class="bi bi-person-vcard-fill"> Compte</i>
-          </a>
         </div>
-      </div>        
-      <div class="d-flex flex-column  overflow-hidden">
-        <!-- Search-->
-        <div class="d-flex justify-content-center gap-2 mt-2">
-          <div>
+        <div class="container my-3 flex-grow-1 d-flex flex-column overflow-hidden">
+          <!-- Search and Options -->
+          <div class="d-flex justify-content-center gap-2 my-2">
             <form id="searchForm" action="/dialogue/<%= chatting.pseudo %>" method="GET" class="d-flex">
               <div class="input-group">
-                <input 
-                  type="text" 
-                  class="form-control rounded-start fst-italic" 
-                  name="search" 
-                  placeholder="recherche..."
-                >
+                <input type="text" class="form-control rounded-start fst-italic" name="search" placeholder="recherche...">
                 <button type="submit" class="btn btn-info rounded-end">
                   <i class="bi bi-search text-dark-75"></i>
                 </button>
               </div>
-            </form>                    
-          </div>
-          <!-- Bouton Options -->
-          <div class="">
+            </form>
             <button id="toggle" class="btn btn-success text-light">
               <i class="bi bi-gear-fill"></i>
             </button>
           </div>
-        </div>
-        <!-- Fin Top body-->
-        <div id="messageBox" class="d-flex reverseMessage overflow-y-auto mb-3">
-          <% messagesFilter.reverse().forEach(message => { %>
-            <div class="text-center fw-bold fst-italic mt-3">
-              <span class="fs-6 text-muted fw-light cible hidden">
-                <%= message.datetime %>
-              </span>
-              <% if (message.expediteur === user.pseudo) { %>
-                <div class="d-flex justify-content-end">
-                  <div class="d-flex justify-content-end align-items-center fs-5 bg-primary gap-2 mw-85 round-msg me-2 px-2">
-                    <div class="d-flex justify-content-center align-items-center gap-2 m-2">
-                      <p class="fw-light text-center text-light m-0 p-0">
-                        <%= message.message %>
-                      </p>
-                      <p class="d-flex fs-5 text-capitalize  m-0 p-0">
-                        <img src="/uploads/<%= user.photo %>" class="card-img-top round wh-25" alt="img profile">
-                      </p>
-                    </div>
-                    <div class="cible hidden">
-                      <div class="d-flex justify-content-center align-items-center pe-2">
-                        <button 
-                          type="button" 
-                          class="btn btn-light btn-sm" 
-                          data-bs-toggle="modal" 
-                          data-bs-target="#editMessageModal<%= message._id %>"
-                        >
-                          <i class="bi bi-pencil-square"></i>
-                        </button>
-                        <div>
-                          <button 
-                            type="button" 
-                            class="btn btn-danger btn-sm ms-2" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#deleteMessageModal<%= message._id %>"
-                          >
+          <!-- Messages -->
+          <div id="messageBox" class="d-flex flex-column-reverse overflow-y-auto mb-3">
+            <% messagesFilter.reverse().forEach(message => { %>
+              <div class="text-center fw-bold fst-italic mt-3">
+                <span class="fs-6 text-muted fw-light cible hidden"><%= message.datetime %></span>
+                <% if (message.expediteur === user.pseudo) { %>
+                  <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end align-items-center fs-5 bg-primary gap-2 mw-85 round-msg me-2 px-2">
+                      <div class="d-flex justify-content-center align-items-center gap-2 m-2">
+                        <p class="fw-light text-center text-light m-0 p-0"><%= message.message %></p>
+                        <p class="d-flex fs-5 text-capitalize m-0 p-0">
+                          <img src="/uploads/<%= user.photo %>" class="card-img-top round wh-25" alt="img profile">
+                        </p>
+                      </div>
+                      <div class="cible hidden">
+                        <div class="d-flex justify-content-center align-items-center pe-2">
+                          <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#editMessageModal<%= message._id %>">
+                            <i class="bi bi-pencil-square"></i>
+                          </button>
+                          <button type="button" class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#deleteMessageModal<%= message._id %>">
                             <i class="bi bi-trash"></i>
                           </button>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              <% } else { %>
-                <div class="d-flex justify-content-start">
-                  <div class="d-flex justify-content-start align-items-center fs-5 bg-info gap-2 mw-85 round-msg ms-2 px-2">
-                    <div class="d-flex justify-content-start align-items-center gap-2 m-2">
-                      <div class="cible hidden align-items-center">
-                        <button 
-                          type="button" 
-                          class="btn btn-danger btn-sm" 
-                          data-bs-toggle="modal" 
-                          data-bs-target="#deleteMessageModal<%= message._id %>"
-                        >
-                          <i class="bi bi-trash"></i>
-                        </button>
-                      </div>
-                      <div class="d-flex justify-content-start align-items-center gap-2">
-                        <p class="d-flex fs-5 text-capitalize text-info-dark m-0 p-0 gap-1">
-                          <img src="/uploads/<%= chatting.photo %>" class="card-img-top round wh-25" alt="img profile">
-                        </p>
-                        <p class="fw-light text-center text-light m-0 p-0">
-                          <%= message.message %>
-                        </p>
+                <% } else { %>
+                  <div class="d-flex justify-content-start">
+                    <div class="d-flex justify-content-start align-items-center fs-5 bg-info gap-2 mw-85 round-msg ms-2 px-2">
+                      <div class="d-flex justify-content-start align-items-center gap-2 m-2">
+                        <div class="cible hidden align-items-center">
+                          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteMessageModal<%= message._id %>">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                        <div class="d-flex justify-content-start align-items-center gap-2">
+                          <p class="d-flex fs-5 text-capitalize text-info-dark m-0 p-0 gap-1">
+                            <img src="/uploads/<%= chatting.photo %>" class="card-img-top round wh-25" alt="img profile">
+                          </p>
+                          <p class="fw-light text-center text-light m-0 p-0"><%= message.message %></p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              <% } %>
-            </div>
-          <% }) %>
-        </div>        
+                <% } %>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+        <!-- Message Input -->
         <div class="below-content bg-dark-75 p-3">
           <form class="d-flex justify-content-center align-items-center" method="POST" action="/message">
             <textarea id="textInput" class="form-control txt-area" name="message" rows="3" required></textarea>
@@ -153,11 +116,12 @@
         </div>
       </div>
     </div>
-    <div id="modalsContainer"></div>
-    <%- include('./partials/dialogueModal'); %>
-    <%- include('./partials/offcanvas'); %>
-    <script> var userPseudo = "<%= user.pseudo.toLowerCase() %>"; </script>
-    <script src="/public/js/dialogue.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-  </body>
+  </div>
+  <div id="modalsContainer"></div>
+  <%- include('./partials/dialogueModal'); %>
+  <%- include('./partials/offcanvas'); %>
+  <script> var userPseudo = "<%= user.pseudo.toLowerCase() %>"; </script>
+  <script src="/public/js/dialogue.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</body>
 </html>

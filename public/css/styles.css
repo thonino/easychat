@@ -1,52 +1,4 @@
-body, html {
-  height: 100%;
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  grid-template-columns: 250px 4fr; 
-  height: 100vh;
-  /* margin-bottom: 60px; */
-}
-
-.topbar {
-  grid-column: 1 / span 2;
-  padding: 20px;
-  text-align: center;
-}
-
-.sidebar {
-  overflow-y: auto;
-  height: 100%;
-  position: relative;
-}
-
-.main-content {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.middle-content {
-  flex-grow: 1;
-  overflow-y: auto;
-}
-
-.below-content {
-  position: relative;
-  bottom: 0;
-  width: 100%;
-}
-
-.link {
-  position: absolute;
-  bottom: 70px; 
-  left: 50%;
-  transform: translateX(-50%);
-}
+.navbar { height: 48px; }
 
 .reverseMessage {
   height: 100vh;
@@ -88,5 +40,5 @@ body, html {
 
 /* Styles pour screen sm */
 @media (max-width:  768px) {
-  .grid-container { grid-template-columns: 1fr;}
+  /* .grid-container { grid-template-columns: 1fr;} */
 }

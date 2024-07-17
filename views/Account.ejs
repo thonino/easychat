@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Mon compte</title>
-    <%- include('./partials/link') %>
-  </head>
-  <body>
-    <%- include('./partials/nav') %>
-    <div class="grid-container bg-white">
-      <div class="topbar">
-        <%- include('./partials/nav'); %>
-      </div>
-      <div class="sidebar bg-dark-less text-center d-none d-md-block">
+<head>
+  <title>Mon compte</title>
+  <%- include('./partials/link') %>
+</head>
+<body>
+  <%- include('./partials/nav'); %>
+  <div class="container-fluid bg-white p-0 vh-100 pt-5">
+    <div class="row g-0 h-100">
+      <!-- Sidebar md-3 -->
+      <div class="col-md-3 bg-dark-less text-center d-none d-md-block p-0 h-100">
         <%- include('./partials/contact'); %>
       </div>
-      <div>
-        <!--Nav-right -->
-        <div class="bg-dark-less px-2">
-          <div class="d-flex justify-content-between py-2">
+      <!-- Main Content md-9 -->
+      <div class="col-md-9 p-0 h-100 d-flex flex-column">
+        <div class="bg-dark-less">
+          <div class="d-flex justify-content-between p-2 align-items-center">
+            <!-- Fix : center profile -->
+            <div class="d-none d-md-inline "></div>
             <!-- Bouton Offcanvas toggle -->
-            <div class="text-light">
+            <div class="text-light d-md-none">
               <button 
-                class="btn bg-info btn-sm d-md-none text-dark-75 text-capitalize fw-bold" 
+                class="btn bg-info btn-sm text-dark-75 text-capitalize fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
                 data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -28,62 +29,48 @@
                 <i class="bi bi-chat-square-text-fill"></i>
               </button>
             </div>
-          <!-- Bouton Profile -->
-          <a 
-            href="/userpage" 
-            class="btn btn-warning btn-sm text-dark-75 fw-bold"
-          >
-            <i class="bi bi-person-square "></i>
-            Profile
-          </a>
+            <!-- Bouton Profile -->
+            <a href="/userpage" class="btn bg-warning btn-sm text-dark-75 fw-bold">
+              <i class="bi bi-person-square"></i> Profile
+            </a>
+            <!-- Fix : center profile -->
+            <div class="d-none d-md-inline"></div>
           </div>
         </div>
-        <!-- container -->
-        <div class="container">
-          <div class="d-flex flex-column text-secondary align-items-center mt-2 m-0 p-0 ">
-            <% if (alert) { %>
-              <div id="alert" class="alert alert-<%= alertType %> text-center m-2" role="alert">
-                <span class="fw-bold text-<%= alertType %> text-capitalize">
-                  <%= alert %>
-                </span>
-              </div> 
-            <% } %>
-            <i class="bi bi-person-vcard-fill fs-1"></i>
-            <h1 class=" fw-bold m-0 mb-3">
-              Gérer Compte 
-            </h1>
-          </div>
-          <div class="d-flex flex-column align-items-center">
-            <div class="card shadow" style="width: 200px;">
-              <!-- Photo -->
-              <img 
-                src="/uploads/<%= logoPhoto %>" 
-                class="card-img-top rounded-0" 
-                alt="photo de profil ami" 
-              >
-              <div class="card-body m-0 p-0">
-                <p class="card-text text-center text-secondary fw-bold text-capitalize fs-2">
-                  <%= user.pseudo  %>
-                </p>
-              </div>
+        <div class="container my-3 flex-grow-1 d-flex flex-column align-items-center">
+          <% if (alert) { %>
+            <div id="alert" class="alert alert-<%= alertType %> text-center m-2" role="alert">
+              <span class="fw-bold text-<%= alertType %> text-capitalize">
+                <%= alert %>
+              </span>
+            </div> 
+          <% } %>   
+          <i class="bi bi-person-vcard-fill fs-1"></i>
+          <h1 class="fw-bold m-0 mb-3">Gérer Compte</h1>
+          <div class="card shadow" style="width: 200px;">
+            <!-- Photo -->
+            <img 
+              src="/uploads/<%= logoPhoto %>" 
+              class="card-img-top rounded-0" 
+              alt="photo de profil ami">
+            <div class="card-body p-0">
+              <p class="card-text text-center text-secondary fw-bold text-capitalize fs-2">
+                <%= user.pseudo %>
+              </p>
             </div>
-            <!-- Upload btn Modal -->
-            <button 
-              type="button" 
-              class="btn btn-success shadow mt-2" 
-              data-bs-toggle="modal" 
-              data-bs-target="#uploadModal"
-            >
-              Mettre à jour l'image <i class="bi bi-pencil-square"></i>
-            </button>
           </div>
+          <!-- Upload btn Modal -->
+          <button 
+            type="button" 
+            class="btn btn-success shadow mt-2" 
+            data-bs-toggle="modal" 
+            data-bs-target="#uploadModal">
+            Mettre à jour l'image <i class="bi bi-pencil-square"></i>
+          </button>
           <h1 class="text-center mt-4 m-0 text-secondary">Mes informations</h1>
           <!-- Informations -->
-          <div class="list-group shadow mt-4">
-            <div 
-              class="list-group-item list-group-item-action d-flex justify-content-between" 
-              aria-current="true"
-            >
+          <div class="list-group shadow mt-4 w-100">
+            <div class="list-group-item list-group-item-action d-flex justify-content-between" aria-current="true">
               <div class="fw-bold text-success">
                 Pseudo : 
                 <span class="text-capitalize fw-light text-dark-75 fst-italic"> 
@@ -94,15 +81,11 @@
                 type="button" 
                 class="btn btn-success btn-sm" 
                 data-bs-toggle="modal" 
-                data-bs-target="#editPseudoModal"
-              >
+                data-bs-target="#editPseudoModal">
                 <i class="bi bi-pencil-square m-0 p-0"></i>
-            </button>
+              </button>
             </div>
-            <div 
-              class="list-group-item list-group-item-action d-flex justify-content-between" 
-              aria-current="true"
-            >
+            <div class="list-group-item list-group-item-action d-flex justify-content-between" aria-current="true">
               <div class="fw-bold text-success">
                 Email : 
                 <span class="text-capitalize fw-light text-dark-75 fst-italic"> 
@@ -113,15 +96,11 @@
                 type="button" 
                 class="btn btn-success btn-sm" 
                 data-bs-toggle="modal" 
-                data-bs-target="#editEmailModal"
-              >
+                data-bs-target="#editEmailModal">
                 <i class="bi bi-pencil-square m-0 p-0"></i>
               </button>
             </div>
-            <div 
-              class="list-group-item list-group-item-action d-flex justify-content-between" 
-              aria-current="true"
-            >
+            <div class="list-group-item list-group-item-action d-flex justify-content-between" aria-current="true">
               <div class="fw-bold text-success">
                 Password : 
                 <span class="text-capitalize fw-light text-dark-75 fst-italic"> 
@@ -132,8 +111,7 @@
                 type="button" 
                 class="btn btn-success btn-sm" 
                 data-bs-toggle="modal" 
-                data-bs-target="#editPasswordModal"
-              >
+                data-bs-target="#editPasswordModal">
                 <i class="bi bi-pencil-square m-0 p-0"></i>
               </button>
             </div>
@@ -141,8 +119,9 @@
         </div> 
       </div>
     </div>
-    <%- include('./partials/editModal'); %>
-    <%- include('./partials/offcanvas'); %>
-    <script src="/public/js/alert.js"></script>
-  </body>
+  </div>
+  <%- include('./partials/editModal'); %>
+  <%- include('./partials/offcanvas'); %>
+  <script src="/public/js/alert.js"></script>
+</body>
 </html>

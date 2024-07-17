@@ -73,7 +73,7 @@ if (isCurrentUser) {
   const messageContentDiv = document.createElement('div');
   messageContentDiv.classList.add(
     'd-flex', 'justify-content-end', 'align-items-center', 'fs-5',
-    'bg-success', 'gap-2', 'mw-85', 'round-msg', 'me-2', 'px-2'
+    'bg-primary', 'gap-2', 'mw-85', 'round-msg', 'me-2', 'px-2'
   );
   messageContentDiv2.appendChild(messageContentDiv);
 
