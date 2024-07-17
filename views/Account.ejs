@@ -20,7 +20,7 @@
             <!-- Bouton Offcanvas toggle -->
             <div class="text-light">
               <button 
-                class="btn bg-info btn-sm d-md-none text-light text-capitalize fw-bold" 
+                class="btn bg-info btn-sm d-md-none text-dark-75 text-capitalize fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
                 data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -28,19 +28,26 @@
                 <i class="bi bi-chat-square-text-fill"></i>
               </button>
             </div>
-            <!-- Bouton Profile -->
-            <a 
-              href="/userpage" 
-              class="btn bg-info-dark btn-sm text-light fw-bold"
-            >
-              <i class="bi bi-person-square "></i>
-              Profile
-            </a>
+          <!-- Bouton Profile -->
+          <a 
+            href="/userpage" 
+            class="btn btn-warning btn-sm text-dark-75 fw-bold"
+          >
+            <i class="bi bi-person-square "></i>
+            Profile
+          </a>
           </div>
         </div>
         <!-- container -->
         <div class="container">
           <div class="d-flex flex-column text-secondary align-items-center mt-2 m-0 p-0 ">
+            <% if (alert) { %>
+              <div id="alert" class="alert alert-<%= alertType %> text-center m-2" role="alert">
+                <span class="fw-bold text-<%= alertType %> text-capitalize">
+                  <%= alert %>
+                </span>
+              </div> 
+            <% } %>
             <i class="bi bi-person-vcard-fill fs-1"></i>
             <h1 class=" fw-bold m-0 mb-3">
               Gérer Compte 
@@ -136,5 +143,6 @@
     </div>
     <%- include('./partials/editModal'); %>
     <%- include('./partials/offcanvas'); %>
+    <script src="/public/js/alert.js"></script>
   </body>
 </html>

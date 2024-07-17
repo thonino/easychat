@@ -5,7 +5,6 @@
     <%- include('./partials/link') %>
   </head>
   <body>
-    <%- include('./partials/nav') %>
     <div class="grid-container bg-white">
       <div class="topbar">
         <%- include('./partials/nav'); %>
@@ -30,7 +29,7 @@
             <!-- Bouton Offcanvas toggle -->
             <div class="text-light">
               <button 
-                class="btn bg-info btn-sm d-md-none text-light text-capitalize fw-bold" 
+                class="btn bg-info btn-sm d-md-none text-dark-75 text-capitalize fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
                 data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -41,7 +40,7 @@
             <!-- Account -->
             <a 
             href="/account/<%= user.pseudo %>" 
-            class="text-light btn bg-warning-dark btn-sm fw-bold"
+            class="text-light btn bg-success btn-sm fw-bold"
             >
               <i class="bi bi-person-vcard-fill"> Compte</i>
             </a>

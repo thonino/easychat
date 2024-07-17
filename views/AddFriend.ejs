@@ -3,10 +3,8 @@
 <head>
   <title>Add friend</title>
   <%- include('./partials/link') %>
-  <link rel="stylesheet" href="/public/css/styles.css">
 </head>
 <body>
-  <%- include('./partials/nav') %>
   <div class="grid-container bg-white">
     <div class="topbar">
       <%- include('./partials/nav'); %>
@@ -18,9 +16,9 @@
       <div class="bg-dark-less px-2">
         <div class="d-flex justify-content-between align-items-center py-2">
           <!-- Bouton Offcanvas toggle -->
-          <div class="text-light d-md-none">
+          <div class="d-md-none">
             <button 
-              class="btn bg-info btn-sm  text-light text-capitalize fw-bold" 
+              class="btn bg-info text-dark-75 btn-sm text-capitalize fw-bold" 
               type="button" 
               data-bs-toggle="offcanvas" 
               data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -31,7 +29,7 @@
           <!-- Bouton Profile -->
           <a 
             href="/userpage" 
-            class="btn bg-info-dark btn-sm text-light fw-bold"
+            class="btn btn-warning btn-sm text-dark-75 fw-bold"
           >
             <i class="bi bi-person-square "></i>
             Profile
@@ -39,17 +37,17 @@
           <!-- Account -->
           <a 
           href="/account/<%= user.pseudo %>" 
-          class="text-light btn bg-warning-dark btn-sm fw-bold"
+          class="text-light btn bg-success btn-sm fw-bold"
           >
             <i class="bi bi-person-vcard-fill"> Compte</i>
           </a>
         </div>
       </div>        
       <div class="flex flex-column container">
-        <% if (confirm) { %>
+        <% if (alert) { %>
           <div id="alert" class="alert alert-<%= alertType %> text-center m-2" role="alert">
             <span class="fw-bold text-<%= alertType %> text-capitalize">
-              <%= confirm %>
+              <%= alert %>
             </span>
           </div> 
         <% } %>   
@@ -237,6 +235,6 @@
   </div>
   <!-- Offcanvas -->
   <%- include('./partials/offcanvas'); %>
-  <script src="/public/js/addFriend.js"></script>
+  <script src="/public/js/alert.js"></script>
 </body>
 </html>

@@ -131,11 +131,11 @@ app.use((req, res, next) => {
   res.locals.chatting = req.session.chatting;
   next();
 });
-// Message d'alerte
+// Message d'alert
 app.use((req, res, next) => {
-  res.locals.confirm = req.session.confirm;
+  res.locals.alert = req.session.alert;
   res.locals.alertType = req.session.alertType;
-  delete req.session.confirm;
+  delete req.session.alert;
   delete req.session.alertType;
   next();
 });
@@ -199,15 +199,24 @@ app.use(makeAvailable);
 
 // Index
 app.get('/', (req, res) => {
+  if (!req.session.user) {return res.redirect('/login'); }
   const user = req.session.user;
+  const alert = req.params.alert;
   const heure = moment().format('DD-MM-YYYY, h:mm:ss');
-  res.render('home', { user: user, heure: heure });
+  res.render('home', { user, alert});
+});
+
+// error
+app.get('/error', (req, res) => {
+  if (!req.session.user) {return res.redirect('/login'); }
+  const user = req.session.user;
+  res.render('error', { user });
 });
 
 // Upload photo
 app.post('/upload', upload.single('photo'), (req, res) => {
+  if (!req.session.user) {return res.redirect('/login'); }
   const user = req.session.user;
-  if (!user) {return res.redirect('/login'); }
   const fileName = req.file.filename; 
   User.findOneAndUpdate(
     { _id: user._id },   // Cibler user
@@ -228,27 +237,41 @@ app.post('/upload', upload.single('photo'), (req, res) => {
 app.post('/updateData', async (req, res) => {
   if (!req.session.user) {return res.redirect('/login');}
   const userId = req.session.user._id;
-  const { editPseudo, editEmail, editPassword, checkPassword } = req.body;
-
+  const { pseudo, email, password, checkPassword } = req.body;
   try {
     const user = await User.findById(userId);
-    if (!user) {return res.status(404).send("Utilisateur non trouvé");}
     if (!bcrypt.compareSync(checkPassword, user.password)) {
-      return res.status(400).send("Mot de passe invalide");
+      req.session.alert = `Mot de passe invalide `;
+      req.session.alertType = 'danger';
+      return res.redirect(`/account/${user.pseudo}`);
     }
-    if (editPseudo) { user.pseudo = editPseudo; }
-    if (editEmail) { user.email = editEmail; }
-    if (editPassword) { user.password = bcrypt.hashSync(editPassword, 10); }
+    let message = '';
+    if (pseudo) {
+      user.pseudo = pseudo;
+      message = `Mise à jour du pseudo réussie`;
+    }
+    if (email) {
+      user.email = email;
+      message = `Mise à jour de l'email réussie`;
+    }
+    if (password) {
+      user.password = bcrypt.hashSync(password, 10);
+      message = `Mise à jour du mot de passe réussie`;
+    }
     await user.save();
-    req.session.user = user; 
-    res.redirect(`/account/${user.pseudo}?confirm`);
-  } 
-  catch (error) {
+    req.session.user = user;
+    if (message) {
+      req.session.alert = message;
+      req.session.alertType = 'success';
+    }
+    res.redirect(`/account/${user.pseudo}`);
+  } catch (error) {
     console.error(error);
-    res.status(500).send("La mise à jour a échouée");
+    req.session.alert = `Mise à jour échouée`;
+    req.session.alertType = 'danger';
+    res.redirect(`/account/${user.pseudo}`);
   }
 });
-
 
 
 app.get('/account/:pseudo', (req, res) => {
@@ -421,7 +444,7 @@ app.post('/cancelrequest', (req, res) => {
       $or: [ { adder, asked }, { adder: asked, asked: adder } ]
     })
     .then(() => {
-      req.session.confirm = `Anulation demande faite à : ${asked}`;
+      req.session.alert = `Anulation demande faite à : ${asked}`;
       req.session.alertType = 'primary';
       res.redirect(`/addfriend`);
     })
@@ -438,7 +461,7 @@ app.post('/sendrequest', (req, res) => {
     const addFriend = new Friend({adder: adder, asked: asked});
     addFriend.save()
     .then(() => {
-      req.session.confirm = `Demande d'ami envoyée à ${asked}`;
+      req.session.alert = `Demande d'ami envoyée à ${asked}`;
       req.session.alertType = 'success';
       res.redirect('/addfriend');
     })
@@ -454,7 +477,7 @@ app.post('/agree', (req, res) => {
   const asked = user.pseudo;
   Friend.findOneAndUpdate({ adder, asked, confirm: false }, { confirm: true })
   .then(() => {
-    req.session.confirm = `Vous avez accepté : ${adder}`;
+    req.session.alert = `Vous avez accepté : ${adder}`;
     req.session.alertType = 'success';
     res.redirect('/addfriend');
   })
@@ -475,7 +498,7 @@ app.post('/remove/:element', (req, res) => {
     $or: [ { adder, asked },  { adder: asked, asked: adder } ]
   })
   .then(() => {
-    req.session.confirm = `Vous avez ${action} ${adder}`;
+    req.session.alert = `Vous avez ${action} ${adder}`;
     req.session.alertType = 'danger';
     res.redirect(`/addfriend`);
   })
