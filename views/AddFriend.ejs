@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Add Friend</title>
+  <title>Gérer amis</title>
   <%- include('./partials/link') %>
 </head>
 <body>
@@ -41,7 +41,7 @@
             </a>
           </div>
         </div>
-        <div class="container my-3 flex-grow-1">
+        <div class="container my-3 flex-grow-1 pb-4">
           <% if (alert) { %>
             <div id="alert" class="alert alert-<%= alertType %> text-center m-2" role="alert">
               <span class="fw-bold text-<%= alertType %> text-capitalize">
@@ -74,7 +74,9 @@
           </div>
           <!-- Demandes reçues -->
           <div class="bg-warning-light shadow rounded-top pb-3">
-            <p class="text-center fw-bold text-light bg-warning fs-4 rounded-top mt-4 m-0">Demandes reçues :</p>
+            <p class="text-center fw-bold text-light bg-warning fs-4 rounded-top mt-4 m-0">
+              Demandes reçues :
+            </p>
             <% friendsReceived.forEach(data => { %>
               <div class="d-flex justify-content-center mt-2">
                 <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 180px;">
@@ -103,7 +105,9 @@
           </div>
           <!-- Demandes envoyées -->
           <div class="bg-primary-light shadow rounded-top pb-3">
-            <p class="text-center fw-bold text-light bg-primary fs-4 rounded-top mt-4 m-0">Demandes envoyées :</p>
+            <p class="text-center fw-bold text-light bg-primary fs-4 rounded-top mt-4 m-0">
+              Demandes envoyées :
+            </p>
             <% friendsSend.forEach(data => { %>
               <div class="d-flex justify-content-center mt-2">
                 <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
@@ -125,7 +129,9 @@
           </div>
           <!-- Utilisateurs disponibles -->
           <div class="bg-success-light shadow rounded-top pb-3">
-            <p class="text-center fw-bold text-light bg-success fs-4 rounded-top mt-4 m-0">Utilisateurs disponibles :</p>
+            <p class="text-center fw-bold text-light bg-success fs-4 rounded-top mt-4 m-0">
+              Utilisateurs disponibles :
+            </p>
             <% userPublicList.forEach(data => { %>
               <div class="d-flex justify-content-center mt-2">
                 <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
@@ -167,18 +173,28 @@
                   <i class="bi bi-person-x-fill text-danger"></i> Retirer
                 </button>
                 <!-- Modal : supprimer -->
-                <div class="modal fade" id="deleteFriendModal<%= data.pseudo %>" tabindex="-1" aria-labelledby="deleteFriendModalLabel<%= data.pseudo %>" aria-hidden="true">
+                <div 
+                  class="modal fade" 
+                  id="deleteFriendModal<%= data.pseudo %>" 
+                  tabindex="-1" 
+                  aria-labelledby="deleteFriendModalLabel<%= 
+                  data.pseudo %>" aria-hidden="true"
+                >
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <!--Title modal -->
                       <div class="modal-header bg-danger-light">
-                        <h5 class="modal-title fw-bold" id="deleteFriendModalLabel<%= data.pseudo %>">Confirmer la suppression</h5>
+                        <h5 class="modal-title fw-bold" id="deleteFriendModalLabel<%= data.pseudo %>">
+                          Confirmer la suppression
+                        </h5>
                         <!--Close btn -->
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <!--Body modal -->
                       <div class="modal-body text-center">
-                        <p>Supprimer <span class="text-secondary fst-italic text-capitalize fw-bold">"<%= data.pseudo %>"</span> de vos amis ?</p>
+                        <p>Supprimer <span class="text-secondary fst-italic text-capitalize fw-bold">
+                          "<%= data.pseudo %>"</span> de vos amis ?
+                        </p>
                       </div>
                       <!--Footer modal -->
                       <div class="modal-footer">

@@ -17,27 +17,18 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="/edit-message/<%= message._id %>?_method=PUT" method="POST">
+          <form action="/edit-message/<%=message._id %>?_method=PUT" method="POST">
             <input type="hidden" name="_method" value="PUT">
-            <input type="hidden" name="destinataire" value="<%= message.destinataire %>">
-            <div class="form-group text-center">
-              <label for="message" class="text-capitalize fst-italic fw-bold mb-2 ">à : 
-                <span class=" text-info"><%= message.destinataire %> </span>
+            <input type="hidden" name="destinataire" value="<%=message.destinataire %>">
+            <div class="form-group">
+              <label for="message" class="mb-2 text-capitalize"> à : 
+                <span class="fw-bold text-info"><%=message.destinataire %></span>
               </label>
-              <textarea 
-                class="form-control bg-info-light" 
-                name="message" 
-                rows="4" 
-                required
-              >
-                <%= message.message %>
-              </textarea>
+              <textarea class="form-control bg-info-light" name="message" rows="4" required><%=message.text %></textarea>
             </div>
-            <input type="hidden" name="datetime" value="<%= heure %>">
+            <input type="hidden" name="datetime" value="<%=message.datetime %>">
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                Annuler
-              </button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
               <button type="submit" class="btn btn-success">Enregistrer</button>
             </div>
           </form>
@@ -80,7 +71,14 @@
 
 <!-- Search Modal -->
 <% if (showModal) { %>
-  <div class="modal fade show" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true" style="display: block;">
+  <div 
+    class="modal fade show" 
+    id="searchModal" 
+    tabindex="-1" 
+    aria-labelledby="searchModalLabel" 
+    aria-hidden="true" 
+    style="display: block;"
+  >
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-top">
       <div class="modal-content">
         <!-- Head -->
@@ -95,7 +93,7 @@
               <% messagesFilterSearcher.forEach(message => { %>
                 <div class="d-flex justify-content-center mt-2">
                   <% if (message.expediteur === user.pseudo) { %>
-                    <div class="d-flex fs-5 bg-success mw-85 round-msg gap-2 p-2">
+                    <div class="d-flex fs-5 bg-primary mw-85 round-msg gap-2 p-2">
                       <span class="fs-6 text-muted fw-light">
                         <%= message.datetime %>
                       </span>

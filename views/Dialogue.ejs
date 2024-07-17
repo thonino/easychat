@@ -2,8 +2,7 @@
 <html>
 <head>
   <%- include('./partials/link') %>
-  <title>Chat</title>
-  <link rel="stylesheet" href="/public/css/styles.css">
+  <title>Dialogue</title>
 </head>
 <body>
   <%- include('./partials/nav'); %>
@@ -14,7 +13,7 @@
         <%- include('./partials/contact'); %>
       </div>
       <!-- Main Content md-9 -->
-      <div class="col-md-9 p-0 h-100 d-flex flex-column">
+      <div class="col-md-9 g-0 p-0 h-100 d-flex flex-column">
         <div class="bg-dark-less">
           <div class="d-flex justify-content-between p-2 align-items-center">
             <!-- Bouton Offcanvas toggle -->
@@ -38,23 +37,23 @@
             </a>
           </div>
         </div>
-        <div class="container my-3 flex-grow-1 d-flex flex-column overflow-hidden">
+        <div class="flex-grow-1 d-flex flex-column overflow-hidden my-3">
           <!-- Search and Options -->
           <div class="d-flex justify-content-center gap-2 my-2">
             <form id="searchForm" action="/dialogue/<%= chatting.pseudo %>" method="GET" class="d-flex">
               <div class="input-group">
                 <input type="text" class="form-control rounded-start fst-italic" name="search" placeholder="recherche...">
-                <button type="submit" class="btn btn-info rounded-end">
+                <button type="submit" class="btn bg-success-light rounded-end">
                   <i class="bi bi-search text-dark-75"></i>
                 </button>
               </div>
             </form>
-            <button id="toggle" class="btn btn-success text-light">
+            <button id="toggle" class="btn bg-success-light">
               <i class="bi bi-gear-fill"></i>
             </button>
           </div>
           <!-- Messages -->
-          <div id="messageBox" class="d-flex flex-column-reverse overflow-y-auto mb-3">
+          <div id="messageBox" class="d-flex flex-column-reverse overflow-auto mb-3 px-2 vh-100">
             <% messagesFilter.reverse().forEach(message => { %>
               <div class="text-center fw-bold fst-italic mt-3">
                 <span class="fs-6 text-muted fw-light cible hidden"><%= message.datetime %></span>

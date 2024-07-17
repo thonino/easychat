@@ -102,7 +102,7 @@ if (isCurrentUser) {
 
   const editButton = document.createElement('button');
   editButton.type = 'button';
-  editButton.classList.add('btn', 'btn-success', 'btn-sm');
+  editButton.classList.add('btn', 'btn-light', 'btn-sm');
   editButton.setAttribute('data-bs-toggle', 'modal');
   editButton.setAttribute('data-bs-target', `#editMessageModal${data.id}`);
 

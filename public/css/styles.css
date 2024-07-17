@@ -1,10 +1,5 @@
 .navbar { height: 48px; }
 
-.reverseMessage {
-  height: 100vh;
-  flex-direction: column-reverse;
-}
-
 .mw-85 { max-width: 85%;}
 .round-msg { border-radius:  30px; }
 .round { border-radius: 50%;}
@@ -22,15 +17,26 @@
 .text-warning-dark { color: #dca602; }
 .text-info-light { color: #d0f3f6; }
 .text-info-dark { color: #086c80; }
+
 .bg-warning-dark { background-color: #dca602; }
 .bg-dark-75 { background-color: #404040; }
 .bg-dark-less { background-color: #343a40; }
+
 .bg-info-light { background-color: #d0f3f6; }
 .bg-info-dark { background-color: #086c80; }
+.bg-info-light:hover, .bg-info-dark:hover { background-color: #0dcaf0; }
+
 .bg-success-light { background-color: #b2e5c9; }
+.bg-success-light:hover {background-color:#198754}
+
 .bg-danger-light { background-color: #fdecea; }
+
 .bg-warning-light { background-color: #FFE8A3 }
+.bg-warning-light:hover { background-color: #ffc107}
+
 .bg-primary-light { background-color: #A6C9FE; }
+.bg-primary-light:hover { background-color: #0d6efd; }
+
 .bg-secondary-light { background-color: #e8e8e8; }
 
 .input-class , .input-class:hover{
@@ -38,7 +44,3 @@
   box-shadow: none;
 }
 
-/* Styles pour screen sm */
-@media (max-width:  768px) {
-  /* .grid-container { grid-template-columns: 1fr;} */
-}
