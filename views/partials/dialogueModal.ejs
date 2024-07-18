@@ -24,7 +24,7 @@
               <label for="message" class="mb-2 text-capitalize"> à : 
                 <span class="fw-bold text-info"><%=message.destinataire %></span>
               </label>
-              <textarea class="form-control bg-info-light" name="message" rows="4" required><%=message.text %></textarea>
+              <textarea class="form-control bg-info-light" name="message" rows="4" required><%=message.message %></textarea>
             </div>
             <input type="hidden" name="datetime" value="<%=message.datetime %>">
             <div class="modal-footer">
@@ -98,7 +98,11 @@
                         <%= message.datetime %>
                       </span>
                       <p class="d-flex fs-5 text-capitalize text-white m-0">
-                        <img src="/uploads/<%= user.photo %>" class="card-img-top round wh-25" alt="Profile image">
+                        <img 
+                          src="/uploads/<%= user.photo %>" 
+                          class="card-img-top round wh-25 border border-light border-2" 
+                          alt="Profile image"
+                        >
                       </p>
                       <p class="fw-light text-center text-light m-0">
                         <%= message.message %>
@@ -110,7 +114,11 @@
                         <%= message.datetime %>
                       </span>
                       <p class="d-flex fs-5 text-capitalize text-info-dark m-0 gap-1">
-                        <img src="/uploads/<%= chatting.photo %>" class="card-img-top round wh-25" alt="Profile image">
+                        <img 
+                          src="/uploads/<%= chatting.photo %>" 
+                          class="card-img-top round wh-25 border border-light border-2" 
+                          alt="Profile image"
+                        >
                       </p>
                       <p class="fw-light text-center text-light m-0">
                         <%= message.message %>

@@ -8,7 +8,12 @@
       class="text-decoration-none text-capitalize fw-bold fs-5 m-0 p-0
         <%= chatting && chatting.pseudo === data.pseudo ? 'text-info' : 'text-secondary' %>"
     >
-    <img src="/uploads/<%= data.photo %>" class="card-img-top round wh-25" alt="...">
+    <img 
+      src="/uploads/<%= data.photo %>" 
+      class="card-img-top round wh-25 border  border-2 
+        <%= chatting && chatting.pseudo === data.pseudo ? 'border-info' : 'border border-secondary' %>" 
+      alt="..."
+    >
       <%= data.pseudo %><br>
     </a>
     <form action="/archive" method="POST" class="m-0 p-0">

@@ -35,25 +35,18 @@
             </a>
           </div>
         </div>
-        <div class="container my-3 flex-grow-1 pb-4">
-          <h1 class="text-secondary fw-bold text-center">Mon Profile</h1>
-          <div class="d-flex flex-column align-items-center">
-            <div class="card shadow" style="width: 200px;">
+        <div class="container  flex-grow-1 pb-4">
+          <h1 class="text-secondary fw-bold text-center text-capitalize"><%= user.pseudo %></h1>
+          <div class="d-flex justify-content-center align-items-center">
               <img 
                 src="./uploads/<%= logoPhoto %>" 
-                class="card-img-top rounded-0" 
+                class="wh-100 round border border-info border-4 shadow" 
                 alt="photo de profil ami" 
               />
-              <div class="card-body p-0">
-                <p class="card-text text-center text-secondary fw-bold text-capitalize fs-2">
-                  <%= user.pseudo %>
-                </p>
-              </div>
-            </div>
           </div>
           <!-- Add friend -->
-          <div class="text-center mt-4">
-            <a href="/addfriend" class="btn btn-success btn-lg shadow">
+          <div class="text-center mt-3">
+            <a href="/addfriend" class="btn btn-info border-color-primary btn-lg shadow">
               <i class="bi bi-person-fill-add"> Amis</i>
             </a>
           </div>
@@ -66,7 +59,7 @@
                 <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2 mx-2" style="width: 200px;">
                   <img 
                     src="./uploads/<%= data.photo %>" 
-                    class="card-img-top round wh-25" 
+                    class="card-img-top round wh-25 border border-info border-2" 
                     alt="photo de profil ami"
                   />
                   <span class="text-capitalize"><%= data.pseudo %></span>

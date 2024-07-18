@@ -43,8 +43,8 @@
             <form id="searchForm" action="/dialogue/<%= chatting.pseudo %>" method="GET" class="d-flex">
               <div class="input-group">
                 <input type="text" class="form-control rounded-start fst-italic" name="search" placeholder="recherche...">
-                <button type="submit" class="btn bg-success-light rounded-end">
-                  <i class="bi bi-search text-dark-75"></i>
+                <button type="submit" class="btn bg-success-light text-dark-75 rounded-end">
+                  <i class="bi bi-search "></i>
                 </button>
               </div>
             </form>
@@ -63,7 +63,11 @@
                       <div class="d-flex justify-content-center align-items-center gap-2 m-2">
                         <p class="fw-light text-center text-light m-0 p-0"><%= message.message %></p>
                         <p class="d-flex fs-5 text-capitalize m-0 p-0">
-                          <img src="/uploads/<%= user.photo %>" class="card-img-top round wh-25" alt="img profile">
+                          <img 
+                          src="/uploads/<%= user.photo %>" 
+                          class="card-img-top round wh-25 border border-light border-2" 
+                          alt="img profile"
+                        >
                         </p>
                       </div>
                       <div class="cible hidden">
@@ -89,7 +93,7 @@
                         </div>
                         <div class="d-flex justify-content-start align-items-center gap-2">
                           <p class="d-flex fs-5 text-capitalize text-info-dark m-0 p-0 gap-1">
-                            <img src="/uploads/<%= chatting.photo %>" class="card-img-top round wh-25" alt="img profile">
+                            <img src="/uploads/<%= chatting.photo %>" class="card-img-top round wh-25 border border-light border-2" alt="img profile">
                           </p>
                           <p class="fw-light text-center text-light m-0 p-0"><%= message.message %></p>
                         </div>

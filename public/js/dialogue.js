@@ -88,7 +88,7 @@ if (isCurrentUser) {
 
   const profileImg = document.createElement('img');
   profileImg.src = `/uploads/${data.expediteurPhoto}`;
-  profileImg.classList.add('card-img-top', 'round', 'wh-25');
+  profileImg.classList.add('card-img-top', 'round', 'wh-25', 'border', 'border-light', 'border-2');
   profileImg.alt = 'img profile';
   contentDivExpediteur.appendChild(profileImg);
 
@@ -158,7 +158,7 @@ if (isCurrentUser) {
 
   const profileImg = document.createElement('img');
   profileImg.src = `/uploads/${data.expediteurPhoto}`;
-  profileImg.classList.add('card-img-top', 'round', 'wh-25');
+  profileImg.classList.add('card-img-top', 'round', 'wh-25', 'border', 'border-light', 'border-2',);
   profileImg.alt = 'img profile';
   contentDivDestinataire.appendChild(profileImg);
 

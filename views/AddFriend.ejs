@@ -41,7 +41,7 @@
             </a>
           </div>
         </div>
-        <div class="container my-3 flex-grow-1 pb-4">
+        <div class="container text-center flex-grow-1 pb-4">
           <% if (alert) { %>
             <div id="alert" class="alert alert-<%= alertType %> text-center m-2" role="alert">
               <span class="fw-bold text-<%= alertType %> text-capitalize">
@@ -49,7 +49,9 @@
               </span>
             </div> 
           <% } %>   
-          <h1 class="text-center text-secondary my-2 fw-bold">Gérer amis !</h1>
+          <i class="bi bi-people-fill fs-1 text-secondary "></i>
+          <h1 class="text-center text-secondary mb-2 fw-bold m-0">Gérer amis !</h1>
+          
           <!-- Gestion statut -->
           <div class="d-flex justify-content-center mt-2">
             <div class="dropdown border border-secondary border-2 rounded-2">
@@ -82,7 +84,7 @@
                 <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 180px;">
                   <img 
                     src="./uploads/<%= data.photo %>" 
-                    class="card-img-top round wh-25" 
+                    class="card-img-top round wh-25 border border-light border-2" 
                     alt="photo de profil ami">
                   <span class="text-capitalize"><%= data.pseudo %></span>
                 </div>
@@ -113,7 +115,7 @@
                 <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
                   <img 
                     src="./uploads/<%= data.photo %>" 
-                    class="card-img-top round wh-25" 
+                    class="card-img-top round wh-25 border border-light border-2" 
                     alt="photo de profil ami">
                   <span class="text-capitalize"><%= data.pseudo %></span>
                 </div>
@@ -137,7 +139,7 @@
                 <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
                   <img 
                     src="./uploads/<%= data.photo %>" 
-                    class="card-img-top round wh-25" 
+                    class="card-img-top round wh-25  border border-light border-2" 
                     alt="photo de profil ami">
                   <span class="text-capitalize"><%= data.pseudo %></span>
                 </div>
@@ -160,7 +162,7 @@
                 <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
                   <img 
                     src="./uploads/<%= data.photo %>" 
-                    class="card-img-top round wh-25" 
+                    class="card-img-top round wh-25  border border-light border-2" 
                     alt="photo de profil ami">
                   <span class="text-capitalize"><%= data.pseudo %></span>
                 </div>
