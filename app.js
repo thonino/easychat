@@ -526,7 +526,7 @@ app.post('/search', async (req, res) => {
         message.message.toLowerCase().includes(search.toLowerCase())
       );
     }
-    res.render('search', { user, search, messagesFilter, heure, chatting });
+    res.render('Search', { user, search, messagesFilter, heure, chatting });
   } 
   catch (err) { console.error(err); res.redirect('/error');}
 });
@@ -559,7 +559,7 @@ app.get('/dialogue/:chatting', async (req, res) => {
       );
       console.log('search: ', search);
     }
-    res.render('dialogue', {
+    res.render('Dialogue', {
       messagesFilter, messagesFilterSearcher, heure, chats,
       user, chatting: chattingUser, friends, friendsAsk, showModal: !!search,
     });
