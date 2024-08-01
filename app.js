@@ -112,7 +112,7 @@ io.on('connection', (socket) => {
           });
       } catch (err) {
         console.log(err);
-        console.error("Erreur message ou de MAJ friend:", err);
+        console.ERROR("Erreur message ou de MAJ friend:", err);
       }
     });
     socket.on('disconnect', () => {
@@ -203,14 +203,14 @@ app.get('/', (req, res) => {
   const user = req.session.user;
   const alert = req.params.alert;
   const heure = moment().format('DD-MM-YYYY, h:mm:ss');
-  res.render('home', { user, alert});
+  res.render('Home', { user, alert});
 });
 
 // error
 app.get('/error', (req, res) => {
   if (!req.session.user) {return res.redirect('/login'); }
   const user = req.session.user;
-  res.render('error', { user });
+  res.render('Error', { user });
 });
 
 // Upload photo
@@ -229,7 +229,7 @@ app.post('/upload', upload.single('photo'), (req, res) => {
   })
   .catch((err) => {
     console.error('Erreur de mise à jour:', err);
-    res.redirect('/error');
+    res.redirect('/Error');
   });
 });
 
@@ -278,7 +278,7 @@ app.get('/account/:pseudo', (req, res) => {
   if (!req.session.user) {return res.redirect('/login');}
   const user = req.session.user;
   const logoPhoto = user && user.photo ? user.photo : 'logo.jpg';
-  res.render('account', { user, logoPhoto });
+  res.render('Account', { user, logoPhoto });
 });
 
 // Get register
@@ -339,7 +339,7 @@ app.get('/userpage', async (req, res) => {
   const logoPhoto = user.photo ? user.photo : 'logo.jpg';
   const chatting = res.locals.chatting;
   const messagesFilter = res.locals.messagesFilter;
-  res.render('userpage', {
+  res.render('Userpage', {
     user: res.locals.user,
     contacts: res.locals.contacts,
     userPublicList: res.locals.userPublicList,
