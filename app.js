@@ -112,7 +112,7 @@ io.on('connection', (socket) => {
           });
       } catch (err) {
         console.log(err);
-        console.ERROR("Erreur message ou de MAJ friend:", err);
+        console.error("Erreur message ou de MAJ friend:", err);
       }
     });
     socket.on('disconnect', () => {
