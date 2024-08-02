@@ -203,7 +203,7 @@ app.get('/', (req, res) => {
   const user = req.session.user;
   const alert = req.params.alert;
   const heure = moment().format('DD-MM-YYYY, h:mm:ss');
-  res.render('Home', { user, alert});
+  res.render('Home', { user, heure, alert});
 });
 
 // error
