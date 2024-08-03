@@ -131,6 +131,7 @@ app.use((req, res, next) => {
   res.locals.chatting = req.session.chatting;
   next();
 });
+
 // Message d'alert
 app.use((req, res, next) => {
   res.locals.alert = req.session.alert;
