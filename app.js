@@ -349,6 +349,25 @@ app.get('/userpage', async (req, res) => {
   });
 });
 
+
+// POST NEW MESSAGE
+app.post('/message', (req, res) => {
+  if (!req.session.user) {return res.redirect('/login');}
+  const user = req.session.user;
+  const heure = moment().format(' h:mm:ss');
+  const messageData = new Message({
+    expediteur: user.pseudo,
+    destinataire: req.body.destinataire,
+    message: req.body.message,
+    datetime: heure
+  });
+  messageData.save()
+    .then(() => res.redirect(`/userpage/${req.body.destinataire}`))
+    .catch(err => {
+      console.log(err);
+    });
+});
+
 // Create new chat
 app.post('/chat', async (req, res) => {
   try {
