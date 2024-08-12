@@ -92,11 +92,9 @@ io.on('connection', (socket) => {
       });
       try {
         const savedMessage = await newMessage.save();
-        console.log(`
-          Texte: ${newMessage.message} 
-          De: ${newMessage.expediteur} 
-          A: ${newMessage.destinataire}
-        `);
+        console.log(`Texte: ${newMessage.message}`);
+        console.log(`De: ${newMessage.expediteur}`);
+        console.log(`A: ${newMessage.destinataire}`);
         const expediteurData = await User.findOne({ pseudo: newMessage.expediteur });
         const destinataireData =  await User.findOne({ pseudo: newMessage.destinataire });
         io.to(`${newMessage.expediteur}-${newMessage.destinataire}`)
