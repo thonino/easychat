@@ -104,11 +104,9 @@ io.on('connection', (socket) => {
           .emit('receiveText', {
             id: savedMessage._id,
             pseudo: expediteurData.pseudo,
-            text,
             destinataire: destinataireData.pseudo,
+            text, expediteurData, destinataireData,
             datetime: heure,
-            expediteurPhoto: expediteurData.photo,
-            destinatairePhoto: destinataireData.photo
           });
       } catch (err) {
         console.log(err);
