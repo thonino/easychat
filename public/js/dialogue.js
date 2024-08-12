@@ -87,7 +87,7 @@ if (isCurrentUser) {
   contentDivExpediteur.appendChild(messageParagraph);
 
   const profileImg = document.createElement('img');
-  profileImg.src = `/uploads/${data.expediteurPhoto}`;
+  profileImg.src = `/uploads/${data.expediteurPhoto} || logo.jpg`;
   profileImg.classList.add('card-img-top', 'round', 'wh-25', 'border', 'border-light', 'border-2');
   profileImg.alt = 'img profile';
   contentDivExpediteur.appendChild(profileImg);
@@ -157,7 +157,7 @@ if (isCurrentUser) {
   cibleDiv.appendChild(deleteButton);
 
   const profileImg = document.createElement('img');
-  profileImg.src = `/uploads/${data.expediteurPhoto}`;
+  profileImg.src = `/uploads/${data.expediteurPhoto} || logo.jpg `;
   profileImg.classList.add('card-img-top', 'round', 'wh-25', 'border', 'border-light', 'border-2',);
   profileImg.alt = 'img profile';
   contentDivDestinataire.appendChild(profileImg);

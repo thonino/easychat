@@ -64,7 +64,7 @@
                         <p class="fw-light text-center text-light m-0 p-0"><%= message.message %></p>
                         <p class="d-flex fs-5 text-capitalize m-0 p-0">
                           <img 
-                          src="/uploads/<%= user.photo %>" 
+                          src="/uploads/<%= user.photo || 'logo.jpg' %>" 
                           class="card-img-top round wh-25 border border-light border-2" 
                           alt="img profile"
                         >
@@ -93,7 +93,7 @@
                         </div>
                         <div class="d-flex justify-content-start align-items-center gap-2">
                           <p class="d-flex fs-5 text-capitalize text-info-dark m-0 p-0 gap-1">
-                            <img src="/uploads/<%= chatting.photo %>" class="card-img-top round wh-25 border border-light border-2" alt="img profile">
+                            <img src="/uploads/<%= chatting.photo || 'logo.jpg'%>" class="card-img-top round wh-25 border border-light border-2" alt="img profile">
                           </p>
                           <p class="fw-light text-center text-light m-0 p-0"><%= message.message %></p>
                         </div>

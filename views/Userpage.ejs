@@ -44,7 +44,7 @@
                 alt="photo de profil ami" 
               />
           </div>
-          <!-- Add friend -->
+          <!-- friend -->
           <div class="text-center mt-3">
             <a href="/addfriend" class="btn btn-info border-color-primary btn-lg shadow">
               <i class="bi bi-person-fill-add"> Amis</i>
@@ -58,7 +58,7 @@
                 <!-- info friend -->
                 <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2 mx-2" style="width: 200px;">
                   <img 
-                    src="./uploads/<%= data.photo %>" 
+                    src="./uploads/<%= data.photo || 'logo.jpg' %>" 
                     class="card-img-top round wh-25 border border-info border-2" 
                     alt="photo de profil ami"
                   />
