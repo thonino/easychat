@@ -89,7 +89,6 @@ if (isCurrentUser) {
   const profileImg = document.createElement('img');
   profileImg.src = `/uploads/${data.expediteurData.photo  || 'logo.jpg'}`;
   profileImg.classList.add('card-img-top', 'round', 'wh-25', 'border', 'border-light', 'border-2');
-  profileImg.alt = 'img profile';
   contentDivExpediteur.appendChild(profileImg);
 
   const cibleDiv = document.createElement('div');
@@ -159,7 +158,6 @@ if (isCurrentUser) {
   const profileImg = document.createElement('img');
   profileImg.src = `/uploads/${data.expediteurData.photo || 'logo.jpg'}`;
   profileImg.classList.add('card-img-top', 'round', 'wh-25', 'border', 'border-light', 'border-2',);
-  profileImg.alt = 'img profile';
   contentDivDestinataire.appendChild(profileImg);
 
   const messageParagraph = document.createElement('p');

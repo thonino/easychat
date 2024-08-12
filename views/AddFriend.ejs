@@ -22,8 +22,10 @@
                 class="btn bg-info btn-sm text-dark-75 text-capitalize fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
-                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-                  Chat
+                data-bs-target="#offcanvasNavbar" 
+                aria-controls="offcanvasNavbar"
+              >
+                Chat
                 <i class="bi bi-chat-square-text-fill"></i>
               </button>
             </div>
@@ -43,14 +45,20 @@
         </div>
         <div class="container text-center flex-grow-1 pb-4">
           <% if (alert) { %>
-            <div id="alert" class="alert alert-<%= alertType %> text-center m-2" role="alert">
+            <div 
+              id="alert" 
+              class="alert alert-<%= alertType %> text-center m-2" 
+                role="alert"
+            >
               <span class="fw-bold text-<%= alertType %> text-capitalize">
                 <%= alert %>
               </span>
             </div> 
           <% } %>   
           <i class="bi bi-people-fill fs-1 text-secondary "></i>
-          <h1 class="text-center text-secondary mb-2 fw-bold m-0">Gérer amis !</h1>
+          <h1 class="text-center text-secondary mb-2 fw-bold m-0">
+            Gérer amis !
+          </h1>
           
           <!-- Gestion statut -->
           <div class="d-flex justify-content-center mt-2">
@@ -59,17 +67,31 @@
                 class="btn bg-secondary-light dropdown-toggle fw-bold text-secondary w-100" 
                 type="button" 
                 data-bs-toggle="dropdown" 
-                aria-expanded="false">
-                Mon Statut <span class="<%= color %>"> ( <%= state %> )</span>
+                aria-expanded="false"
+              >
+                Mon Statut 
+                <span class="<%= color %>"> 
+                  ( <%= state %> )
+                </span>
               </button>
               <div class="dropdown-menu w-100 text-center">
                 <form action="/status" method="POST">
                   <input type="hidden" name="status" value="true"/>
-                  <button class="dropdown-item text-success fw-bold" type="submit">Visible</button>
+                  <button 
+                    class="dropdown-item text-success fw-bold" 
+                    type="submit"
+                  >
+                    Visible
+                  </button>
                 </form>
                 <form action="/status" method="POST">
                   <input type="hidden" name="status" value="false"/>
-                  <button class="dropdown-item text-danger fw-bold" type="submit">Invisible</button>
+                  <button 
+                    class="dropdown-item text-danger fw-bold" 
+                    type="submit"
+                  >
+                    Invisible
+                  </button>
                 </form>
               </div>
             </div>
@@ -81,22 +103,35 @@
             </p>
             <% friendsReceived.forEach(data => { %>
               <div class="d-flex justify-content-center mt-2">
-                <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 180px;">
+                <div 
+                  class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" 
+                  style="width: 180px"
+                >
                   <img 
                     src="./uploads/<%= data.photo || 'logo.jpg' %>" 
                     class="card-img-top round wh-25 border border-light border-2" 
-                >
-                  <span class="text-capitalize"><%= data.pseudo %></span>
+                  >
+                  <span class="text-capitalize">
+                    <%= data.pseudo %>
+                  </span>
                 </div>
                 <div class="d-flex gap-2">
                   <form action="/agree" method="POST">
-                    <input type="hidden" name="adder" value="<%= data.pseudo %>"/>
+                    <input 
+                      type="hidden" 
+                      name="adder" 
+                      value="<%= data.pseudo %>"
+                    />
                     <button type="submit" class="btn fst-italic fw-bold px-2 py-1 m-0">
                       <i class='bi bi-check-circle-fill text-success'></i> Oui
                     </button>
                   </form>
                   <form action="/remove/disagree" method="POST">
-                    <input type="hidden" name="adder" value="<%= data.pseudo %>"/>
+                    <input 
+                      type="hidden" 
+                      name="adder" 
+                      value="<%= data.pseudo %>"
+                    />
                     <button type="submit" class="btn fst-italic fw-bold px-2 py-1 m-0">
                       <i class="bi bi-x-circle-fill text-danger"></i> Non
                     </button>
@@ -112,12 +147,17 @@
             </p>
             <% friendsSend.forEach(data => { %>
               <div class="d-flex justify-content-center mt-2">
-                <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
+                <div 
+                  class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" 
+                  style="width: 230px"
+                >
                   <img 
                     src="./uploads/<%= data.photo || 'logo.jpg' %>" 
                     class="card-img-top round wh-25 border border-light border-2" 
-                >
-                  <span class="text-capitalize"><%= data.pseudo %></span>
+                  >
+                  <span class="text-capitalize">
+                    <%= data.pseudo %>
+                  </span>
                 </div>
                 <form action="/cancelrequest" method="POST">
                   <input type="hidden" name="adder" value="<%= user.pseudo %>"/>
@@ -136,12 +176,17 @@
             </p>
             <% userPublicList.forEach(data => { %>
               <div class="d-flex justify-content-center mt-2">
-                <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
+                <div 
+                  class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" 
+                  style="width: 230px"
+                >
                   <img 
                     src="./uploads/<%= data.photo || 'logo.jpg' %>" 
                     class="card-img-top round wh-25  border border-light border-2" 
                 >
-                  <span class="text-capitalize"><%= data.pseudo %></span>
+                  <span class="text-capitalize">
+                    <%= data.pseudo %>
+                  </span>
                 </div>
                 <form action="/sendrequest" method="POST">
                   <input type="hidden" name="adder" value="<%= user.pseudo %>"/>
@@ -155,23 +200,31 @@
           </div>
           <!-- Mes amis -->
           <div class="bg-info-light shadow rounded-top pb-3">
-            <h3 class="text-center text-light bg-info fw-bold rounded-top mt-4 m-0">Mes Amis :</h3>
+            <h3 class="text-center text-light bg-info fw-bold rounded-top mt-4 m-0">
+              Mes Amis :
+            </h3>
             <% friends.forEach(data =>  { %>
               <div class="d-flex justify-content-center mt-2">
                 <!-- info friend -->
-                <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
+                <div 
+                  class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" 
+                  style="width: 230px"
+                >
                   <img 
                     src="./uploads/<%= data.photo || 'logo.jpg' %>" 
                     class="card-img-top round wh-25  border border-light border-2" 
-                >
-                  <span class="text-capitalize"><%= data.pseudo %></span>
+                  >
+                  <span class="text-capitalize">
+                    <%= data.pseudo %>
+                  </span>
                 </div>
                 <!-- btn modal : supprimer-->
                 <button 
                   type="button" 
                   class="btn px-2 fst-italic text-info-dark fw-bold" 
                   data-bs-toggle="modal" 
-                  data-bs-target="#deleteFriendModal<%= data.pseudo %>">
+                  data-bs-target="#deleteFriendModal<%= data.pseudo %>"
+                >
                   <i class="bi bi-person-x-fill text-danger"></i> Retirer
                 </button>
                 <!-- Modal : supprimer -->
@@ -179,30 +232,56 @@
                   class="modal fade" 
                   id="deleteFriendModal<%= data.pseudo %>" 
                   tabindex="-1" 
-                  aria-labelledby="deleteFriendModalLabel<%= data.pseudo %>" aria-hidden="true"
+                  aria-labelledby="deleteFriendModalLabel<%= data.pseudo %>" 
+                  aria-hidden="true"
                 >
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <!--Title modal -->
                       <div class="modal-header bg-danger-light">
-                        <h5 class="modal-title fw-bold" id="deleteFriendModalLabel<%= data.pseudo %>">
+                        <h5 
+                          class="modal-title fw-bold" 
+                          id="deleteFriendModalLabel<%= data.pseudo %>"
+                        >
                           Confirmer la suppression
                         </h5>
                         <!--Close btn -->
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button 
+                          type="button" 
+                          class="btn-close" 
+                          data-bs-dismiss="modal" 
+                          aria-label="Close"
+                        >
+                        </button>
                       </div>
                       <!--Body modal -->
                       <div class="modal-body text-center">
-                        <p>Supprimer <span class="text-secondary fst-italic text-capitalize fw-bold">
-                          "<%= data.pseudo %>"</span> de vos amis ?
+                        <p>
+                          Supprimer 
+                          <span class="text-secondary fst-italic text-capitalize fw-bold">
+                            "<%= data.pseudo %>"
+                          </span> 
+                          de vos amis ?
                         </p>
                       </div>
                       <!--Footer modal -->
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <form id="deleteFriend<%= data.pseudo %>" action="/remove/deleted" method="POST">
+                        <button 
+                          type="button" 
+                          class="btn btn-secondary" 
+                          data-bs-dismiss="modal"
+                        >
+                          Annuler
+                        </button>
+                        <form 
+                          id="deleteFriend<%= data.pseudo %>" 
+                          action="/remove/deleted" 
+                          method="POST"
+                        >
                           <input type="hidden" name="adder" value="<%= data.pseudo %>"/>
-                          <button type="submit" class="btn btn-danger">Supprimer</button>
+                          <button type="submit" class="btn btn-danger">
+                            Supprimer
+                          </button>
                         </form>
                       </div>
                     </div>

@@ -22,7 +22,9 @@
                 class="btn bg-info btn-sm text-dark-75 text-capitalize fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
-                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                data-bs-target="#offcanvasNavbar" 
+                aria-controls="offcanvasNavbar"
+              >
                   Chat
                 <i class="bi bi-chat-square-text-fill"></i>
               </button>
@@ -32,7 +34,10 @@
               <i class="bi bi-person-square"></i> Profile
             </a>
             <!-- Account -->
-            <a href="/account/<%= user.pseudo %>" class="btn bg-success btn-sm text-light fw-bold">
+            <a 
+              href="/account/<%= user.pseudo %>" 
+              class="btn bg-success btn-sm text-light fw-bold"
+            >
               <i class="bi bi-person-vcard-fill"></i> Compte
             </a>
           </div>
@@ -40,10 +45,23 @@
         <div class="flex-grow-1 d-flex flex-column overflow-hidden my-3">
           <!-- Search and Options -->
           <div class="d-flex justify-content-center gap-2 my-2">
-            <form id="searchForm" action="/dialogue/<%= chatting.pseudo %>" method="GET" class="d-flex">
+            <form 
+              id="searchForm" 
+              action="/dialogue/<%= chatting.pseudo %>" 
+              method="GET" 
+              class="d-flex"
+            >
               <div class="input-group">
-                <input type="text" class="form-control rounded-start fst-italic" name="search" placeholder="recherche...">
-                <button type="submit" class="btn bg-success-light text-dark-75 rounded-end">
+                <input 
+                  type="text" 
+                  class="form-control rounded-start fst-italic" 
+                  name="search" 
+                  placeholder="recherche..."
+                />
+                <button 
+                  type="submit" 
+                  class="btn bg-success-light text-dark-75 rounded-end"
+                >
                   <i class="bi bi-search "></i>
                 </button>
               </div>
@@ -53,29 +71,45 @@
             </button>
           </div>
           <!-- Messages -->
-          <div id="messageBox" class="d-flex flex-column-reverse overflow-auto mb-3 px-2 vh-100">
+          <div 
+            id="messageBox" 
+            class="d-flex flex-column-reverse overflow-auto mb-3 px-2 vh-100"
+          >
             <% messagesFilter.reverse().forEach(message => { %>
               <div class="text-center fw-bold fst-italic mt-3">
-                <span class="fs-6 text-muted fw-light cible hidden"><%= message.datetime %></span>
+                <span class="fs-6 text-muted fw-light cible hidden">
+                  <%= message.datetime %>
+                </span>
                 <% if (message.expediteur === user.pseudo) { %>
                   <div class="d-flex justify-content-end">
                     <div class="d-flex justify-content-end align-items-center fs-5 bg-primary gap-2 mw-85 round-msg me-2 px-2">
                       <div class="d-flex justify-content-center align-items-center gap-2 m-2">
-                        <p class="fw-light text-center text-light m-0 p-0"><%= message.message %></p>
+                        <p class="fw-light text-center text-light m-0 p-0">
+                          <%= message.message %>
+                        </p>
                         <p class="d-flex fs-5 text-capitalize m-0 p-0">
                           <img 
                           src="/uploads/<%= user.photo || 'logo.jpg' %>" 
                           class="card-img-top round wh-25 border border-light border-2" 
-                          alt="img profile"
                         >
                         </p>
                       </div>
                       <div class="cible hidden">
                         <div class="d-flex justify-content-center align-items-center pe-2">
-                          <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#editMessageModal<%= message._id %>">
+                          <button 
+                            type="button" 
+                            class="btn btn-light btn-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#editMessageModal<%= message._id %>"
+                          >
                             <i class="bi bi-pencil-square"></i>
                           </button>
-                          <button type="button" class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#deleteMessageModal<%= message._id %>">
+                          <button 
+                            type="button" 
+                            class="btn btn-danger btn-sm ms-2" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteMessageModal<%= message._id %>"
+                          >
                             <i class="bi bi-trash"></i>
                           </button>
                         </div>
@@ -87,15 +121,25 @@
                     <div class="d-flex justify-content-start align-items-center fs-5 bg-info gap-2 mw-85 round-msg ms-2 px-2">
                       <div class="d-flex justify-content-start align-items-center gap-2 m-2">
                         <div class="cible hidden align-items-center">
-                          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteMessageModal<%= message._id %>">
+                          <button 
+                            type="button" 
+                            class="btn btn-danger btn-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteMessageModal<%= message._id %>"
+                          >
                             <i class="bi bi-trash"></i>
                           </button>
                         </div>
                         <div class="d-flex justify-content-start align-items-center gap-2">
                           <p class="d-flex fs-5 text-capitalize text-info-dark m-0 p-0 gap-1">
-                            <img src="/uploads/<%= chatting.photo || 'logo.jpg'%>" class="card-img-top round wh-25 border border-light border-2" alt="img profile">
+                            <img 
+                              src="/uploads/<%= chatting.photo || 'logo.jpg'%>" 
+                              class="card-img-top round wh-25 border border-light border-2"
+                            >
                           </p>
-                          <p class="fw-light text-center text-light m-0 p-0"><%= message.message %></p>
+                          <p class="fw-light text-center text-light m-0 p-0">
+                            <%= message.message %>
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -107,12 +151,39 @@
         </div>
         <!-- Message Input -->
         <div class="below-content bg-dark-75 p-3">
-          <form class="d-flex justify-content-center align-items-center" method="POST" action="/message">
-            <textarea id="textInput" class="form-control txt-area" name="message" rows="3" required></textarea>
-            <input type="hidden" name="destinataire" value="<%= chatting.pseudo %>">
-            <input type="hidden" name="expediteur" value="<%= user.pseudo %>">
-            <input type="hidden" name="datetime" value="<%= heure %>">
-            <button id="sendButton" type="submit" class="btn btn-success ms-2">
+          <form 
+            class="d-flex justify-content-center align-items-center" 
+            method="POST" 
+            action="/message"
+          >
+            <textarea 
+            id="textInput" 
+            class="form-control txt-area" 
+            name="message" 
+            rows="3" 
+            required
+            >
+            </textarea>
+            <input 
+              type="hidden" 
+              name="destinataire" 
+              value="<%= chatting.pseudo %>"
+            />
+            <input 
+              type="hidden" 
+              name="expediteur" 
+              value="<%= user.pseudo %>"
+            />
+            <input 
+              type="hidden" 
+              name="datetime" 
+              value="<%= heure %>"
+            />
+            <button 
+              id="sendButton" 
+              type="submit" 
+              class="btn btn-success ms-2"
+            >
               <i class="bi bi-send fs-3"></i>
             </button>
           </form>
@@ -123,7 +194,9 @@
   <div id="modalsContainer"></div>
   <%- include('./partials/dialogueModal'); %>
   <%- include('./partials/offcanvas'); %>
-  <script> var userPseudo = "<%= user.pseudo.toLowerCase() %>"; </script>
+  <script> 
+    var userPseudo = "<%= user.pseudo.toLowerCase() %>"; 
+  </script>
   <script src="/public/js/dialogue.js"></script>
   <script src="/socket.io/socket.io.js"></script>
 </body>

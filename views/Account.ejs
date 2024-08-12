@@ -24,8 +24,11 @@
                 class="btn bg-info btn-sm text-dark-75 text-capitalize fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
-                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-                  Chat
+                data-bs-target="#offcanvasNavbar" 
+                aria-controls="offcanvasNavbar"
+              >
+                  
+                Chat
                 <i class="bi bi-chat-square-text-fill"></i>
               </button>
             </div>
@@ -39,20 +42,26 @@
         </div>
         <div class="container flex-grow-1 d-flex flex-column align-items-center pb-4">
           <% if (alert) { %>
-            <div id="alert" class="alert alert-<%= alertType %> text-center m-2" role="alert">
+            <div 
+              id="alert" 
+              class="alert alert-<%= alertType %> text-center m-2" 
+              role="alert"
+            >
               <span class="fw-bold text-<%= alertType %> text-capitalize">
                 <%= alert %>
               </span>
             </div> 
           <% } %>   
           <i class="bi bi-person-vcard-fill fs-1 text-secondary"></i>
-          <h1 class="fw-bold text-secondary m-0 mb-3">Gérer Compte</h1>
-          <div class="card shadow" style="width: 200px;">
+          <h1 class="fw-bold text-secondary m-0 mb-3">
+            Gérer Compte
+          </h1>
+          <div class="card shadow" style="width: 200px">
             <!-- Photo -->
             <img 
               src="/uploads/<%= logoPhoto %>" 
               class="card-img-top rounded-0" 
-              alt="photo de profil ami">
+            >
             <div class="card-body p-0">
               <p class="card-text text-center text-secondary fw-bold text-capitalize fs-2">
                 <%= user.pseudo %>
@@ -64,13 +73,20 @@
             type="button" 
             class="btn btn-success shadow mt-2" 
             data-bs-toggle="modal" 
-            data-bs-target="#uploadModal">
-            Mettre à jour l'image <i class="bi bi-pencil-square"></i>
+            data-bs-target="#uploadModal"
+          >
+            Mettre à jour l'image 
+            <i class="bi bi-pencil-square"></i>
           </button>
-          <h1 class="text-center mt-4 m-0 text-secondary">Mes informations</h1>
+          <h1 class="text-center mt-4 m-0 text-secondary">
+            Mes informations
+          </h1>
           <!-- Informations -->
           <div class="list-group shadow mt-4 w-100">
-            <div class="list-group-item list-group-item-action d-flex justify-content-between" aria-current="true">
+            <div 
+              class="list-group-item list-group-item-action d-flex justify-content-between" 
+              aria-current="true"
+            >
               <div class="fw-bold text-success">
                 Pseudo : 
                 <span class="text-capitalize fw-light text-dark-75 fst-italic"> 
@@ -81,11 +97,15 @@
                 type="button" 
                 class="btn btn-success btn-sm" 
                 data-bs-toggle="modal" 
-                data-bs-target="#editPseudoModal">
+                data-bs-target="#editPseudoModal"
+              >
                 <i class="bi bi-pencil-square m-0 p-0"></i>
               </button>
             </div>
-            <div class="list-group-item list-group-item-action d-flex justify-content-between" aria-current="true">
+            <div 
+              class="list-group-item list-group-item-action d-flex justify-content-between" 
+              aria-current="true"
+            >
               <div class="fw-bold text-success">
                 Email : 
                 <span class="text-capitalize fw-light text-dark-75 fst-italic"> 
@@ -96,11 +116,15 @@
                 type="button" 
                 class="btn btn-success btn-sm" 
                 data-bs-toggle="modal" 
-                data-bs-target="#editEmailModal">
+                data-bs-target="#editEmailModal"
+              >
                 <i class="bi bi-pencil-square m-0 p-0"></i>
               </button>
             </div>
-            <div class="list-group-item list-group-item-action d-flex justify-content-between" aria-current="true">
+            <div 
+              class="list-group-item list-group-item-action d-flex justify-content-between" 
+              aria-current="true"
+            >
               <div class="fw-bold text-success">
                 Password : 
                 <span class="text-capitalize fw-light text-dark-75 fst-italic"> 
@@ -111,7 +135,8 @@
                 type="button" 
                 class="btn btn-success btn-sm" 
                 data-bs-toggle="modal" 
-                data-bs-target="#editPasswordModal">
+                data-bs-target="#editPasswordModal"
+              >
                 <i class="bi bi-pencil-square m-0 p-0"></i>
               </button>
             </div>

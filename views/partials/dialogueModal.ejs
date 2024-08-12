@@ -14,22 +14,54 @@
           <h5 class="modal-title" id="editMessageModalLabel<%= message._id %>">
             Modifier Message
           </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button 
+            type="button" 
+            class="btn-close" 
+            data-bs-dismiss="modal" 
+            aria-label="Close"
+          >
+          </button>
         </div>
         <div class="modal-body">
           <form action="/edit-message/<%=message._id %>?_method=PUT" method="POST">
             <input type="hidden" name="_method" value="PUT">
-            <input type="hidden" name="destinataire" value="<%=message.destinataire %>">
+            <input 
+              type="hidden" 
+              name="destinataire" 
+              value="<%=message.destinataire %>"
+            >
             <div class="form-group">
-              <label for="message" class="mb-2 text-capitalize"> à : 
-                <span class="fw-bold text-info"><%=message.destinataire %></span>
+              <label for="message" class="mb-2 text-capitalize"> 
+                à : 
+                <span class="fw-bold text-info">
+                  <%=message.destinataire %>
+                </span>
               </label>
-              <textarea class="form-control bg-info-light" name="message" rows="4" required><%=message.message %></textarea>
+              <textarea 
+                class="form-control bg-info-light" 
+                name="message" 
+                rows="4" 
+                required
+              >
+                <%=message.message %>
+              </textarea>
             </div>
-            <input type="hidden" name="datetime" value="<%=message.datetime %>">
+            <input 
+              type="hidden" 
+              name="datetime" 
+              value="<%=message.datetime %>"
+            />
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-              <button type="submit" class="btn btn-success">Enregistrer</button>
+              <button 
+                type="button" 
+                class="btn btn-secondary" 
+                data-bs-dismiss="modal"
+              >
+                Annuler
+              </button>
+              <button type="submit" class="btn btn-success">
+                Enregistrer
+              </button>
             </div>
           </form>
         </div>
@@ -47,21 +79,41 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header bg-danger-light">
-          <h5 class="modal-title fw-bold" id="deleteMessageModalLabel<%= message._id %>">
+          <h5 
+            class="modal-title fw-bold" 
+            id="deleteMessageModalLabel<%= message._id %>"
+          >
             Confirmer la suppression
           </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button 
+            type="button" 
+            class="btn-close" 
+            data-bs-dismiss="modal" 
+            aria-label="Close"
+          >
+          </button>
         </div>
         <div class="modal-body text-center">
           <p>Confirmer la suppression du message ?</p>
-          <p class="text-secondary fst-italic">" <%= message.message %>" </p>
+          <p class="text-secondary fst-italic">"<%= message.message %>"</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-          <form action="/delete-message/<%= message._id %>?_method=DELETE" method="POST">
-            <input type="hidden" name="chatting" value="<%= chatting %>">
-            <input type="hidden" name="_method" value="DELETE">
-            <button type="submit" class="btn btn-danger">Supprimer</button>
+          <button 
+            type="button" 
+            class="btn btn-secondary" 
+            data-bs-dismiss="modal"
+          >
+            Annuler
+          </button>
+          <form 
+            action="/delete-message/<%= message._id %>?_method=DELETE" 
+            method="POST"
+          >
+            <input type="hidden" name="chatting" value="<%= chatting %>"/>
+            <input type="hidden" name="_method" value="DELETE"/>
+            <button type="submit" class="btn btn-danger">
+              Supprimer
+            </button>
           </form>
         </div>
       </div>
@@ -77,19 +129,28 @@
     tabindex="-1" 
     aria-labelledby="searchModalLabel" 
     aria-hidden="true" 
-    style="display: block;"
+    style="display: block"
   >
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-top">
       <div class="modal-content">
         <!-- Head -->
         <div class="modal-header bg-success-light">
-          <h5 class="modal-title" id="searchModalLabel">Résultats de la recherche</h5>
-          <a href="/dialogue/<%= chatting.pseudo %>" class="btn-close" aria-label="Close"></a>
+          <h5 class="modal-title" id="searchModalLabel">
+            Résultats de la recherche
+          </h5>
+          <a 
+            href="/dialogue/<%= chatting.pseudo %>" 
+            class="btn-close" 
+            aria-label="Close"
+          >
+          </a>
         </div>
         <!-- Body -->
         <div class="modal-body">
           <div id="searchResults" class="d-flex flex-column">
-            <% if (messagesFilterSearcher && messagesFilterSearcher.length > 0) { %>
+            <% 
+              if(messagesFilterSearcher && messagesFilterSearcher.length > 0){
+            %>
               <% messagesFilterSearcher.forEach(message => { %>
                 <div class="d-flex justify-content-center mt-2">
                   <% if (message.expediteur === user.pseudo) { %>
@@ -128,16 +189,23 @@
                 </div>
               <% }) %>
             <% } else { %>
-              <p class="text-center">Aucun message trouvé.</p>
+              <p class="text-center">
+                Aucun message trouvé.
+              </p>
             <% } %>
           </div>
         </div>
         <!-- Foot -->
         <div class="modal-footer">
-          <a href="/dialogue/<%= chatting.pseudo %>" class="btn btn-secondary">Retour</a>
+          <a 
+            href="/dialogue/<%= chatting.pseudo %>" 
+            class="btn btn-secondary"
+          >
+            Retour
+          </a>
         </div>
       </div>
     </div>
-  </div>
+    </div>
   <% } %>
   

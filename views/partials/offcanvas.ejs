@@ -3,15 +3,23 @@
   class="offcanvas offcanvas-start bg-dark-less" 
   tabindex="-1" 
   id="offcanvasNavbar" 
-  aria-labelledby="offcanvasNavbarLabel">
+  aria-labelledby="offcanvasNavbarLabel"
+>
   <div class="offcanvas-header bg-info">
     <h5 
       class="offcanvas-title text-dark-75 fw-bold bg-info fs-3" 
       id="offcanvasNavbarLabel"
     >
-        Chats <i class="bi bi-chat-square-text-fill"></i>
+      Chats 
+      <i class="bi bi-chat-square-text-fill"></i>
     </h5>
-      <i class="bi bi-x-lg text-dark-75 ms-auto fs-3" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></i>
+      <i 
+        class="bi bi-x-lg text-dark-75 ms-auto fs-3" 
+        type="button" 
+        data-bs-dismiss="offcanvas" 
+        aria-label="Close"
+      >
+      </i>
   </div>
   <div class="offcanvas-body">
     <% chats.forEach(data => { %>
@@ -19,13 +27,18 @@
         <a 
           href="/dialogue/<%= data.pseudo %>" 
           class="text-decoration-none text-capitalize fw-bold fs-5 m-0 p-0
-            <%= chatting && chatting.pseudo === data.pseudo ? 'text-info' : 'text-secondary' %>"
+          <%= chatting && chatting.pseudo === data.pseudo 
+            ? 'text-info' 
+            : 'text-secondary' 
+          %>"
         >
         <img 
           src="/uploads/<%= data.photo || 'logo.jpg' %>" 
           class="card-img-top round wh-25 border  border-2 
-            <%= chatting && chatting.pseudo === data.pseudo ? 'border-info' : 'border border-secondary' %>" 
-          alt="..."
+          <%= chatting && chatting.pseudo === data.pseudo 
+            ? 'border-info' 
+            : 'border border-secondary' 
+          %>" 
         >
           <%= data.pseudo %><br>
         </a>

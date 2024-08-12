@@ -22,8 +22,10 @@
                 class="btn bg-info btn-sm d-md-none text-dark-75 text-capitalize fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
-                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-                  Chat
+                data-bs-target="#offcanvasNavbar" 
+                aria-controls="offcanvasNavbar"
+              >
+                Chat
                 <i class="bi bi-chat-square-text-fill"></i>
               </button>
             </div>
@@ -36,12 +38,13 @@
           </div>
         </div>
         <div class="container  flex-grow-1 pb-4">
-          <h1 class="text-secondary fw-bold text-center text-capitalize"><%= user.pseudo %></h1>
+          <h1 class="text-secondary fw-bold text-center text-capitalize">
+            <%= user.pseudo %>
+          </h1>
           <div class="d-flex justify-content-center align-items-center">
               <img 
-                src="./uploads/<%= logoPhoto %>" 
+                src="./uploads/<%= user.photo || 'logo.jpg' %>" 
                 class="wh-100 round border border-info border-4 shadow" 
-                alt="photo de profil ami" 
               />
           </div>
           <!-- friend -->
@@ -52,15 +55,19 @@
           </div>
           <!-- Mes amis -->
           <div class="d-flex flex-column bg-info-light shadow mt-4 pb-2 rounded-top">
-            <h3 class="text-center text-light bg-info fw-bold rounded-top">Mes Amis :</h3>
+            <h3 class="text-center text-light bg-info fw-bold rounded-top">
+              Mes Amis :
+            </h3>
             <% friends.forEach(data => { %>
               <div class="d-flex justify-content-center mt-2">
                 <!-- info friend -->
-                <div class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2 mx-2" style="width: 200px;">
+                <div 
+                  class="d-flex align-items-center fw-bold text-secondary fs-5 gap-2 mx-2" 
+                  style="width: 200px"
+                >
                   <img 
                     src="./uploads/<%= data.photo || 'logo.jpg' %>" 
                     class="card-img-top round wh-25 border border-info border-2" 
-                    alt="photo de profil ami"
                   />
                   <span class="text-capitalize"><%= data.pseudo %></span>
                 </div>
@@ -68,7 +75,9 @@
                 <form action="/chat" method="POST">
                   <input type="hidden" name="destinataire" value="<%= data.pseudo %>"/>
                   <button class="btn px-0 fst-italic" type="submit">
-                    <i class="bi bi-chat-square-text-fill text-info-dark fw-bold"> Ecrire.. </i> 
+                    <i class="bi bi-chat-square-text-fill text-info-dark fw-bold"> 
+                      Ecrire.. 
+                    </i> 
                   </button>
                 </form>
               </div>
