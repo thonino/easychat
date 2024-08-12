@@ -83,7 +83,7 @@
               <div class="d-flex justify-content-center mt-2">
                 <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 180px;">
                   <img 
-                    src="./uploads/<%= data.photo %>" 
+                    src="./uploads/<%= data.photo || 'logo.jpg' %>" 
                     class="card-img-top round wh-25 border border-light border-2" 
                 >
                   <span class="text-capitalize"><%= data.pseudo %></span>
@@ -114,7 +114,7 @@
               <div class="d-flex justify-content-center mt-2">
                 <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
                   <img 
-                    src="./uploads/<%= data.photo %>" 
+                    src="./uploads/<%= data.photo || 'logo.jpg' %>" 
                     class="card-img-top round wh-25 border border-light border-2" 
                 >
                   <span class="text-capitalize"><%= data.pseudo %></span>
@@ -138,7 +138,7 @@
               <div class="d-flex justify-content-center mt-2">
                 <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
                   <img 
-                    src="./uploads/<%= data.photo %>" 
+                    src="./uploads/<%= data.photo || 'logo.jpg' %>" 
                     class="card-img-top round wh-25  border border-light border-2" 
                 >
                   <span class="text-capitalize"><%= data.pseudo %></span>
@@ -161,7 +161,7 @@
                 <!-- info friend -->
                 <div class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" style="width: 230px;">
                   <img 
-                    src="./uploads/<%= data.photo %>" 
+                    src="./uploads/<%= data.photo || 'logo.jpg' %>" 
                     class="card-img-top round wh-25  border border-light border-2" 
                 >
                   <span class="text-capitalize"><%= data.pseudo %></span>
@@ -179,8 +179,7 @@
                   class="modal fade" 
                   id="deleteFriendModal<%= data.pseudo %>" 
                   tabindex="-1" 
-                  aria-labelledby="deleteFriendModalLabel<%= 
-                  data.pseudo %>" aria-hidden="true"
+                  aria-labelledby="deleteFriendModalLabel<%= data.pseudo %>" aria-hidden="true"
                 >
                   <div class="modal-dialog">
                     <div class="modal-content">
