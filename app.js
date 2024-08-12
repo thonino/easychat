@@ -98,13 +98,15 @@ io.on('connection', (socket) => {
           A: ${newMessage.destinataire}`
         );
         const expediteurData = await User.findOne({ pseudo: newMessage.expediteur });
-        const destinataireData = await User.findOne({ pseudo: newMessage.destinataire });
+        console.log('expediteurData.pseudo : ', expediteurData.pseudo);
+        const destinataireData =  await User.findOne({ pseudo: newMessage.destinataire });
+        console.log('destinataireData.pseudo : ', destinataireData.pseudo);
         io.to(`${newMessage.expediteur}-${newMessage.destinataire}`)
           .to(`${newMessage.destinataire}-${newMessage.expediteur}`)
           .emit('receiveText', {
             id: savedMessage._id,
             pseudo: expediteurData.pseudo,
-            text: text,
+            text,
             destinataire: destinataireData.pseudo,
             datetime: heure,
             expediteurPhoto: expediteurData.photo,
