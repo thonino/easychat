@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   sendButton.addEventListener('click', (e) => {
     e.preventDefault();
     const destinataireElement = document.querySelector('input[name="destinataire"]');
-    const destinataire = destinataireElement.value.toLowerCase();
+    const destinataire = destinataireElement.value;
     const text = textInput.value;
     const textTrim = text.trim();
 
@@ -38,9 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   socket.on('receiveText', (data) => {
     console.log('Received message:', data);
-    const isCurrentUser = data.pseudo.toLowerCase() === userPseudo;
-    const isCurrentDestinataire = data.destinataire.toLowerCase() === userPseudo;
-    const isChattingWith = document.querySelector('input[name="destinataire"]').value.toLowerCase() === data.pseudo.toLowerCase();
+    const isCurrentUser = data.pseudo === userPseudo;
+    const isCurrentDestinataire = data.destinataire === userPseudo;
+    const isChattingWith = document.querySelector('input[name="destinataire"]').value === data.pseudo;
 
     console.log(
       'isCurrentUser: ', isCurrentUser,

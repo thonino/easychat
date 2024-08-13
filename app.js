@@ -78,15 +78,15 @@ io.on('connection', (socket) => {
   const chattingWith = socket.handshake.session.chatting?.pseudo;
   if (user && user.pseudo && chattingWith) {
     console.log(`${user.pseudo} a ouvert le chat pour : ${chattingWith}`);
-    const room1 = `${user.pseudo.toLowerCase()}-${chattingWith.toLowerCase()}`;
-    const room2 = `${chattingWith.toLowerCase()}-${user.pseudo.toLowerCase()}`;
+    const room1 = `${user.pseudo}-${chattingWith}`;
+    const room2 = `${chattingWith}-${user.pseudo}`;
     socket.join(room1);
     socket.join(room2);
     socket.on('sendText', async ({ text }) => {
       const heure = moment().format('h:mm:ss');
       const newMessage = new Message({
-        expediteur: user.pseudo.toLowerCase(),
-        destinataire: chattingWith.toLowerCase(),
+        expediteur: user.pseudo,
+        destinataire: chattingWith,
         message: text,
         datetime: heure
       });
@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
           .to(`${newMessage.destinataire}-${newMessage.expediteur}`)
           .emit('receiveText', {
             id: savedMessage._id,
-            pseudo: expediteurData.pseudo.toLowerCase(),
+            pseudo: expediteurData.pseudo,
             destinataire: destinataireData.pseudo,
             text, expediteurData, destinataireData,
             datetime: heure,
@@ -539,7 +539,7 @@ app.post('/search', async (req, res) => {
         (message.destinataire === user.pseudo && message.expediteur === chatting.pseudo)
       );
       messagesFilter = messages.filter(message =>
-        message.message.toLowerCase().includes(search.toLowerCase())
+        message.message.includes(search)
       );
     }
     res.render('Search', { user, search, messagesFilter, heure, chatting });
@@ -571,7 +571,7 @@ app.get('/dialogue/:chatting', async (req, res) => {
     let messagesFilterSearcher = [];
     if (search) {
         messagesFilterSearcher = messagesFilter.filter(message =>
-        message.message.toLowerCase().includes(search.toLowerCase())
+        message.message.includes(search)
       );
       console.log('search: ', search);
     }
