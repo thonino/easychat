@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
           .to(`${newMessage.destinataire}-${newMessage.expediteur}`)
           .emit('receiveText', {
             id: savedMessage._id,
-            pseudo: expediteurData.pseudo,
+            pseudo: expediteurData.pseudo.toLowerCase(),
             destinataire: destinataireData.pseudo,
             text, expediteurData, destinataireData,
             datetime: heure,
