@@ -1,3 +1,4 @@
+// Importation des modules nécessaires
 const express = require('express');
 const session = require('express-session');
 const http = require('http');
@@ -6,73 +7,57 @@ const sharedSession = require('express-socket.io-session');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
-const moment = require('moment');
 const bcrypt = require('bcrypt');
+const moment = require('moment');
+const cookieParser = require('cookie-parser');
+const multer = require('multer');
 require('dotenv').config();
 
-const multer = require("multer");
-const cookieParser = require('cookie-parser');
-
+// Importation des modèles
 const Message = require('./models/Message');
 const User = require('./models/User');
 const Friend = require('./models/Friend');
+const UploadFile = require('./models/UploadFile'); 
 
+// Configuration de l'application Express
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
-const sessionMiddleware = session({
-  secret: 'your-secret-key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false }
-});
-
-mongoose.connect(
-  process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true }
-)
-  .then(() => { console.log("MongoDB connected"); })
-  .catch(err => { console.log(err); });
-
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
-app.use(sessionMiddleware);
-app.use('/public', express.static('public'));
-app.use('/uploads', express.static('uploads'));
-io.use(sharedSession(sessionMiddleware, { autoSave: true }));
-
-
-// Configuration de Multer
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    const user = req.session.user; 
-      const extension = file.mimetype.split('/')[1]; 
-      const fileName = `logo${user.pseudo}.${extension}`;
-      cb(null, fileName);
-  }
-});
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1024 * 1024 * 5 // Limite à 5MB
-  }
-});
-
 app.use(cookieParser());
 
-// Créer un dossier 'uploads' si nécessaire
-const fs = require('fs');
-const path = require('path');
-const { log } = require('console');
-const uploadDir = path.join(__dirname, 'uploads');
+// Configuration des fichiers statiques
+app.use('/public', express.static('public'));
 
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
+// Configuration de la session
+const sessionMiddleware = session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } 
+});
+app.use(sessionMiddleware);
+
+// Configuration de Socket.io avec session partagée
+const server = http.createServer(app);
+const io = socketIo(server);
+io.use(sharedSession(sessionMiddleware, { autoSave: true }));
+
+// Connexion à MongoDB
+const mongoURI = process.env.DATABASE_URL;
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log("MongoDB connecté avec succès");
+  })
+  .catch(err => {
+    console.error('Erreur de connexion à MongoDB:', err);
+    process.exit(1);
+  });
+
+// Configuration de Multer pour l'upload d'image
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
 io.on('connection', (socket) => {
   const user = socket.handshake.session.user;
   const chattingWith = socket.handshake.session.chatting?.pseudo;
@@ -119,7 +104,7 @@ io.on('connection', (socket) => {
   }
 });
 
-// Session  chatting
+// Session chatting
 app.use((req, res, next) => {
   if (req.params && req.params.chatting) {
     req.session.chatting = req.params.chatting;
@@ -144,34 +129,39 @@ const makeAvailable = async (req, res, next) => {
     let chats = [];
     let friendsReceived = [];
     let friendsSend = [];
+    let logoPhoto = '/public/img/profilDefault.jpg'; 
     if (user) {
+      // Récupération de la photo de profil de l'utilisateur connecté
+      const profilFilename = `profil${user.pseudo}`;
+      const file = await UploadFile.findOne({ filename: profilFilename });
+      if (file) {
+        logoPhoto = `/image/${file.filename}`;
+      }
+      // Récupération des données des amis et utilisateurs
       userPublicList = await User.find();
       const allFriends = await Friend.find();
-      // Filtre tous les utilisateurs amis
       const confirmedFriends = allFriends.filter(friend => { 
         return friend.confirm === true &&
               (friend.adder === user.pseudo || friend.asked === user.pseudo);
       });
-      // Filtrer utilisateur qui chattent avec user.pseudo
       const chattingFriends = confirmedFriends.filter(friend => friend.chat && friend.chat.includes(user.pseudo));
-      // Garde "adder/asker" different de user.pseudo => crée liste amis
       const friendsPseudos = confirmedFriends.map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
-      // Garde "adder/asker" different de user.pseudo => crée liste amis
       const chatsPseudos = chattingFriends.map(friend => friend.adder === user.pseudo ? friend.asked : friend.adder);
-      // Filtre demandes reçues
+      
       const friendsReceivedPseudos = allFriends
-        .filter(friend => friend.confirm === false && friend.asked === user.pseudo)
-        .map(friend => friend.adder);
-      // Filtre demandes envoyées
+      .filter(friend => friend.confirm === false && friend.asked === user.pseudo)
+      .map(friend => friend.adder);
+    
+
       const friendsSendPseudos = allFriends
-        .filter(friend => friend.confirm === false && friend.adder === user.pseudo)
-        .map(friend => friend.asked);
-      // Récupérer les objets utilisateur complets pour chaque liste
+      .filter(friend => friend.confirm === false && friend.adder === user.pseudo)
+      .map(friend => friend.asked);
+
       friends = await User.find({ pseudo: { $in: friendsPseudos } });
       chats = await User.find({ pseudo: { $in: chatsPseudos } });
       friendsReceived = await User.find({ pseudo: { $in: friendsReceivedPseudos } });
       friendsSend = await User.find({ pseudo: { $in: friendsSendPseudos } });
-      // Filtrer les utilisateurs disponibles par pseudo
+
       userPublicList = userPublicList.filter(data => data.status === true);
       userPublicList = userPublicList.filter(data => !friendsPseudos.includes(data.pseudo));
       userPublicList = userPublicList.filter(data => !friendsReceivedPseudos.includes(data.pseudo));
@@ -184,6 +174,7 @@ const makeAvailable = async (req, res, next) => {
     res.locals.friendsReceived = friendsReceived;
     res.locals.friendsSend = friendsSend;
     res.locals.chats = chats;
+    res.locals.logoPhoto = logoPhoto;
     next();
   } catch (err) {
     console.error("Erreur => makeAvailable :", err);
@@ -192,7 +183,58 @@ const makeAvailable = async (req, res, next) => {
 };
 app.use(makeAvailable);
 
+
 //---------------------------------------ROOTS---------------------------------------//
+
+// Route pour uploader une photo
+app.post('/upload', upload.single('photo'), async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  try {
+    const filename = `profil${req.session.user.pseudo}`;
+    // Met à jour le document si le filename existe, sinon crée un nouveau document
+    await UploadFile.findOneAndUpdate({ filename },  
+      { 
+        contentType: req.file.mimetype,
+        data: req.file.buffer
+      },  
+      { upsert: true, new: true }  // Crée le document si non trouvé 
+    );
+    res.redirect('/account/' + req.session.user.pseudo);
+  } catch (err) {
+    console.error('Erreur lors de l\'upload de l\'image:', err);
+    res.status(500).json({ error: 'Échec de l\'upload de l\'image' });
+  }
+});
+
+// Route pour servir l'image
+app.get('/image/:filename', async (req, res) => {
+  try {
+    const file = await UploadFile.findOne({ filename: req.params.filename });
+    if (!file) {
+      return res.status(404).json({ error: 'Image non trouvée' });
+    }
+    res.set('Content-Type', file.contentType);
+    res.send(file.data);
+  } catch (err) {
+    console.error('Erreur lors de la récupération de l\'image:', err);
+    res.status(500).json({ error: 'Erreur lors de la récupération de l\'image' });
+  }
+});
+
+
+// Route pour afficher la page de compte utilisateur
+app.get('/account/:pseudo', (req, res) => {
+  if (!req.session.user) {
+    console.log('Utilisateur non connecté, redirection vers login');
+    return res.redirect('/login');
+  }
+  const user = res.locals.user;
+  const logoPhoto = res.locals.logoPhoto;
+  res.render('Account', { user, logoPhoto });
+});
+
 
 // Index
 app.get('/', (req, res) => {
@@ -210,25 +252,6 @@ app.get('/error', (req, res) => {
   res.render('Error', { user });
 });
 
-// Upload photo
-app.post('/upload', upload.single('photo'), (req, res) => {
-  if (!req.session.user) {return res.redirect('/login'); }
-  const user = req.session.user;
-  const fileName = req.file.filename; 
-  User.findOneAndUpdate(
-    { _id: user._id },   // Cibler user
-    { photo: fileName }, // Mettre à jour photo
-    { new: true }        // Retourner le document mis à jour
-  )
-  .then((updatedUser) => {
-    req.session.user = updatedUser;
-    res.redirect('/userpage');
-  })
-  .catch((err) => {
-    console.error('Erreur de mise à jour:', err);
-    res.redirect('/Error');
-  });
-});
 
 // Edit datas
 app.post('/updateData', async (req, res) => {
@@ -268,14 +291,6 @@ app.post('/updateData', async (req, res) => {
     req.session.alertType = 'danger';
     res.redirect(`/account/${user.pseudo}`);
   }
-});
-
-
-app.get('/account/:pseudo', (req, res) => {
-  if (!req.session.user) {return res.redirect('/login');}
-  const user = req.session.user;
-  const logoPhoto = user && user.photo ? user.photo : 'logo.jpg';
-  res.render('Account', { user, logoPhoto });
 });
 
 // Get register
@@ -333,15 +348,16 @@ app.get('/userpage', async (req, res) => {
   const friendsReceived = res.locals.friendsReceived;
   const friendsSend = res.locals.friendsSend;
   const chats = res.locals.chats; 
-  const logoPhoto = user.photo ? user.photo : 'logo.jpg';
   const chatting = res.locals.chatting;
   const messagesFilter = res.locals.messagesFilter;
+  const logoPhoto = res.locals.logoPhoto;
   res.render('Userpage', {
     user: res.locals.user,
     contacts: res.locals.contacts,
     userPublicList: res.locals.userPublicList,
     chatting, user, friends, friendsReceived, friendsSend, 
-    chats,logoPhoto, messagesFilter
+    chats,logoPhoto, messagesFilter, logoPhoto,
+
   });
 });
 
@@ -410,7 +426,7 @@ app.get('/addfriend', async (req, res) => {
   if (!req.session.user) { return res.redirect('/login'); }
   const user = req.session.user;
   const status = user.status;
-  const logoPhoto = user.photo ? user.photo : 'logo.jpg';
+  const logoPhoto = res.locals.logoPhoto;
   const chatting = res.locals.chatting;
   let state, color;
   // Déterminer l'état en fonction du statut
@@ -421,7 +437,7 @@ app.get('/addfriend', async (req, res) => {
     userPublicList: res.locals.userPublicList,
     friends: res.locals.friends,
     friendsAsk: res.locals.friendsAsk,
-    chats: res.locals.chats,
+    chats: res.locals.chats, logoPhoto,
   });
 });
 

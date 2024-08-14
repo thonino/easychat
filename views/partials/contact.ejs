@@ -17,14 +17,11 @@
       %>"
     >
     <img 
-      src="/uploads/<%= data.photo || 'logo.jpg' %>" 
-      class="card-img-top round wh-25 border  border-2 
-      <%= 
-        chatting && chatting.pseudo === data.pseudo 
-        ? 'border-info' 
-        : 'border border-secondary'
-      %>" 
-    >
+      src="<%= '/image/profil' + data.pseudo %>" 
+      onerror="this.onerror=null; this.src='/public/img/profilDefault.jpg';" 
+      class="card-img-top round wh-25 border border-2 
+      <%= chatting && chatting.pseudo === data.pseudo ? 'border-info' : 'border-secondary' %>" 
+    />
       <%= data.pseudo %><br>
     </a>
     <form action="/archive" method="POST" class="m-0 p-0">
@@ -39,3 +36,4 @@
     </form>    
   </div>
 <% }); %>
+
