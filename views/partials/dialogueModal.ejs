@@ -160,7 +160,7 @@
                       </span>
                       <p class="d-flex fs-5 text-capitalize text-white m-0">
                         <img 
-                          src="/uploads/<%= user.photo || 'logo.jpg' %>" 
+                          src="<%= logoPhoto %>" 
                           class="card-img-top round wh-25 border border-light border-2" 
                         >
                       </p>
@@ -175,7 +175,8 @@
                       </span>
                       <p class="d-flex fs-5 text-capitalize text-info-dark m-0 gap-1">
                         <img 
-                          src="/uploads/<%= chatting.photo || 'logo.jpg' %>" 
+                          src="<%= '/image/profil' + chatting.pseudo %>" 
+                          onerror="this.onerror=null; this.src='/public/img/profilDefault.jpg';" 
                           class="card-img-top round wh-25 border border-light border-2" 
                         >
                       </p>

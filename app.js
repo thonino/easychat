@@ -544,6 +544,7 @@ app.post('/search', async (req, res) => {
   const search = req.body.search;
   const chatting = res.locals.chatting;
   const heure = moment().format('h:mm:ss');
+  const logoPhoto = res.locals.logoPhoto;
   try {
     let messagesFilter = [];
     if (search) {
@@ -558,7 +559,7 @@ app.post('/search', async (req, res) => {
         message.message.includes(search)
       );
     }
-    res.render('Search', { user, search, messagesFilter, heure, chatting });
+    res.render('Search', { user, search, messagesFilter, heure, chatting, logoPhoto });
   } 
   catch (err) { console.error(err); res.redirect('/error');}
 });
@@ -572,6 +573,7 @@ app.get('/dialogue/:chatting', async (req, res) => {
   const friendsAsk = res.locals.friendsAsk;
   const chats = res.locals.chats;
   const search = req.query.search;
+  const logoPhoto = res.locals.logoPhoto;
   try {
     const chattingUser = await User.findOne({ pseudo: chattingPseudo });
     req.session.chatting = chattingUser;
@@ -592,7 +594,7 @@ app.get('/dialogue/:chatting', async (req, res) => {
       console.log('search: ', search);
     }
     res.render('Dialogue', {
-      messagesFilter, messagesFilterSearcher, heure, chats,
+      messagesFilter, messagesFilterSearcher, heure, chats, logoPhoto,
       user, chatting: chattingUser, friends, friendsAsk, showModal: !!search,
     });
   } 
