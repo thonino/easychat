@@ -87,9 +87,15 @@ if (isCurrentUser) {
   contentDivExpediteur.appendChild(messageParagraph);
 
   const profileImg = document.createElement('img');
-  profileImg.src = `/uploads/${data.expediteurData.photo  || 'logo.jpg'}`;
+  profileImg.src = `/image/profil${data.expediteurData.pseudo}`;
+  profileImg.onerror = function() {
+    this.onerror = null; 
+    this.src = '/public/img/profilDefault.jpg';
+  };
   profileImg.classList.add('card-img-top', 'round', 'wh-25', 'border', 'border-light', 'border-2');
   contentDivExpediteur.appendChild(profileImg);
+
+
 
   const cibleDiv = document.createElement('div');
   cibleDiv.classList.add('cible', 'hidden', 'me-2');
@@ -156,7 +162,11 @@ if (isCurrentUser) {
   cibleDiv.appendChild(deleteButton);
 
   const profileImg = document.createElement('img');
-  profileImg.src = `/uploads/${data.expediteurData.photo || 'logo.jpg'}`;
+  profileImg.src = `/image/profil${data.expediteurData.pseudo}`;
+  profileImg.onerror = function() {
+    this.onerror = null; 
+    this.src = '/public/img/profilDefault.jpg';
+  };
   profileImg.classList.add('card-img-top', 'round', 'wh-25', 'border', 'border-light', 'border-2',);
   contentDivDestinataire.appendChild(profileImg);
 

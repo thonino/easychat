@@ -58,52 +58,6 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-io.on('connection', (socket) => {
-  const user = socket.handshake.session.user;
-  const chattingWith = socket.handshake.session.chatting?.pseudo;
-  if (user && user.pseudo && chattingWith) {
-    console.log(`${user.pseudo} a ouvert le chat pour : ${chattingWith}`);
-    const room1 = `${user.pseudo}-${chattingWith}`;
-    const room2 = `${chattingWith}-${user.pseudo}`;
-    socket.join(room1);
-    socket.join(room2);
-    socket.on('sendText', async ({ text }) => {
-      const heure = moment().format('h:mm:ss');
-      const newMessage = new Message({
-        expediteur: user.pseudo,
-        destinataire: chattingWith,
-        message: text,
-        datetime: heure
-      });
-      try {
-        const savedMessage = await newMessage.save();
-        console.log(`Texte: ${newMessage.message}`);
-        console.log(`De: ${newMessage.expediteur}`);
-        console.log(`A: ${newMessage.destinataire}`);
-        const expediteurData = await User.findOne({ pseudo: newMessage.expediteur });
-        const destinataireData =  await User.findOne({ pseudo: newMessage.destinataire });
-        io.to(`${newMessage.expediteur}-${newMessage.destinataire}`)
-          .to(`${newMessage.destinataire}-${newMessage.expediteur}`)
-          .emit('receiveText', {
-            id: savedMessage._id,
-            pseudo: expediteurData.pseudo,
-            destinataire: destinataireData.pseudo,
-            text, expediteurData, destinataireData,
-            datetime: heure,
-          });
-      } catch (err) {
-        console.log(err);
-        console.error("Erreur message ou de MAJ friend:", err);
-      }
-    });
-    socket.on('disconnect', () => {
-      console.log(`${user.pseudo} : logout`);
-    });
-  } else {
-    console.error('User or chattingWith is undefined or does not have a pseudo');
-  }
-});
-
 // Session chatting
 app.use((req, res, next) => {
   if (req.params && req.params.chatting) {
@@ -121,6 +75,9 @@ app.use((req, res, next) => {
   delete req.session.alertType;
   next();
 });
+
+
+// Rendre disponible
 const makeAvailable = async (req, res, next) => {
   try {
     const user = req.session.user;
@@ -182,6 +139,66 @@ const makeAvailable = async (req, res, next) => {
   }
 };
 app.use(makeAvailable);
+
+//socket io
+io.on('connection', (socket) => {
+  const user = socket.handshake.session.user;
+  const chattingWith = socket.handshake.session.chatting?.pseudo;
+  if (user && user.pseudo && chattingWith) {
+    console.log(`${user.pseudo} a ouvert le chat pour : ${chattingWith}`);
+    const room1 = `${user.pseudo}-${chattingWith}`;
+    const room2 = `${chattingWith}-${user.pseudo}`;
+    socket.join(room1);
+    socket.join(room2);
+    socket.on('sendText', async ({ text }) => {
+      const heure = moment().format('h:mm:ss');
+      const newMessage = new Message({
+        expediteur: user.pseudo,
+        destinataire: chattingWith,
+        message: text,
+        datetime: heure
+      });
+      try {
+        // when sending message Add user to contact  
+        const friend = await Friend.findOne({
+          $or: [
+            { adder: user.pseudo, asked: chattingWith  },
+            { adder: chattingWith , asked: user.pseudo }
+          ]
+        });
+        const chatChecking = friend.chat;
+        if (!chatChecking.includes(chattingWith)) {
+          friend.chat = [chattingWith, user.pseudo];
+          await friend.save();
+        }
+        // fin when
+        const savedMessage = await newMessage.save();
+        console.log(`Texte: ${newMessage.message}`);
+        console.log(`De: ${newMessage.expediteur}`);
+        console.log(`A: ${newMessage.destinataire}`);
+        const expediteurData = await User.findOne({ pseudo: newMessage.expediteur });
+        const destinataireData =  await User.findOne({ pseudo: newMessage.destinataire });
+        io.to(`${newMessage.expediteur}-${newMessage.destinataire}`)
+          .to(`${newMessage.destinataire}-${newMessage.expediteur}`)
+          .emit('receiveText', {
+            id: savedMessage._id,
+            pseudo: expediteurData.pseudo,
+            destinataire: destinataireData.pseudo,
+            text, expediteurData, destinataireData,
+            datetime: heure,
+          });
+      } catch (err) {
+        console.log(err);
+        console.error("Erreur message ou de MAJ friend:", err);
+      }
+    });
+    socket.on('disconnect', () => {
+      console.log(`${user.pseudo} : logout`);
+    });
+  } else {
+    console.error('User or chattingWith is undefined or does not have a pseudo');
+  }
+});
 
 
 //---------------------------------------ROOTS---------------------------------------//
@@ -361,25 +378,6 @@ app.get('/userpage', async (req, res) => {
   });
 });
 
-
-// POST NEW MESSAGE
-app.post('/message', (req, res) => {
-  if (!req.session.user) {return res.redirect('/login');}
-  const user = req.session.user;
-  const heure = moment().format(' h:mm:ss');
-  const messageData = new Message({
-    expediteur: user.pseudo,
-    destinataire: req.body.destinataire,
-    message: req.body.message,
-    datetime: heure
-  });
-  messageData.save()
-    .then(() => res.redirect(`/userpage/${req.body.destinataire}`))
-    .catch(err => {
-      console.log(err);
-    });
-});
-
 // Create new chat
 app.post('/chat', async (req, res) => {
   try {
@@ -407,15 +405,15 @@ app.post('/archive', async (req, res) => {
     const user = req.session.user;
     const destinataire = req.body.destinataire;
     console.log(`${user.pseudo} a archivé son chat avec : ${destinataire}`);
-    const friend = await Friend.findOne({
+    const friends = await Friend.findOne({
       $or: [
         { adder: user.pseudo, asked: destinataire },
         { adder: destinataire, asked: user.pseudo }
       ]
     });
     // Retirer user.pseudo du tableau
-    friend.chat = friend.chat.filter(data => data !== user.pseudo);
-    await friend.save(); 
+    friends.chat = friends.chat.filter(data => data !== user.pseudo);
+    await friends.save(); 
     res.redirect(`/userpage`);
   } 
   catch (err) { console.log(err); res.redirect('/error');}
