@@ -6,14 +6,15 @@
 </head>
 <body>
   <%- include('./partials/nav'); %>
-  <div class="container-fluid bg-white p-0 vh-100 pt-5">
-    <div class="row g-0 h-100 ">
-      <!-- Left md-3 -->
-      <div class="col-md-3 bg-dark-less text-center d-none d-md-block  h-100">
+  <div class="container-fluid bg-white p-0 vh-100">
+    <!-- Container  -->
+    <div class="flex-container pt-5">
+      <!-- Left fix-->
+      <div class="fixed-sidebar bg-dark-less text-center d-none d-md-block  h-100">
         <%- include('./partials/contact'); %>
       </div>
-      <!-- Right md-9 -->
-      <div class="col-md-9 p-0 h-100 d-flex flex-column">
+      <!-- Right grow -->
+      <div class="flex-grow p-0 h-100 d-flex flex-column">
         <div class="bg-dark-less">
           <div class="d-flex justify-content-between p-2">
             <!-- Bouton Offcanvas toggle -->
@@ -37,20 +38,20 @@
             </a>
           </div>
         </div>
-        <div class="container  flex-grow-1 pb-4">
+        <div class="container flex-grow-1 pb-4">
           <h1 class="text-secondary fw-bold text-center text-capitalize">
             <%= user.pseudo %>
           </h1>
           <div class="d-flex justify-content-center align-items-center">
               <img 
-              src="<%= logoPhoto %>" 
-                class="wh-100 round border border-info border-4 shadow" 
+                src="<%= logoPhoto %>" 
+                class="wh-100 round border border-secondary border-4 shadow" 
               />
           </div>
           <!-- friend -->
           <div class="text-center mt-3">
-            <a href="/addfriend" class="btn btn-info border-color-primary btn-lg shadow">
-              <i class="bi bi-person-fill-add"> Amis</i>
+            <a href="/addfriend" class="btn btn-secondary btn-lg shadow">
+              <i class="bi bi-person-fill-add"> Gestion Amis</i>
             </a>
           </div>
           <!-- Mes amis -->
@@ -67,7 +68,7 @@
                 >
                   <img 
                     src="<%= '/image/profil' + data.pseudo %>" 
-                    onerror="this.onerror=null; this.src='/public/img/profilDefault.jpg';" 
+                    onerror="this.onerror=null; this.src='/public/img/profilDefault.jpg'" 
                     class="card-img-top round wh-25 border border-info border-2" 
                   />
                   <span class="text-capitalize"><%= data.pseudo %></span>

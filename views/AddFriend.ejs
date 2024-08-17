@@ -6,14 +6,15 @@
 </head>
 <body>
   <%- include('./partials/nav'); %>
-  <div class="container-fluid bg-white p-0 vh-100 pt-5">
-    <div class="row g-0 h-100">
-      <!-- Left md-3 -->
-      <div class="col-md-3 bg-dark-less text-center d-none d-md-block h-100">
+  <div class="container-fluid bg-white p-0 vh-100">
+    <!-- Container -->
+    <div class="flex-container pt-5">
+      <!-- left fix -->
+      <div class="fixed-sidebar bg-dark-less text-center d-none d-md-block p-0 h-100">
         <%- include('./partials/contact'); %>
       </div>
-      <!-- Right md-9 -->
-      <div class="col-md-9 p-0 h-100 d-flex flex-column">
+      <!-- right grow -->
+      <div class="flex-grow g-0 p-0 h-100 d-flex flex-column">
         <div class="bg-dark-less">
           <div class="d-flex justify-content-between p-2">
             <!-- Bouton Offcanvas toggle -->
@@ -32,7 +33,7 @@
             <!-- Profile -->
             <a 
               href="/userpage" 
-              class="btn btn-warning btn-sm text-dark-75 fw-bold">
+              class="btn btn-info btn-sm text-dark-75 fw-bold">
               <i class="bi bi-person-square"></i> Profile
             </a>
             <!-- Account -->

@@ -37,3 +37,21 @@
   box-shadow: none;
 }
 
+.text-link { 
+  text-decoration: none;
+  font-size: small;
+
+}
+
+.flex-container { display: flex; height: 100vh;}
+.fixed-sidebar {
+  width: 300px;
+  min-width: 300px;
+  background-color: #343a40; 
+}
+.flex-grow {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
