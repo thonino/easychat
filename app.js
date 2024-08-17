@@ -200,17 +200,22 @@ io.on('connection', (socket) => {
   }
 });
 
+const http = require('http');
+
 // Keep-Alive
 function keepAlive() {
   setInterval(() => {
-    http.get('http://localhost:5001/health', (res) => {
+    http.get('https://easychat-tue1.onrender.com/health', (res) => {
       res.on('data', () => {});
       res.on('end', () => console.log('Keep-alive ping successful.'));
     }).on('error', (err) => {
       console.log('Keep-alive ping failed: ' + err.message);
     });
-  }, 30000); // Période de 30 secondes
+  }, 600000); // Intervalle de 10 minutes
 }
+
+keepAlive();
+
 
 
 //---------------------------------------ROOTS---------------------------------------//
