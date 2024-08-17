@@ -200,8 +200,6 @@ io.on('connection', (socket) => {
   }
 });
 
-const http = require('http');
-
 // Keep-Alive
 function keepAlive() {
   setInterval(() => {
