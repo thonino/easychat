@@ -201,10 +201,8 @@ io.on('connection', (socket) => {
   }
 });
 
+//------- Pour render, decommenter avant d'envoyer sur git -------//
 
-
-
-// Keep-Alive
 function keepAlive() {
   setInterval(() => {
     https.get('https://easychat-tue1.onrender.com/health', (res) => { 
@@ -218,16 +216,13 @@ function keepAlive() {
 
 keepAlive();
 
-
-
-//---------------------------------------ROOTS---------------------------------------//
-
-// Endpoint de vérification de santé
+// Endpoint de vérification 
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
-keepAlive();
 
+
+//---------------------------------------ROOTS---------------------------------------//
 
 // Route pour uploader une photo
 app.post('/upload', upload.single('photo'), async (req, res) => {
