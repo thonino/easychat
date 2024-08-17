@@ -200,8 +200,27 @@ io.on('connection', (socket) => {
   }
 });
 
+// Keep-Alive
+function keepAlive() {
+  setInterval(() => {
+    http.get('http://localhost:5001/health', (res) => {
+      res.on('data', () => {});
+      res.on('end', () => console.log('Keep-alive ping successful.'));
+    }).on('error', (err) => {
+      console.log('Keep-alive ping failed: ' + err.message);
+    });
+  }, 30000); // Période de 30 secondes
+}
+
 
 //---------------------------------------ROOTS---------------------------------------//
+
+// Endpoint de vérification de santé
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+keepAlive();
+
 
 // Route pour uploader une photo
 app.post('/upload', upload.single('photo'), async (req, res) => {
