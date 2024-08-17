@@ -2,6 +2,7 @@
 const express = require('express');
 const session = require('express-session');
 const http = require('http');
+const https = require('https');
 const socketIo = require('socket.io');
 const sharedSession = require('express-socket.io-session');
 const bodyParser = require('body-parser');
@@ -200,10 +201,13 @@ io.on('connection', (socket) => {
   }
 });
 
+
+
+
 // Keep-Alive
 function keepAlive() {
   setInterval(() => {
-    http.get('https://easychat-tue1.onrender.com/health', (res) => {
+    https.get('https://easychat-tue1.onrender.com/health', (res) => { 
       res.on('data', () => {});
       res.on('end', () => console.log('Keep-alive ping successful.'));
     }).on('error', (err) => {
