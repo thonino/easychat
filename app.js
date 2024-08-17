@@ -207,11 +207,11 @@ function keepAlive() {
   setInterval(() => {
     https.get('https://easychat-tue1.onrender.com/health', (res) => { 
       res.on('data', () => {});
-      res.on('end', () => console.log('Keep-alive ping successful.'));
+      res.on('end', () => console.log('test ping successful.'));
     }).on('error', (err) => {
-      console.log('Keep-alive ping failed: ' + err.message);
+      console.log('test ping failed: ' + err.message);
     });
-  }, 600000); // Intervalle de 10 minutes
+  }, 873737); // Intervalle d'environ 14 minutes et 33 secondes
 }
 
 keepAlive();
