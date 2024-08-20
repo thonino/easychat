@@ -7,5 +7,7 @@ const userSchema = new mongoose.Schema({
     status: { type: Boolean, default: false},
     role: { type: String },
     photo: { type: String },
+    token: { type: "String" },
+    tokenExpires: { type: Date } 
 });
 module.exports = mongoose.model('User', userSchema);

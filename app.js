@@ -8,11 +8,34 @@ const sharedSession = require('express-socket.io-session');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 const moment = require('moment');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
 require('dotenv').config();
+
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+
+const nodemailer = require('nodemailer');
+// Configurer le transporteur SMTP réutilisable pour l'envoi d'e-mails
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+
+// Vérifier la configuration du transporteur
+transporter.verify(function(error, success) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('Server is ready to take our messages');
+  }
+});
+
 
 // Importation des modèles
 const Message = require('./models/Message');
@@ -376,6 +399,68 @@ app.get('/logout', (req, res) => {
     if (err) { console.log(err); }
     else { res.redirect('/login'); }
   });
+});
+
+// Forgot password
+app.get('/passwordforgot', (req, res) => {
+  res.render('passwordForgot');
+});
+app.post('/passwordforgot', async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).send("<h1>Email address not found</h1>"); // email
+    }
+    const token = crypto.randomBytes(20).toString('hex');
+    user.token = token;
+    user.tokenExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+    const mailOptions = {
+      from: 'easychat.freeapp@gmail.com',
+      to: email,
+      subject: 'Reset password',
+      // text: `Reset your password at this address: https://easychat-tue1.onrender.com/reset/${token}`
+      text: `Reset your password at this address: http://localhost:5001/reset/${token}`
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).send("<h1>Error sending email</h1>");
+      }
+      res.send(`<h1>Please check your email box: ${email}</h1>`);
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("<h1>Reset request error</h1>");
+  }
+});
+
+// Reset password
+app.get('/reset/:token', (req, res) => {
+  const token = req.params.token;
+  res.render('passwordReset', { token });
+});
+app.post('/passwordreset', async (req, res) => {
+  const { token, password } = req.body;
+  try {
+    const user = await User.findOne({
+      token: token,
+      tokenExpires: { $gt: Date.now() }
+    });
+    if (!user) {
+      return res.status(400).send("<h1>Invalid or expired token</h1>");
+    }
+    user.password = bcrypt.hashSync(password, 10);
+    user.token = undefined;
+    user.tokenExpires = undefined;
+    await user.save();
+    
+    res.send("<h1>Successfully reset password</h1>");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("<h1>Reset password error</h1>");
+  }
 });
 
 // Get userpage
