@@ -403,7 +403,7 @@ app.get('/logout', (req, res) => {
 
 // Forgot password
 app.get('/passwordforgot', (req, res) => {
-  res.render('passwordForgot');
+  res.render('PasswordForgot');
 });
 app.post('/passwordforgot', async (req, res) => {
   const { email } = req.body;
@@ -439,7 +439,7 @@ app.post('/passwordforgot', async (req, res) => {
 // Reset password
 app.get('/reset/:token', (req, res) => {
   const token = req.params.token;
-  res.render('passwordReset', { token });
+  res.render('PasswordReset', { token });
 });
 app.post('/passwordreset', async (req, res) => {
   const { token, password } = req.body;
