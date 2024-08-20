@@ -420,8 +420,8 @@ app.post('/passwordforgot', async (req, res) => {
       from: 'easychat.freeapp@gmail.com',
       to: email,
       subject: 'Reset password',
-      // text: `Reset your password at this address: https://easychat-tue1.onrender.com/reset/${token}`
-      text: `Reset your password at this address: http://localhost:5001/reset/${token}`
+      text: `Reset your password at this address: https://easychat-tue1.onrender.com/reset/${token}`
+      // text: `Reset your password at this address: http://localhost:5001/reset/${token}`
     };
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
