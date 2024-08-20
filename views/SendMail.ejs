@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('./partials/link') %>
+    <title>Send Mail</title>
+  </head>
+  <body style="margin-top:35px">
+    <%- include('./partials/nav') %>
+    <div class="container">
+      <h1 class="text-center pt-3">Send mail</h1>
+      <form action="/sendmail" method="POST">
+        <label for="email" class="fst-italic mb-1 ">
+          Address :
+        </label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          class="form-control"
+          placeholder="whrite email address"
+          required
+        >
+        <label for="subject" class="fst-italic mb-1 ">
+          Subject :
+        </label>
+        <input 
+          type="text" 
+          id="subject" 
+          name="subject" 
+          class="form-control"
+          placeholder="whrite subject"
+          required
+        >
+        <label for="text" class="fst-italic mb-1 ">
+          Text :
+        </label>
+        <textarea 
+          type="text" 
+          id="text" 
+          name="text" 
+          class="form-control"
+          style="resize: none;"
+          required
+        ></textarea>
+        <button type="submit" class="btn bg-info mt-2">
+          Send
+        </button>
+      </form>
+    </div>
+  </body>
+</html>

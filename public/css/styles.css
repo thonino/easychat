@@ -23,6 +23,7 @@
 .bg-dark-less { background-color: #343a40; }
 
 .bg-info-light { background-color: #d0f3f6; }
+.bg-info-light:hover  { background-color: #b0f3fa; }
 .bg-info-dark { background-color: #086c80; }
 .bg-info-dark:hover { background-color: #0dcaf0; }
 
