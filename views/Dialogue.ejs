@@ -10,17 +10,17 @@
     <!-- Container -->
     <div class="flex-container pt-5">
       <!-- left fix -->
-      <div class="fixed-sidebar bg-dark-less text-center d-none d-md-block p-0 h-100">
+      <div class="fixed-sidebar bg-secondary-dark text-center d-none d-md-block p-0 h-100">
         <%- include('./partials/contact'); %>
       </div>
       <!-- right grow -->
       <div class="flex-grow g-0 p-0 h-100 d-flex flex-column">
-        <div class="bg-dark-less">
+        <div class="bg-secondary">
           <div class="d-flex justify-content-between p-2 align-items-center">
             <!-- Bouton Offcanvas toggle -->
             <div class="d-md-none text-light">
               <button 
-                class="btn bg-info btn-sm text-dark-75 text-capitalize fw-bold" 
+                class="btn bg-info btn-sm text-capitalize fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
                 data-bs-target="#offcanvasNavbar" 
@@ -31,13 +31,13 @@
               </button>
             </div>
             <!-- Bouton Profile -->
-            <a href="/userpage" class="btn bg-info btn-sm text-dark-75 fw-bold">
+            <a href="/userpage" class="btn bg-info btn-sm fw-bold">
               <i class="bi bi-person-square"></i> Profile
             </a>
             <!-- Account -->
             <a 
               href="/account/<%= user.pseudo %>" 
-              class="btn bg-success btn-sm text-light fw-bold"
+              class="btn bg-info btn-sm  fw-bold"
             >
               <i class="bi bi-person-vcard-fill"></i> Compte
             </a>
@@ -61,7 +61,7 @@
                 />
                 <button 
                   type="submit" 
-                  class="btn bg-success-light text-dark-75 rounded-end"
+                  class="btn bg-success-light text-secondary-dark rounded-end"
                 >
                   <i class="bi bi-search "></i>
                 </button>
@@ -152,7 +152,7 @@
           </div>
         </div>
         <!-- Message Input -->
-        <div class="below-content bg-dark-75 p-3">
+        <div class="below-content bg-secondary-light p-3">
           <form 
             class="d-flex justify-content-center align-items-center" 
             method="POST" 

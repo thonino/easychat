@@ -7,22 +7,12 @@
 .wh-25{ width: 25px; height: 25px;}
 .wh-25-21{ width: 25px; height: 21px;}
 .wh-15{ width: 15px; height: 15px;}
-
+.fix-logo{ margin-top: -7px;}
 .hidden { display: none; }
 .cursor-default { cursor: default; }
 .underline { text-decoration: underline; }
+.undecored { text-decoration: none; }
 .txt-area { resize: none; }
-
-.text-dark-75 { color: #404040; }
-
-
-.bg-dark-75 { background-color: #404040; }
-.bg-dark-less { background-color: #343a40; }
-
-
-
-
-
 
 /* light */
 .text-primary-light { color: #b3d7ff !important; }
@@ -63,25 +53,21 @@ Light : #f8f9fa
 Dark : #212529 
 */
 
-
 .ft-victoria {font-family: "Playwrite AU VIC", cursive;}
 .ft-roboto {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-style: normal;
 }
-
 .input-class , .input-class:hover{
   outline: none;
   box-shadow: none;
 }
-
 .text-link { 
   text-decoration: none;
   font-size: small;
 
 }
-
 .flex-container { display: flex; height: 100vh;}
 .fixed-sidebar {
   width: 300px;

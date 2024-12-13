@@ -10,17 +10,17 @@
     <!-- Container  -->
     <div class="flex-container pt-5">
       <!-- Left fix-->
-      <div class="fixed-sidebar bg-dark-less text-center d-none d-md-block  h-100">
+      <div class="fixed-sidebar bg-secondary-dark text-center d-none d-md-block  h-100">
         <%- include('./partials/contact'); %>
       </div>
       <!-- Right grow -->
       <div class="flex-grow p-0 h-100 d-flex flex-column">
-        <div class="bg-dark-less">
+        <div class="bg-secondary">
           <div class="d-flex justify-content-between p-2">
             <!-- Bouton Offcanvas toggle -->
             <div class="text-light">
               <button 
-                class="btn bg-info btn-sm d-md-none text-dark-75 text-capitalize fw-bold" 
+                class="btn bg-info btn-sm d-md-none text-secondary-darktext-capitalize fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
                 data-bs-target="#offcanvasNavbar" 
@@ -33,8 +33,8 @@
             <!-- Account -->
             <a 
               href="/account/<%= user.pseudo %>" 
-              class="text-light btn bg-success btn-sm fw-bold">
-              <i class="bi bi-person-vcard-fill"> Compte</i>
+              class="text-light btn bg-info btn-sm fw-bold">
+              <i class="bi bi-person-vcard-fill text-secondary-dark"> Compte</i>
             </a>
           </div>
         </div>
@@ -45,7 +45,7 @@
           <div class="d-flex justify-content-center align-items-center">
               <img 
                 src="<%= logoPhoto %>" 
-                class="wh-100 round border border-secondary border-4 shadow" 
+                class="wh-100 round border border-info border-4 shadow" 
               />
           </div>
           <!-- friend -->
@@ -55,8 +55,8 @@
             </a>
           </div>
           <!-- Mes amis -->
-          <div class="d-flex flex-column bg-info-light shadow mt-4 pb-2 rounded-top">
-            <h3 class="text-center text-light bg-info fw-bold rounded-top">
+          <div class="d-flex flex-column bg-info-light shadow mt-4 pb-2rounded-top">
+            <h3 class="text-center text-light bg-info fw-bold p-1  rounded-top">
               Mes Amis :
             </h3>
             <% friends.forEach(data => { %>

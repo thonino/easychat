@@ -10,19 +10,19 @@
     <!-- Container -->
     <div class="flex-container pt-5">
       <!-- left fix -->
-      <div class="fixed-sidebar bg-dark-less text-center d-none d-md-block p-0 h-100">
+      <div class="fixed-sidebar bg-secondary-dark text-center d-none d-md-block p-0 h-100">
         <%- include('./partials/contact'); %>
       </div>
       <!-- right grow -->
       <div class="flex-grow g-0 p-0 h-100 d-flex flex-column">
-        <div class="bg-dark-less">
+        <div class="bg-secondary">
           <div class="d-flex justify-content-between p-2 align-items-center">
             <!-- Fix : center profile -->
             <div class="d-none d-md-inline "></div>
             <!-- Bouton Offcanvas toggle -->
             <div class="text-light d-md-none">
               <button 
-                class="btn bg-info btn-sm text-dark-75 text-capitalize fw-bold" 
+                class="btn bg-info btn-sm text-secondary-dark text-capitalize fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
                 data-bs-target="#offcanvasNavbar" 
@@ -34,7 +34,7 @@
               </button>
             </div>
             <!-- Bouton Profile -->
-            <a href="/userpage" class="btn bg-info btn-sm text-dark-75 fw-bold">
+            <a href="/userpage" class="btn bg-info btn-sm text-secondary-dark fw-bold">
               <i class="bi bi-person-square"></i> Profile
             </a>
             <!-- Fix : center profile -->
@@ -90,7 +90,7 @@
             >
               <div class="fw-bold text-success">
                 Pseudo : 
-                <span class="text-capitalize fw-light text-dark-75 fst-italic"> 
+                <span class="text-capitalize fw-light text-secondary-dark fst-italic"> 
                   <%= user.pseudo %>
                 </span>
               </div>
@@ -109,7 +109,7 @@
             >
               <div class="fw-bold text-success">
                 Email : 
-                <span class="fw-light text-dark-75 fst-italic"> 
+                <span class="fw-light text-secondary-dark fst-italic"> 
                   <%= user.email %>
                 </span>
               </div>
@@ -128,7 +128,7 @@
             >
               <div class="fw-bold text-success">
                 Password : 
-                <span class="text-capitalize fw-light text-dark-75 fst-italic"> 
+                <span class="text-capitalize fw-light text-secondary-dark fst-italic"> 
                   **********
                 </span>
               </div>

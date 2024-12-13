@@ -1,32 +1,25 @@
-<nav class="navbar navbar-expand navbar-dark bg-secondary-light fixed-top p-0">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold text-dark-75" href="/userpage">
-      <img 
-        src="/public/img/logoEasychat.png" 
-        class="card-img-top wh-25-21" 
-      >
-      <span class="text-info-dark ms-2">
+<nav class="navbar navbar-expand navbar-dark bg-dark fixed-top p-0">
+  <div class="container-fluid d-flex align-items-center">
+    <a class="navbar-brand fw-bold text-secondary-dark fix-logo" href="/userpage">
+      <img src="/public/img/logoEasychat.png" class="card-img-top wh-25-21">
+      <span class="text-info ms-2 m-0 p-0">
         EasyChat
       </span>
     </a>
     <div>
       <% if (user) { %>
-        <a 
-          class="btn bg-secondary-light text-black-50 fw-bold text-decoration-none m-0 p-0 d-flex align-items-center" 
-          href="/logout"
-        >
-          <span class="">Quitter</span>
-          <i class="bi bi-box-arrow-right ms-2"></i>
+        <a class=" d-flex align-items-center undecored" href="/logout">
+          <span class="badge text-bg-danger">Quitter</span>
         </a>
       <% } else { %>
         <ul class="navbar-nav ms-auto justify-content-center gap-2">
           <li class="nav-item">
-            <a class="text-black-50 fw-bold underline" href="/register">
+            <a class="text-secondary-dark fw-bold underline" href="/register">
               Inscription
             </a>
           </li>
           <li class="nav-item">
-            <a class="text-black-50 fw-bold underline" href="/">
+            <a class="text-secondary-dark fw-bold underline" href="/">
               Connexion
             </a>
           </li>

@@ -10,17 +10,17 @@
     <!-- Container -->
     <div class="flex-container pt-5">
       <!-- left fix -->
-      <div class="fixed-sidebar bg-dark-less text-center d-none d-md-block p-0 h-100">
+      <div class="fixed-sidebar bg-secondary-dark text-center d-none d-md-block p-0 h-100">
         <%- include('./partials/contact'); %>
       </div>
       <!-- right grow -->
       <div class="flex-grow g-0 p-0 h-100 d-flex flex-column">
-        <div class="bg-dark-less">
+        <div class="bg-secondary">
           <div class="d-flex justify-content-between p-2">
             <!-- Bouton Offcanvas toggle -->
-            <div class="text-light d-md-none">
+            <div class="d-md-none">
               <button 
-                class="btn bg-info btn-sm text-dark-75 text-capitalize fw-bold" 
+                class="btn bg-info btn-sm text-secondary-dark text-capitalize fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
                 data-bs-target="#offcanvasNavbar" 
@@ -33,13 +33,13 @@
             <!-- Profile -->
             <a 
               href="/userpage" 
-              class="btn btn-info btn-sm text-dark-75 fw-bold">
+              class="btn btn-info btn-sm text-secondary-dark fw-bold">
               <i class="bi bi-person-square"></i> Profile
             </a>
             <!-- Account -->
             <a 
               href="/account/<%= user.pseudo %>" 
-              class="text-light btn bg-success btn-sm fw-bold">
+              class="text-secondary-dark btn bg-info  btn-sm fw-bold">
               <i class="bi bi-person-vcard-fill"></i> Compte
             </a>
           </div>
@@ -105,7 +105,7 @@
             <% friendsReceived.forEach(data => { %>
               <div class="d-flex justify-content-center mt-2">
                 <div 
-                  class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" 
+                  class="d-flex align-items-center fw-bold text-secondary-dark fs-5 gap-2" 
                   style="width: 180px"
                 >
                   <img 
@@ -150,7 +150,7 @@
             <% friendsSend.forEach(data => { %>
               <div class="d-flex justify-content-center mt-2">
                 <div 
-                  class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" 
+                  class="d-flex align-items-center fw-bold text-secondary-dark fs-5 gap-2" 
                   style="width: 230px"
                 >
                   <img 
@@ -180,7 +180,7 @@
             <% userPublicList.forEach(data => { %>
               <div class="d-flex justify-content-center mt-2">
                 <div 
-                  class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" 
+                  class="d-flex align-items-center fw-bold text-secondary-dark fs-5 gap-2" 
                   style="width: 230px"
                 >
                   <img 
@@ -204,14 +204,14 @@
           </div>
           <!-- Mes amis -->
           <div class="bg-info-light shadow rounded-top pb-3">
-            <h3 class="text-center text-light bg-info fw-bold rounded-top mt-4 m-0">
+            <h3 class="text-center text-light bg-info fw-bold rounded-top mt-4 p-1 m-0">
               Mes Amis :
             </h3>
             <% friends.forEach(data =>  { %>
               <div class="d-flex justify-content-center mt-2">
                 <!-- info friend -->
                 <div 
-                  class="d-flex align-items-center fw-bold text-black-50 fs-5 gap-2" 
+                  class="d-flex align-items-center fw-bold text-secondary-dark fs-5 gap-2" 
                   style="width: 230px"
                 >
                   <img 
