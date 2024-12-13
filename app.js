@@ -245,7 +245,7 @@ io.on('connection', (socket) => {
 // Route pour uploader une photo
 app.post('/upload', upload.single('photo'), async (req, res) => {
   if (!req.session.user) {
-    return res.redirect('/login');
+    return res.redirect('/');
   }
   try {
     const filename = `profil${req.session.user.pseudo}`;
@@ -302,26 +302,18 @@ app.get('/image/:filename', async (req, res) => {
 // Route pour afficher la page de compte utilisateur
 app.get('/account/:pseudo', (req, res) => {
   if (!req.session.user) {
-    console.log('Utilisateur non connecté, redirection vers login');
-    return res.redirect('/login');
+    console.log('Utilisateur non connecté, redirection vers ');
+    return res.redirect('/');
   }
   const user = res.locals.user;
   const logoPhoto = res.locals.logoPhoto;
   res.render('Account', { user, logoPhoto });
 });
 
-// Index
-app.get('/', (req, res) => {
-  if (!req.session.user) {return res.redirect('/login'); }
-  const user = req.session.user;
-  const alert = req.params.alert;
-  const heure = moment().format('DD-MM-YYYY, h:mm:ss');
-  res.render('Home', { user, heure, alert});
-});
 
 // error
 app.get('/error', (req, res) => {
-  if (!req.session.user) {return res.redirect('/login'); }
+  if (!req.session.user) {return res.redirect('/'); }
   const user = req.session.user;
   res.render('Error', { user });
 });
@@ -329,7 +321,7 @@ app.get('/error', (req, res) => {
 
 // Edit datas
 app.post('/updateData', async (req, res) => {
-  if (!req.session.user) {return res.redirect('/login');}
+  if (!req.session.user) {return res.redirect('/');}
   const userId = req.session.user._id;
   const { pseudo, email, password, checkPassword } = req.body;
   try {
@@ -382,19 +374,21 @@ app.post('/register', (req, res) =>{
     role: req.body.role
   });
   userData.save()
-    .then(() => { res.redirect('/login') })
+    .then(() => { res.redirect('/') })
     .catch((err) => { console.log(err); });
 });
 
 // Get login
-app.get('/login', (req, res) => {
+app.get('/', (req, res) => {
+  if (req.session.user) {return res.redirect('/userpage') }
   const user = req.session.user;
   const messagesFilter = res.locals.messagesFilter;
   res.render('LoginForm', { user: user, messagesFilter });
 });
 
 // Post login
-app.post('/login', (req, res) => {
+app.post('/', (req, res) => {
+  if (req.session.user) {return res.redirect('/userpage') }
   User.findOne({ pseudo: req.body.pseudo }).then(user => {
     if (!user) { res.send('Pseudo invalide'); }
     if (!bcrypt.compareSync(req.body.password, user.password)){
@@ -410,7 +404,7 @@ app.post('/login', (req, res) => {
 app.get('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) { console.log(err); }
-    else { res.redirect('/login'); }
+    else { res.redirect('/'); }
   });
 });
 
@@ -478,7 +472,7 @@ app.post('/passwordreset', async (req, res) => {
 
 // Get userpage
 app.get('/userpage', async (req, res) => {
-  if (!req.session.user) { return res.redirect('/login');}
+  if (!req.session.user) { return res.redirect('/');}
   const user = req.session.user;
   const friends = res.locals.friends;
   const friendsReceived = res.locals.friendsReceived;
@@ -540,7 +534,7 @@ app.post('/archive', async (req, res) => {
 
 // Get addfriend
 app.get('/addfriend', async (req, res) => {
-  if (!req.session.user) { return res.redirect('/login'); }
+  if (!req.session.user) { return res.redirect('/'); }
   const user = req.session.user;
   const status = user.status;
   const logoPhoto = res.locals.logoPhoto;
@@ -560,7 +554,7 @@ app.get('/addfriend', async (req, res) => {
 
 // Post status
 app.post('/status', (req, res) => {
-  if (!req.session.user) { return res.redirect('/login'); }
+  if (!req.session.user) { return res.redirect('/'); }
   const user = req.session.user;
   const status = req.body.status;
   let state;
@@ -603,7 +597,7 @@ app.post('/cancelrequest', (req, res) => {
 
 // Post sendrequest
 app.post('/sendrequest', (req, res) => {
-  if (!req.session.user){ return res.redirect('/login'); }
+  if (!req.session.user){ return res.redirect('/'); }
   const adder = req.body.adder;
   const asked = req.body.asked;
   if (adder && asked) {
@@ -620,7 +614,7 @@ app.post('/sendrequest', (req, res) => {
 
 // Post agree
 app.post('/agree', (req, res) => {
-  if (!req.session.user){ return res.redirect('/login'); }
+  if (!req.session.user){ return res.redirect('/'); }
   const user = req.session.user;
   const adder = req.body.adder;
   const asked = user.pseudo;
@@ -635,7 +629,7 @@ app.post('/agree', (req, res) => {
 
 // Post remove or decline
 app.post('/remove/:element', (req, res) => {
-  if (!req.session.user){ return res.redirect('/login'); }
+  if (!req.session.user){ return res.redirect('/'); }
   const element = req.params.element;
   let action = "";
   if (element === "disagree") { action = "refusé : ";} 
@@ -656,7 +650,7 @@ app.post('/remove/:element', (req, res) => {
 
 // Search 1 
 app.post('/search', async (req, res) => {
-  if (!req.session.user){ return res.redirect('/login');}
+  if (!req.session.user){ return res.redirect('/');}
   const user = req.session.user;
   const search = req.body.search;
   const chatting = res.locals.chatting;
@@ -683,7 +677,7 @@ app.post('/search', async (req, res) => {
 
 // Get dialogue and handle search
 app.get('/dialogue/:chatting', async (req, res) => {
-  if (!req.session.user) { return res.redirect('/login');}
+  if (!req.session.user) { return res.redirect('/');}
   const user = req.session.user;
   const chattingPseudo = req.params.chatting;
   const friends = res.locals.friends;
