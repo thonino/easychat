@@ -14,31 +14,28 @@
         <%- include('./partials/contact'); %>
       </div>
       <!-- right grow -->
-      <div class="flex-grow g-0 p-0 h-100 d-flex flex-column">
+      <div class="flex-grow d-flex flex-column h-100 p-0 ">
         <div class="bg-secondary">
           <div class="d-flex justify-content-between p-2 align-items-center">
-            <!-- Fix : center profile -->
-            <div class="d-none d-md-inline "></div>
             <!-- Bouton Offcanvas toggle -->
-            <div class="text-light d-md-none">
+            <div class="d-md-none text-light">
               <button 
-                class="btn bg-info btn-sm text-secondary-dark text-capitalize fw-bold" 
+                class="btn bg-info btn-sm fw-bold" 
                 type="button" 
                 data-bs-toggle="offcanvas" 
                 data-bs-target="#offcanvasNavbar" 
                 aria-controls="offcanvasNavbar"
               >
-                  
                 Chat
                 <i class="bi bi-chat-square-text-fill"></i>
               </button>
             </div>
-            <!-- Bouton Profile -->
-            <a href="/userpage" class="btn bg-info btn-sm text-secondary-dark fw-bold">
-              <i class="bi bi-person-square"></i> Profile
-            </a>
             <!-- Fix : center profile -->
             <div class="d-none d-md-inline"></div>
+            <!-- Bouton Profile -->
+            <a href="/userpage" class="btn bg-info btn-sm fw-bold">
+              <i class="bi bi-person-square"></i> Profile
+            </a>
           </div>
         </div>
         <div class="container flex-grow-1 d-flex flex-column align-items-center pb-4">

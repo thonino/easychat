@@ -279,7 +279,7 @@ app.get('/image/:filename', async (req, res) => {
   }
 });
 
-// Route Test pour avoyer des mail
+// Route Test pour envoyer des mail
 // app.get('/sendmail', (req, res) => {
 //   res.render('SendMail')
 // })
